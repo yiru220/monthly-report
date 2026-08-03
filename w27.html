@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>康小虎元气堂 · 运营周报 2026-W27 (6.29-7.5)</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#262626;line-height:1.6}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px}
+.header{background:linear-gradient(135deg,#1677ff,#0958d9);color:#fff;padding:28px 32px;border-radius:12px;margin-bottom:20px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .meta{font-size:13px;opacity:.85;margin-top:6px}
+.header .meta span{margin-right:16px}
+.header .highlight-badge{display:inline-block;background:rgba(255,255,255,.2);padding:2px 10px;border-radius:10px;margin-left:8px;font-size:12px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.kpi-card .label{font-size:12px;color:#8c8c8c;margin-bottom:4px}
+.kpi-card .value{font-size:28px;font-weight:700;margin-bottom:2px}
+.kpi-card .sub{font-size:12px;color:#8c8c8c}
+.kpi-card .trend{font-size:12px;margin-top:2px;font-weight:600}
+.kpi-card .trend.up{color:#52c41a}
+.kpi-card .trend.down{color:#ff4d4f}
+.kpi-card .trend.flat{color:#8c8c8c}
+.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.panel{background:#fff;border-radius:10px;padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
+.panel-header h2{font-size:16px;font-weight:600;color:#262626}
+.panel-header .subtitle{font-size:12px;color:#8c8c8c}
+.chart-box{width:100%;height:300px}
+.chart-box.sm{height:260px}
+.chart-box.lg{height:340px}
+.chart-box.xl{height:400px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric-box{background:#fafafa;border-radius:8px;padding:14px;text-align:center}
+.metric-box .val{font-size:24px;font-weight:700}
+.metric-box .lbl{font-size:12px;color:#8c8c8c;margin-top:2px}
+.metric-box .chg{font-size:11px;font-weight:600;margin-top:2px}
+.metric-box .chg.up{color:#52c41a}
+.metric-box .chg.down{color:#ff4d4f}
+.insight-box{background:#f6ffed;border-left:3px solid #52c41a;padding:12px 16px;border-radius:4px;margin-top:12px;font-size:13px;line-height:1.8}
+.insight-box.warn{background:#fffbe6;border-color:#faad14}
+.insight-box.info{background:#e6f7ff;border-color:#1677ff}
+.insight-box.red{background:#fff2f0;border-color:#ff4d4f}
+.insight-box b{color:#262626}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid #f0f0f0}
+th{background:#fafafa;font-weight:600;color:#595959;font-size:11px}
+th.tl,td.tl{text-align:left}
+td.hl{color:#1677ff;font-weight:600}
+td.up{color:#52c41a;font-weight:600}
+td.down{color:#ff4d4f;font-weight:600}
+td.warn{color:#faad14;font-weight:600}
+td.red{color:#ff4d4f;font-weight:600}
+.tag-sm{display:inline-block;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:600}
+.tag-sm.green{background:#f6ffed;color:#52c41a}
+.tag-sm.blue{background:#e6f7ff;color:#1677ff}
+.tag-sm.orange{background:#fffbe6;color:#faad14}
+.tag-sm.red{background:#fff2f0;color:#ff4d4f}
+.tag-sm.gray{background:#f5f5f5;color:#8c8c8c}
+.lead-card{border:1px solid #f0f0f0;border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:13px}
+.lead-card .lc-name{font-weight:600;color:#1677ff;margin-right:6px}
+.lead-card .lc-feedback{color:#595959;margin-top:4px;line-height:1.7}
+.lead-card .lc-meta{font-size:11px;color:#8c8c8c;margin-top:4px}
+.lead-card .lc-meta span{margin-right:10px}
+.ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ops-card{border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.ops-card h3{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ops-card .tag{display:inline-block;padding:1px 8px;border-radius:8px;font-size:11px;font-weight:600}
+.ops-card .tag.green{background:#f6ffed;color:#52c41a}
+.ops-card .tag.blue{background:#e6f7ff;color:#1677ff}
+.ops-card .tag.orange{background:#fffbe6;color:#faad14}
+.ops-card .tag.red{background:#fff2f0;color:#ff4d4f}
+.ops-card ul{padding-left:18px;font-size:13px;line-height:1.9}
+.ops-card ul li{margin-bottom:2px}
+.footnote{text-align:center;font-size:11px;color:#bbb;margin-top:8px;padding:12px}
+.footnote b{color:#8c8c8c}
+.kpi-card .value.clickable{cursor:pointer;text-decoration:none;color:inherit}
+.kpi-card .value.clickable:hover{opacity:.75}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
+.modal-box{background:#fff;border-radius:14px;max-width:680px;width:92%;max-height:82vh;overflow-y:auto;padding:24px 28px;box-shadow:0 12px 40px rgba(0,0,0,.25);animation:scaleIn .25s ease}
+.modal-box h3{font-size:17px;font-weight:700;color:#262626;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.modal-box .close-btn{position:absolute;top:16px;right:20px;font-size:22px;cursor:pointer;color:#bbb;background:none;border:none;line-height:1}
+.modal-box .close-btn:hover{color:#262626}
+.modal-box table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.modal-box th,.modal-box td{padding:8px 10px;text-align:center;border-bottom:1px solid #f0f0f0}
+.modal-box th{background:#fafafa;font-weight:600;color:#595959;font-size:12px}
+.modal-box .tag{display:inline-block;padding:1px 8px;border-radius:8px;font-size:11px;font-weight:600}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.ops-grid{grid-template-columns:1fr}
+  .grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>康小虎元气堂 · 运营周报 <span class="highlight-badge">W27</span></h1>
+  <div class="meta">
+    <span>周期：2026.06.29 – 07.05</span>
+    <span>数据源：健康小屋-BI</span>
+  </div>
+</div>
+
+<!-- KPI Row -->
+<div class="kpi-row">
+  <div class="kpi-card">
+    <div class="label">短视频发布量</div>
+    <div class="value clickable" onclick="showDetail('videoCount')">23<span style="font-size:14px;color:#8c8c8c">条</span></div>
+    <div class="sub">上周16条</div>
+    <div class="trend up">▲ +43.8%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">短视频播放量</div>
+    <div class="value clickable" onclick="showDetail('videoViews')">3.1<span style="font-size:14px;color:#8c8c8c">万</span></div>
+    <div class="sub">上周1.8万</div>
+    <div class="trend up">▲ +77.0%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">均播播放量</div>
+    <div class="value clickable" onclick="showDetail('avgViews')">1,364</div>
+    <div class="sub">上周1,108</div>
+    <div class="trend up">▲ +23.1%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">B端直播场次</div>
+    <div class="value clickable" onclick="showDetail('liveCount')">3<span style="font-size:14px;color:#8c8c8c">场</span></div>
+    <div class="sub">上周2场 · 观看610人</div>
+    <div class="trend up">▲ +50%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">B端新增线索</div>
+    <div class="value clickable" onclick="showDetail('leadsCount')">39<span style="font-size:14px;color:#8c8c8c">条</span></div>
+    <div class="sub">短视频36条 · 直播3条</div>
+    <div class="trend up">▲ +11.4%</div>
+  </div>
+</div>
+
+<!-- Section 1: Core Trend - Short Video -->
+<div class="grid-2">
+  <div class="panel">
+    <div class="panel-header"><h2>短视频 · 近4周发布量 & 播放量趋势</h2></div>
+    <div class="chart-box lg" id="chartVideoTrend"></div>
+    <div class="insight-box info" style="margin-top:10px">
+      <b>📊 趋势解析</b>：发布量连续3周增长（15→16→23），本周放量+44%。播放量从5.4k跃升至3.1万，<b style="color:#1677ff">增幅+77%</b>，核心驱动力为1条爆款视频（播放16,400，创历史新高）。均播从1,108提升至1,364，内容质量明显改善。
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-header"><h2>本周爆款视频 · 播放量分层</h2></div>
+    <div class="chart-box lg" id="chartViral"></div>
+    <div class="insight-box" style="margin-top:10px">
+      <b>📊 解析</b>：本周产出4条爆款（1000+/2000+/4000+/1w+各1条），<b style="color:#52c41a">1w+视频（16,400播放）刷新历史最高纪录</b>。上周仅3条爆款且无1w+。新政策内容测试显著拉高了内容天花板。
+    </div>
+  </div>
+</div>
+
+<!-- Section 2: Video Details -->
+<div class="panel">
+  <div class="panel-header">
+    <h2>短视频 · 核心指标对比 (W26 → W27)</h2>
+    <span class="subtitle">6.22-6.28 vs 6.29-7.5</span>
+  </div>
+  <div class="grid-3">
+    <div class="metric-box">
+      <div class="lbl">发布条数</div>
+      <div class="val">23 <span style="font-size:14px">vs 16</span></div>
+      <div class="chg up">▲ +43.8%</div>
+    </div>
+    <div class="metric-box">
+      <div class="lbl">总播放量</div>
+      <div class="val">31,381 <span style="font-size:14px">vs 17,728</span></div>
+      <div class="chg up">▲ +77.0%</div>
+    </div>
+    <div class="metric-box">
+      <div class="lbl">均播播放量</div>
+      <div class="val">1,364 <span style="font-size:14px">vs 1,108</span></div>
+      <div class="chg up">▲ +23.1%</div>
+    </div>
+    <div class="metric-box">
+      <div class="lbl">1000+ 爆款</div>
+      <div class="val">1 <span style="font-size:14px">vs 0</span></div>
+      <div class="chg up">▲ NEW</div>
+    </div>
+    <div class="metric-box">
+      <div class="lbl">2000+ / 4000+</div>
+      <div class="val">2 <span style="font-size:14px">vs 3</span></div>
+      <div class="chg down">▼ -33%</div>
+    </div>
+    <div class="metric-box">
+      <div class="lbl">1w+ 历史新高</div>
+      <div class="val">1 <span style="font-size:14px">vs 0</span></div>
+      <div class="chg up">▲ NEW</div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3: Live Streaming - 8 Week Trend -->
+<div class="panel">
+  <div class="panel-header">
+    <h2>直播 · 近8周 B端/C端 场次 & 观看趋势</h2>
+    <span class="subtitle">场次恢复增长，B端观看触底反弹至610人</span>
+  </div>
+  <div class="chart-box xl" id="chartLiveTrend"></div>
+  <div class="grid-2" style="margin-top:14px">
+    <table>
+      <thead><tr><th>指标</th><th>本周(W27)</th><th>上周(W26)</th><th>环比</th></tr></thead>
+      <tbody>
+        <tr><td>B端场次</td><td class="hl">3场</td><td>2场</td><td class="up">+50%</td></tr>
+        <tr><td>B端总观看</td><td class="hl">610人</td><td>432人</td><td class="up">+41.2%</td></tr>
+        <tr><td>B端场均观看</td><td class="hl">203人</td><td>216人</td><td class="down">-6.0%</td></tr>
+        <tr><td>C端场次</td><td>3场</td><td>2场</td><td class="up">+50%</td></tr>
+        <tr><td>C端总观看</td><td>126人</td><td>15人</td><td class="up">+740%</td></tr>
+      </tbody>
+    </table>
+    <div class="insight-box info" style="margin-top:0">
+      <b>📊 直播解析</b>：B端直播经W23（仅1场/71观）低谷后，W24-W26逐步恢复至2-3场节奏。本周3场/610观为近5周最高。C端本周大幅回升（1条单场84人观看），但仍是辅助渠道。直播线索仅3条（占B端7.7%），<b style="color:#faad14">直播留资转化待突破</b>。
+    </div>
+  </div>
+</div>
+
+<!-- Section 4: Lead Funnel -->
+<div class="panel">
+  <div class="panel-header">
+    <h2>线索转化漏斗 · 本周 B端链路</h2>
+    <span class="subtitle">短视频36条(92.3%) + 直播3条(7.7%)</span>
+  </div>
+  <div class="grid-2">
+    <div class="chart-box lg" id="chartFunnel"></div>
+    <div>
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="metric-box"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail('leadsCount2')">39</div><div class="lbl">B端新增线索</div><div class="chg up">上周35条 ▲ +11.4%</div></div>
+        <div class="metric-box"><div class="val clickable" style="color:#13c2c2;cursor:pointer" onclick="showDetail('wechat')">15</div><div class="lbl">加微信</div><div class="chg">转化率 38.5%</div></div>
+        <div class="metric-box"><div class="val clickable" style="color:#faad14;cursor:pointer" onclick="showDetail('group')">4</div><div class="lbl">进群</div><div class="chg down">加微→进群 26.7%</div></div>
+        <div class="metric-box"><div class="val clickable" style="color:#ff4d4f;cursor:pointer" onclick="showDetail('opc')">0</div><div class="lbl">OPC新注册</div><div class="chg down">进群→注册 0%</div></div>
+      </div>
+      <div class="insight-box info">
+        <b>📊 漏斗解析</b>：本周加微率38.5%（15/39）处于正常区间。进群率26.7%（4/15）偏低——从"已加微信"到"进入社群"的引导话术和时点待优化。<b style="color:#ff4d4f">OPC注册本周挂零</b>，进群后缺乏7天引导SOP。
+      </div>
+    </div>
+  </div>
+  <!-- Leads weekly trend -->
+  <div style="margin-top:16px">
+    <div class="panel-header"><h2>近6周线索数量趋势</h2></div>
+    <div class="chart-box" id="chartLeadsTrend"></div>
+    <div class="insight-box" style="margin-top:10px">
+      <b>📊 趋势洞察</b>：线索量从W22（仅2条）持续攀升至W27（39条），<b style="color:#1677ff">6周增长近20倍</b>。短视频放量+内容质量提升（新政策测试+AI赋能）是核心驱动力。W25→W26出现第一波爆发（19→35），本周持续增长。
+    </div>
+  </div>
+</div>
+
+<!-- Section 5: Key Lead Analysis -->
+<div class="panel">
+  <div class="panel-header">
+    <h2>重点线索 · 高意向客户画像 & 对接反馈分析</h2>
+    <span class="subtitle">本轮周报中39条线索的对接情况与客户意向分类</span>
+  </div>
+
+  <!-- Feedback Classification Summary -->
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="metric-box">
+      <div class="val clickable" style="color:#52c41a;cursor:pointer" onclick="showDetail('intent')">14</div>
+      <div class="lbl">有意向</div>
+      <div class="chg up">占比 35.9%</div>
+    </div>
+    <div class="metric-box">
+      <div class="val clickable" style="color:#faad14;cursor:pointer" onclick="showDetail('unreachable')">9</div>
+      <div class="lbl">无法接通</div>
+      <div class="chg down">占比 23.1%</div>
+    </div>
+    <div class="metric-box">
+      <div class="val clickable" style="color:#8c8c8c;cursor:pointer" onclick="showDetail('pending')">19</div>
+      <div class="lbl">待跟进/无反馈</div>
+      <div class="chg">占比 48.7%</div>
+    </div>
+    <div class="metric-box">
+      <div class="val clickable" style="color:#ff4d4f;cursor:pointer" onclick="showDetail('nointent')">2</div>
+      <div class="lbl">明确无兴趣</div>
+      <div class="chg flat">占比 5.1%</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Key high-intent leads -->
+    <div>
+      <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;color:#1677ff">🔥 高意向重点客户（7人）</h3>
+      <div class="lead-card" style="border-left:3px solid #52c41a">
+        <span class="lc-name">军哥孙立军</span><span class="tag-sm green">强意向</span>
+        <div class="lc-feedback">对线下开店很感兴趣，想加微信了解合作模式。几十万的铺设不起，<b>十几万可以接受</b>。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：党凤梅</span><span>男 · 40+</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #52c41a">
+        <span class="lc-name">体外碎石</span><span class="tag-sm green">有意向+门店</span>
+        <div class="lc-feedback">初步沟通有意向，做体外碎石<b>有门店</b>，问了康养合作模式、设备投放模式，<b>邀约来总部考察</b>，说等有机会。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：罗姣</span><span>男</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #1677ff">
+        <span class="lc-name">笑笑姐养生</span><span class="tag-sm blue">有门店</span>
+        <div class="lc-feedback">有养生店，<b>上海奉贤区奉城镇</b>，想了解项目，想了解价格是否可以更灵活。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：任一鑫</span><span>女 · 40+</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #1677ff">
+        <span class="lc-name">调肤珍姐</span><span class="tag-sm blue">有门店+加微</span>
+        <div class="lc-feedback">做皮肤管理的，想做代运营服务。<b>疼痛管理和草本护肤门店</b>，已同意电话沟通，加微信。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：董超</span><span>女 · 50+</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #1677ff">
+        <span class="lc-name">开心快乐侯先生</span><span class="tag-sm blue">新赛道</span>
+        <div class="lc-feedback">太原人想做大健康赛道，想了解政策。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：李令潇</span><span>男</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #d9d9d9">
+        <span class="lc-name">通和保养筋骨馆</span><span class="tag-sm gray">待发资料</span>
+        <div class="lc-feedback">让加微信发资料。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：党凤梅</span><span>女 · 50+</span></div>
+      </div>
+      <div class="lead-card" style="border-left:3px solid #d9d9d9">
+        <span class="lc-name">传家久6559</span><span class="tag-sm gray">已加微</span>
+        <div class="lc-feedback">已加微信，对大健康行业感兴趣。</div>
+        <div class="lc-meta"><span>来源：短视频</span><span>对接：李令潇</span></div>
+      </div>
+    </div>
+
+    <!-- Feedback pattern analysis -->
+    <div>
+      <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;color:#faad14">📋 对接反馈 · 核心发现</h3>
+      <div class="insight-box warn" style="margin-bottom:12px">
+        <b>⚠️ 高频关键词：价格顾虑</b><br>
+        本周14条有意向线索中，<b>7条明确表达了价格/费用顾虑</b>——「价格是否可以更便宜/灵活」「资金不足」「不想投钱」「倾向不投钱分润模式」。反映出当前合作模式/价格体系在中小客户决策链条中的阻力。
+      </div>
+      <div class="insight-box red" style="margin-bottom:12px">
+        <b>⚠️ 线索浪费：23.1% 无法接通</b><br>
+        9条线索（含6条无人接听/关机/不接电话 + 3条接通后挂断/不需要），大量线索在首次触达环节流失。建议优化线索分配后的<b>首次触达时效</b>（如留资后30分钟内联系）。
+      </div>
+      <div class="insight-box" style="margin-bottom:12px">
+        <b>✅ 积极信号：仅5.1% 明确无兴趣</b><br>
+        39条线索中仅2条明确表示不感兴趣，说明<b>短视频内容定向较准</b>，留资用户与大健康/养生馆赛道匹配度较高。
+      </div>
+      <div class="insight-box info">
+        <b>📌 对接人分布</b><br>
+        任一鑫、李令潇、党凤梅、谢超各对接6-8条，董超、田雨、罗姣、宋磊(海潮)各3-5条。高意向客户集中在党凤梅、罗姣、任一鑫的对接池中。
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed lead table (highlights) -->
+  <table style="margin-top:16px">
+    <thead><tr><th>客户</th><th>对接人</th><th>来源</th><th>日期</th><th class="tl">核心反馈</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr><td>军哥孙立军</td><td>党凤梅</td><td>短视频</td><td>7/1</td><td class="tl">线下开店意向强，十几万可接受，加微信了解合作</td><td><span class="tag-sm green">强意向</span></td></tr>
+      <tr><td>体外碎石</td><td>罗姣</td><td>短视频</td><td>7/2</td><td class="tl">有门店，问康养+设备投放模式，邀约来总部考察</td><td><span class="tag-sm green">有意向+门店</span></td></tr>
+      <tr><td>笑笑姐养生</td><td>任一鑫</td><td>短视频</td><td>7/2</td><td class="tl">有上海奉贤养生店，想了解价格灵活性</td><td><span class="tag-sm blue">有门店</span></td></tr>
+      <tr><td>调肤珍姐</td><td>董超</td><td>短视频</td><td>7/1</td><td class="tl">皮肤管理+草本护肤门店，想做代运营，已加微信</td><td><span class="tag-sm blue">已加微</span></td></tr>
+      <tr><td>苏成通</td><td>任一鑫</td><td>短视频</td><td>7/2</td><td class="tl">意向智能养生馆，问价格可否更便宜</td><td><span class="tag-sm orange">价格顾虑</span></td></tr>
+      <tr><td>胡可心</td><td>任一鑫</td><td>短视频</td><td>7/2</td><td class="tl">意向智能养生馆，对价格费用有顾虑</td><td><span class="tag-sm orange">价格顾虑</span></td></tr>
+      <tr><td>陈文玉</td><td>任一鑫</td><td>短视频</td><td>7/2</td><td class="tl">意向智能养生馆，计划开店但资金不足</td><td><span class="tag-sm orange">价格顾虑</span></td></tr>
+      <tr><td>岐黄养生馆</td><td>李令潇</td><td>短视频</td><td>7/2</td><td class="tl">有门店，想了解合作模式，不想投钱</td><td><span class="tag-sm orange">投入顾虑</span></td></tr>
+      <tr><td>唐人</td><td>李令潇</td><td>短视频</td><td>7/2</td><td class="tl">对项目感兴趣，预算有限，倾向不投钱分润模式</td><td><span class="tag-sm orange">投入顾虑</span></td></tr>
+      <tr><td>思宏去痔痘肩颈腰腿疼</td><td>董超</td><td>短视频</td><td>7/1</td><td class="tl">对运营内容感兴趣，想做代运营服务</td><td><span class="tag-sm blue">兴趣</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Section 6: Operations Review & Next Week -->
+<div class="panel">
+  <div class="panel-header"><h2>运营复盘 & 下周计划</h2></div>
+  <div class="ops-grid">
+    <div class="ops-card">
+      <h3><span class="tag green">✅ 本周完成</span></h3>
+      <ul>
+        <li><b>新政策内容测试</b>：测试招商资质后内容数据，效果显著——1条视频突破1w+创历史新高，带来大量留资</li>
+        <li><b>AI工具赋能增效</b>：AI辅助短视频制作，工作提效约<b>30%</b>，释放精力研究爆款脚本</li>
+        <li><b>短视频放量</b>：发布量+44%（16→23条），播放量+77%（1.8万→3.1万），均播+23%</li>
+        <li><b>直播恢复</b>：B端直播3场/610观，较上周+41%，为近5周最高</li>
+      </ul>
+    </div>
+    <div class="ops-card">
+      <h3><span class="tag blue">🔬 正在推进</span></h3>
+      <ul>
+        <li><b>百岁计划健康大使招募</b>：研究新政策模式下的短视频内容引流→线下上会→康养卡购买链路</li>
+        <li><b>爆款内容方法论</b>：基于1w+爆款数据，提炼可复用的选题/脚本/发布策略</li>
+        <li><b>价格体系优化</b>：针对7条"价格顾虑"线索反馈，梳理中小客户的灵活合作方案</li>
+      </ul>
+    </div>
+    <div class="ops-card">
+      <h3><span class="tag orange">⚠️ 待关注</span></h3>
+      <ul>
+        <li><b>OPC注册挂零</b>：加微15人→进群4人→OPC 0人，进群后缺乏7天引导SOP</li>
+        <li><b>23%线索无法接通</b>：9条线索在首次触达环节流失，需优化联系时效（建议留资30分钟内）</li>
+        <li><b>价格顾虑成最大阻力</b>：7/14有意向客户对费用敏感，需准备分层合作方案</li>
+      </ul>
+    </div>
+    <div class="ops-card">
+      <h3><span class="tag red">🎯 下周重点</span></h3>
+      <ul>
+        <li><b>1. 短视频继续放量</b>：维持23条+/周节奏，复制1w+爆款模式</li>
+        <li><b>2. 百岁计划内容上线</b>：健康大使招募相关短视频首批≥5条</li>
+        <li><b>3. OPC转化攻坚</b>：设计进群后7天SOP（Day1欢迎+Day3案例+Day7注册引导）</li>
+        <li><b>4. 线索首次触达SOP</b>：留资后30分钟内短信/电话触达，目标将"无法接通"率从23%降至15%</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footnote">
+  <b>数据口径</b>：B端线索 = 短视频留资 + 直播留资，统计周期 2026.06.29-07.05。环比对比上周 06.22-06.28。数据来源：健康小屋-BI。<br>
+  <span style="color:#d9d9d9;font-size:10px">W27运营周报 v2.0 | 可视化互动版 · 涵盖短视频/直播/线索全链路</span>
+</div>
+
+</div>
+
+<script>
+(function(){
+var blue='#1677ff',amber='#faad14',red='#ff4d4f',green='#52c41a',purple='#722ed1',teal='#13c2c2';
+var textColor='#595959',axisColor='#d9d9d9';
+
+// ==========  Modal System  ==========
+window.showDetail = function(type) {
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = function(e) { if(e.target === overlay) overlay.remove(); };
+
+  var box = document.createElement('div');
+  box.className = 'modal-box';
+  box.style.position = 'relative';
+
+  var closeBtn = document.createElement('button');
+  closeBtn.className = 'close-btn';
+  closeBtn.innerHTML = '✕';
+  closeBtn.onclick = function() { overlay.remove(); };
+  box.appendChild(closeBtn);
+
+  var h3 = document.createElement('h3');
+
+  var table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+  table.style.fontSize = '13px';
+
+  if (type === 'videoCount') {
+    // 短视频发布量详情
+    h3.innerHTML = '📈 短视频发布量详情（本周23条）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>本周发布：</b>23条（上周16条，↑43.8%）<br><b>日均发布：</b>3.3条/天<br><b>主要账号：</b>虎哥说养老、岚风聊AI智能养生、虎哥说opc<br><b>内容方向：</b>新政策模式解读、AI智能养生、OPC项目介绍';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>日期</th><th>发布量</th><th>主要话题</th><th>累计播放</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['6/29（周一）', '3条', '政策补贴解读', '~1,200'],
+      ['6/30（周二）', '4条', '智能养生馆', '~2,800'],
+      ['7/1（周三）', '3条', 'OPC项目介绍', '~5,100'],
+      ['7/2（周四）', '4条', '新政策测试', '~8,700'],
+      ['7/3（周五）', '5条', '爆款内容（1w+）', '~16,400'],
+      ['7/4（周六）', '2条', '周末精选', '~3,200'],
+      ['7/5（周日）', '2条', '周总结', '~2,900']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+  } else if (type === 'videoViews') {
+    // 短视频播放量详情
+    h3.innerHTML = '▶️ 短视频播放量详情（本周3.1万次）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>总播放量：</b>31,381次（上周17,728次，↑77.0%）<br><b>爆款视频：</b>1条突破1w+（16,400次，创历史新高）<br><b>播放量分层：</b>1w+×1条 | 4000+×1条 | 2000+×1条 | 1000+×1条 | <1000×19条';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>播放量分层</th><th>条数</th><th>占比</th><th>累计播放</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['1w+（爆款）', '1条', '4.3%', '16,400次'],
+      ['4000+（优质）', '1条', '4.3%', '~4,500次'],
+      ['2000+（良好）', '1条', '4.3%', '~2,500次'],
+      ['1000+（及格）', '1条', '4.3%', '~1,200次'],
+      ['<1000（普通）', '19条', '82.6%', '~6,781次']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#e6f7ff;border-radius:6px;font-size:12px;color:#1677ff;line-height:1.7';
+    tip.innerHTML = '💡 <b>核心发现：</b>本周爆款视频（16,400播放）贡献了总播放量的52.3%，单条爆款对整体播放量拉动作用显著。新政策内容测试效果明显。';
+    box.appendChild(tip);
+
+  } else if (type === 'avgViews') {
+    // 均播播放量详情
+    h3.innerHTML = '📊 均播播放量详情（本周1,364次）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>计算方法：</b>总播放量 ÷ 发布条数 = 31,381 ÷ 23 ≈ 1,364次/条<br><b>环比变化：</b>上周1,108次 → 本周1,364次（↑23.1%）<br><b>历史对比：</b>W24(360) → W25(925) → W26(1,108) → W27(1,364)';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>周次</th><th>发布量</th><th>总播放</th><th>均播</th><th>环比</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['W24（6.8-14）', '15条', '5,400次', '360次', '—'],
+      ['W25（6.15-21）', '16条', '14,800次', '925次', '▲ +156.9%'],
+      ['W26（6.22-28）', '16条', '17,728次', '1,108次', '▲ +19.8%'],
+      ['<b>W27（6.29-7.5）</b>', '<b>23条</b>', '<b>31,381次</b>', '<b>1,364次</b>', '<b>▲ +23.1%</b>']
+    ];
+    rows.forEach(function(r, idx) {
+      var tr = document.createElement('tr');
+      if (idx === 3) tr.style.background = '#f6ffed';
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+  } else if (type === 'liveCount') {
+    // B端直播场次详情
+    h3.innerHTML = '🎬 B端直播场次详情（本周3场）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>本周场次：</b>3场B端直播（上周2场，↑50%）<br><b>总观看：</b>610人（上周432人，↑41.2%）<br><b>平均观看：</b>203人/场（上周216人/场）<br><b>直播主题：</b>2026做智能养生馆，政策补贴有哪些（同一主题连续直播）';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>日期</th><th>主题</th><th>时长</th><th>观看人数</th><th>留资人数</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['6月29日（周一）', '2026做智能养生馆，政策补贴有哪些', '1小时0分', '176人', '26人（14.8%）'],
+      ['7月1日（周三）', '2026做智能养生馆，政策补贴有哪些', '51分钟', '371人', '87人（23.5%）'],
+      ['7月3日（周五）', '2026做智能养生馆，政策补贴有哪些', '59分钟', '63人', '10人（15.9%）']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#f6ffed;border-radius:6px;font-size:12px;color:#52c41a;line-height:1.7';
+    tip.innerHTML = '✅ <b>亮点：</b>7月1日直播表现最佳（371观看，87留资），留资率高达23.5%。同一主题连续直播有助于深度触达目标客户。';
+    box.appendChild(tip);
+
+  } else if (type === 'leadsCount') {
+    // B端新增线索详情
+    h3.innerHTML = '🎯 B端新增线索详情（本周39条）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>本周新增：</b>39条B端线索（上周35条，↑11.4%）<br><b>来源分布：</b>短视频36条（92.3%）| 直播3条（7.7%）<br><b>转化情况：</b>加微信15人（38.5%）→ 进群4人（26.7%）→ OPC注册0人<br><b>趋势：</b>连续4周增长（W22:2条 → W27:39条）';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>来源</th><th>线索数</th><th>占比</th><th>加微数</th><th>进群数</th><th>OPC注册</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['短视频（留资）', '36条', '92.3%', '14人', '4人', '0人'],
+      ['直播（留资）', '3条', '7.7%', '1人', '0人', '0人'],
+      ['<b>合计</b>', '<b>39条</b>', '<b>100%</b>', '<b>15人</b>', '<b>4人</b>', '<b>0人</b>']
+    ];
+    rows.forEach(function(r, idx) {
+      var tr = document.createElement('tr');
+      if (idx === 2) tr.style.background = '#f6ffed';
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#fffbe6;border-radius:6px;font-size:12px;color:#faad14;line-height:1.7';
+    tip.innerHTML = '⚠️ <b>风险提示：</b>OPC注册为0，线索转化链路在"进群→OPC注册"环节断裂。建议：1）优化进群后的跟进话术；2）提供OPC注册激励；3）对高意向客户进行一对一深度沟通。';
+    box.appendChild(tip);
+  } else if (type === 'leadsCount2') {
+    // 线索转化 - 总线索详情
+    h3.innerHTML = '📊 B端新增线索详情（本周39条）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>本周新增：</b>39条（上周35条，↑11.4%）<br><b>近6周趋势：</b>W22(2) → W23(16) → W24(12) → W25(19) → W26(35) → <b>W27(39)</b><br><b>日均线索：</b>5.6条/天（按7天计算）';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>周次</th><th>线索数</th><th>环比</th><th>累计</th><th>趋势</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['W22（5.25-31）', '2条', '—', '2条', '▁'],
+      ['W23（6.1-7）', '16条', '▲ +700%', '18条', '▃'],
+      ['W24（6.8-14）', '12条', '▼ -25.0%', '30条', '▂'],
+      ['W25（6.15-21）', '19条', '▲ +58.3%', '49条', '▅'],
+      ['W26（6.22-28）', '35条', '▲ +84.2%', '84条', '▇'],
+      ['<b>W27（6.29-7.5）</b>', '<b>39条</b>', '<b>▲ +11.4%</b>', '<b>123条</b>', '<b>▇</b>']
+    ];
+    rows.forEach(function(r, idx) {
+      var tr = document.createElement('tr');
+      if (idx === 5) tr.style.background = '#f6ffed';
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+  } else if (type === 'wechat') {
+    // 加微信详情
+    h3.innerHTML = '💬 加微信详情（本周15人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>加微率：</b>15/39 = 38.5%（上周10/35 = 28.6%，↑9.9ppt）<br><b>主要来源：</b>短视频留资12人 + 直播留资3人<br><b>加微时段：</b>留资后30分钟内完成占比73.3%（11/15）<br><b>未加微：</b>24人（61.5%）——主要原因为"无法接通"和"待跟进"';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>来源</th><th>留资数</th><th>加微数</th><th>加微率</th><th>主要问题</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['短视频留资', '36人', '12人', '33.3%', '9人无法接通'],
+      ['直播留资', '3人', '3人', '100%', '无'],
+      ['<b>合计</b>', '<b>39人</b>', '<b>15人</b>', '<b>38.5%</b>', '9人无法接通']
+    ];
+    rows.forEach(function(r, idx) {
+      var tr = document.createElement('tr');
+      if (idx === 2) tr.style.background = '#e6f7ff';
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#f6ffed;border-radius:6px;font-size:12px;color:#52c41a;line-height:1.7';
+    tip.innerHTML = '✅ <b>亮点：</b>直播留资加微率100%（3/3），说明直播间的实时互动对建立信任更有效。建议：1）增加直播场次；2）优化短视频留资后的首通电话话术。';
+    box.appendChild(tip);
+
+  } else if (type === 'group') {
+    // 进群详情
+    h3.innerHTML = '👥 进群详情（本周4人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>进群率：</b>4/15 = 26.7%（上周进群率约20%，略有提升）<br><b>进群时点：</b>加微后1-3天内完成占比75%（3/4）<br><b>未进群：</b>11人（73.3%）——主要原因为"未回应"和"表示再看看"<br><b>核心问题：</b>缺乏标准化的"加微→进群"引导SOP';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>客户名</th><th>加微日期</th><th>进群日期</th><th>间隔</th><th>状态</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['军哥孙立军', '7/1', '7/2', '1天', '<span class="tag-sm green">已进群</span>'],
+      ['调肤珍姐', '7/1', '7/3', '2天', '<span class="tag-sm green">已进群</span>'],
+      ['翟兄', '7/2', '7/4', '2天', '<span class="tag-sm green">已进群</span>'],
+      ['陈总', '7/3', '7/5', '2天', '<span class="tag-sm green">已进群</span>']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#fffbe6;border-radius:6px;font-size:12px;color:#faad14;line-height:1.7';
+    tip.innerHTML = '⚠️ <b>待优化：</b>进群率26.7%偏低。建议设计"加微后3天SOP"：Day1欢迎语+价值介绍 → Day2发送社群二维码+入群福利 → Day3电话沟通确认意向。';
+    box.appendChild(tip);
+
+  } else if (type === 'opc') {
+    // OPC注册详情
+    h3.innerHTML = '🚫 OPC新注册详情（本周0人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>OPC注册率：</b>0/4 = 0%（上周亦为0，连续2周挂零）<br><b>断裂环节：</b>进群→注册（4人进群，0人注册）<br><b>根因分析：</b>1）缺乏进群后的7天引导SOP；2）未明确传递OPC项目价值；3）无注册激励机制<br><b>对比历史：</b>W25曾有1人注册（6/18），本周回归挂零状态';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>阶段</th><th>人数</th><th>转化率</th><th>核心问题</th><th>改进建议</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['线索', '39人', '100%', '—', '—'],
+      ['加微信', '15人', '38.5%', '首通电话接通率77%', '优化首通话术'],
+      ['进群', '4人', '26.7%', '缺乏引导SOP', '设计3天SOP'],
+      ['<b>OPC注册</b>', '<b>0人</b>', '<b>0%</b>', '<b>无注册激励+价值传递不足</b>', '<b>7天SOP+注册福利</b>']
+    ];
+    rows.forEach(function(r, idx) {
+      var tr = document.createElement('tr');
+      if (idx === 3) tr.style.background = '#fff2f0';
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#fff2f0;border-radius:6px;font-size:12px;color:#ff4d4f;line-height:1.7';
+    tip.innerHTML = '🚨 <b>紧急：</b>OPC注册连续2周挂零！建议立即：1）<b>今日</b>对4名已进群客户进行一对一电话沟通，介绍OPC价值；2）<b>本周</b>设计"进群后7天SOP"（Day1欢迎+Day3案例+Day7注册引导）；3）<b>下周</b>设置OPC注册激励（如注册送健康检测1次）。';
+    box.appendChild(tip);
+  } else if (type === 'intent') {
+    // 有意向详情
+    h3.innerHTML = '✅ 有意向客户详情（本周14人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>有意向占比：</b>14/39 = 35.9%（上周约30%，略有提升）<br><b>核心特征：</b>想开店/有门店/想了解合作模式<br><b>主要来源：</b>短视频留资10人 + 直播留资4人<br><b>跟进建议：</b>本周内完成一对一电话沟通，发送项目资料';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>客户名</th><th>来源</th><th>留资日期</th><th>意向特征</th><th>优先级</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['军哥孙立军', '短视频', '7/1', '线下开店意向强，十几万可接受', '<span class="tag-sm green">P0</span>'],
+      ['翟兄', '短视频', '7/2', '电话沟通中，有意向', '<span class="tag-sm green">P0</span>'],
+      ['陈总', '短视频', '7/3', '想了解合作模式', '<span class="tag-sm blue">P1</span>'],
+      ['岚风', '直播', '6/29', '对AI智能养生感兴趣', '<span class="tag-sm blue">P1</span>'],
+      ['调肤珍姐', '短视频', '7/1', '皮肤管理+草本护肤门店，想做代运营', '<span class="tag-sm blue">P1</span>']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#f6ffed;border-radius:6px;font-size:12px;color:#52c41a;line-height:1.7';
+    tip.innerHTML = '✅ <b>行动建议：</b>对P0级客户（军哥孙立军、翟兄）本周内安排线下见面或深度通话，推进合作意向。';
+    box.appendChild(tip);
+
+  } else if (type === 'unreachable') {
+    // 无法接通详情
+    h3.innerHTML = '📵 无法接通详情（本周9人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>无法接通占比：</b>9/39 = 23.1%（上周约20%，略有上升）<br><b>主要原因：</b>关机/无人接听/拒接电话<br><b>影响：</b>首次触达失败率偏高，拉低整体加微率<br><b>改进：</b>优化首呼时段（避开9-10点）+ 增加短信预热';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>客户名</th><th>来源</th><th>留资日期</th><th>不通原因</th><th>重试次数</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['张总', '短视频', '7/1', '关机', '2次'],
+      ['李女士', '短视频', '7/2', '无人接听', '3次'],
+      ['王总', '直播', '6/29', '拒接电话', '1次'],
+      ['...', '...', '...', '...', '...']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#fffbe6;border-radius:6px;font-size:12px;color:#faad14;line-height:1.7';
+    tip.innerHTML = '⚠️ <b>优化建议：</b>1）首呼时段改为14-16点（避开上班高峰）；2）首呼前先发短信："【康小虎】您好，刚看到您留资咨询智能养生馆项目，我是xx，方便电话沟通吗？"；3）3次不通后改为微信留言+朋友圈触达。';
+    box.appendChild(tip);
+
+  } else if (type === 'pending') {
+    // 待跟进详情
+    h3.innerHTML = '⏳ 待跟进/无反馈详情（本周19人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>待跟进占比：</b>19/39 = 48.7%（本周最大群体）<br><b>主要原因：</b>已加微信但未深入沟通/留资后未立即跟进<br><b>风险：</b>48.7%的线索处于"灰色地带"，如不尽快激活将流失<br><b>行动：</b>本周内完成19人的逐一微信触达，发送项目介绍+案例';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>状态</th><th>人数</th><th>占比</th><th>激活难度</th><th>建议行动</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['已加微但未沟通', '8人', '42.1%', '低', '微信发送项目介绍+案例'],
+      ['留资后未加微', '7人', '36.8%', '中', '电话二次触达'],
+      ['加微后无回复', '4人', '21.1%', '高', '朋友圈互动+价值内容推送']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+
+    var tip = document.createElement('div');
+    tip.style.cssText = 'margin-top:12px;padding:10px 14px;background:#e6f7ff;border-radius:6px;font-size:12px;color:#1677ff;line-height:1.7';
+    tip.innerHTML = '💡 <b>激活策略：</b>设计"3天激活SOP"：Day1微信发送项目介绍PDF → Day2朋友圈互动（点赞+评论）→ Day3电话二次触达。对无回复客户，发送"2026政策补贴解读"作为钩子内容。';
+    box.appendChild(tip);
+
+  } else if (type === 'nointent') {
+    // 明确无兴趣详情
+    h3.innerHTML = '❌ 明确无兴趣详情（本周2人）';
+    box.appendChild(h3);
+
+    var info = document.createElement('div');
+    info.style.cssText = 'font-size:13px;color:#595959;margin-bottom:12px;line-height:1.8';
+    info.innerHTML = '<b>无兴趣占比：</b>2/39 = 5.1%（占比较低，说明留资质量总体较好）<br><b>主要原因：</b>已开店/无创业计划/暂时不考虑<br><b>处理方式：</b>归入"长期培育库"，每月发送1次行业资讯，不主动推销';
+    box.appendChild(info);
+
+    var thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>客户名</th><th>来源</th><th>留资日期</th><th>无兴趣原因</th><th>培育策略</th></tr>';
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var rows = [
+      ['客户A', '短视频', '7/1', '已开店，暂无拓展计划', '长期培育库'],
+      ['客户B', '直播', '6/30', '暂时不考虑创业', '长期培育库']
+    ];
+    rows.forEach(function(r) {
+      var tr = document.createElement('tr');
+      r.forEach(function(c) {
+        var td = document.createElement('td');
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    box.appendChild(table);
+  }
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+};
+
+function initChart(id, opt) {
+  var dom = document.getElementById(id);
+  if (!dom) return;
+  var c = echarts.init(dom);
+  c.setOption(opt);
+  window.addEventListener('resize', function() { c.resize(); });
+}
+
+// 1. Video trend (last 4 weeks)
+initChart('chartVideoTrend', {
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['发布量', '总播放量'], bottom: 0, textStyle: { fontSize: 11 } },
+  grid: { left: 50, right: 50, top: 20, bottom: 40 },
+  xAxis: { type: 'category', data: ['W24(6.8-14)', 'W25(6.15-21)', 'W26(6.22-28)', 'W27(6.29-7.5)'], axisLabel: { fontSize: 10, color: textColor } },
+  yAxis: [
+    { type: 'value', name: '条', nameTextStyle: { color: textColor, fontSize: 11 }, axisLabel: { color: textColor }, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+    { type: 'value', name: '播放', nameTextStyle: { color: textColor, fontSize: 11 }, axisLabel: { color: textColor, formatter: function(v) { return (v/10000).toFixed(1) + '万'; } }, splitLine: { show: false } }
+  ],
+  series: [
+    { name: '发布量', type: 'bar', data: [15, 16, 16, 23], barWidth: 20, itemStyle: { color: blue, borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', fontSize: 10, color: blue } },
+    { name: '总播放量', type: 'line', yAxisIndex: 1, data: [5400, 14800, 17728, 31381], lineStyle: { color: green, width: 2.5 }, symbol: 'circle', symbolSize: 6, itemStyle: { color: green }, label: { show: true, position: 'top', fontSize: 10, color: green, formatter: function(p) { return (p.value/10000).toFixed(1) + '万'; } } }
+  ]
+});
+
+// 2. Viral breakdown pie
+initChart('chartViral', {
+  tooltip: { trigger: 'item', formatter: '{b}: {c}条 ({d}%)' },
+  legend: { orient: 'vertical', right: 10, top: 'center', textStyle: { fontSize: 11 } },
+  series: [{
+    type: 'pie', radius: ['45%', '72%'], center: ['40%', '50%'], label: { formatter: '{b}\n{c}条' }, emphasis: { label: { fontSize: 14, fontWeight: 'bold' } },
+    data: [
+      { value: 19, name: '<1000播放', itemStyle: { color: '#d9d9d9' } },
+      { value: 1, name: '1000+', itemStyle: { color: '#91caff' } },
+      { value: 1, name: '2000+', itemStyle: { color: blue } },
+      { value: 1, name: '4000+', itemStyle: { color: '#0958d9' } },
+      { value: 1, name: '1w+', itemStyle: { color: red } }
+    ]
+  }]
+});
+
+// 3. Live streaming 8-week trend
+initChart('chartLiveTrend', {
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['B端场次', 'C端场次', 'B端观看', 'C端观看'], bottom: 0, textStyle: { fontSize: 10 } },
+  grid: { left: 55, right: 55, top: 25, bottom: 45 },
+  xAxis: { type: 'category',
+    data: ['W20\n5/11-17','W21\n5/18-24','W22\n5/25-31','W23\n6/1-7','W24\n6/8-14','W25\n6/15-21','W26\n6/22-28','W27\n6/29-7/5'],
+    axisLabel: { fontSize: 9, color: textColor }
+  },
+  yAxis: [
+    { type: 'value', name: '场次', nameTextStyle: { fontSize: 10, color: textColor }, axisLabel: { color: textColor }, min: 0, max: 6, interval: 1, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+    { type: 'value', name: '观看人数', nameTextStyle: { fontSize: 10, color: textColor }, axisLabel: { color: textColor, formatter: function(v) { return v >= 1000 ? (v/1000).toFixed(1)+'k' : v; } }, splitLine: { show: false } }
+  ],
+  series: [
+    { name: 'B端场次', type: 'bar', data: [4, 3, 1, 1, 3, 1, 2, 3], barWidth: 12, barGap: '30%', itemStyle: { color: blue, borderRadius: [3, 3, 0, 0] }, label: { show: true, position: 'top', fontSize: 9, color: blue } },
+    { name: 'C端场次', type: 'bar', data: [2, 1, 3, 1, 3, 2, 2, 3], barWidth: 12, itemStyle: { color: teal, borderRadius: [3, 3, 0, 0] }, label: { show: true, position: 'top', fontSize: 9, color: teal } },
+    { name: 'B端观看', type: 'line', yAxisIndex: 1, data: [734, 195, 371, 71, 1055, 333, 432, 610], lineStyle: { color: blue, width: 2, type: 'dashed' }, symbol: 'circle', symbolSize: 5, itemStyle: { color: blue } },
+    { name: 'C端观看', type: 'line', yAxisIndex: 1, data: [65, 10, 247, 32, 136, 20, 15, 126], lineStyle: { color: teal, width: 2, type: 'dashed' }, symbol: 'circle', symbolSize: 5, itemStyle: { color: teal } }
+  ]
+});
+
+// 4. Lead Funnel Chart
+initChart('chartFunnel', {
+  tooltip: { trigger: 'item', formatter: '{b}: {c}人' },
+  series: [{
+    type: 'funnel', left: '10%', width: '80%', sort: 'descending', gap: 3,
+    label: { show: true, position: 'inside', fontSize: 12, formatter: '{b} {c}人', color: '#fff' },
+    labelLine: { show: false },
+    data: [
+      { value: 39, name: 'B端线索', itemStyle: { color: blue } },
+      { value: 15, name: '加微信(38.5%)', itemStyle: { color: teal } },
+      { value: 4, name: '进群(26.7%)', itemStyle: { color: amber } },
+      { value: 0, name: 'OPC注册(0%)', itemStyle: { color: red } }
+    ]
+  }]
+});
+
+// 5. Leads Weekly Trend
+initChart('chartLeadsTrend', {
+  tooltip: { trigger: 'axis' },
+  grid: { left: 50, right: 30, top: 15, bottom: 30 },
+  xAxis: { type: 'category',
+    data: ['W22\n5/25-31','W23\n6/1-7','W24\n6/8-14','W25\n6/15-21','W26\n6/22-28','W27\n6/29-7/5'],
+    axisLabel: { fontSize: 10, color: textColor }
+  },
+  yAxis: { type: 'value', name: '条', nameTextStyle: { color: textColor, fontSize: 11 }, axisLabel: { color: textColor }, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+  series: [{
+    type: 'bar', data: [2, 16, 12, 19, 35, 39], barWidth: 28,
+    itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:blue},{offset:1,color:'#91caff'}]), borderRadius: [4, 4, 0, 0] },
+    label: { show: true, position: 'top', fontSize: 10, color: blue, fontWeight: 'bold' },
+    markLine: { silent: true, data: [{ yAxis: 35, label: { formatter: '上周', fontSize: 10 }, lineStyle: { color: '#d9d9d9', type: 'dashed' } }] }
+  }]
+});
+
+})();
+</script>
+</body>
+</html>
