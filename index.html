@@ -203,14 +203,14 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
     <div class="panel-header">
       <span>月度趋势 · 4-7月</span>
       <div class="legend-row">
-        <span><span class="dot" style="background:#1677ff"></span>到款(净)</span>
+        <span><span class="dot" style="background:#1677ff"></span>到款(毛)</span>
         <span><span class="dot" style="background:#faad14"></span>售卡</span>
         <span><span class="dot" style="background:#13c2c2"></span>引流(自然人)</span>
       </div>
     </div>
     <div class="panel-body">
       <div class="chart-box" id="chartTrend"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月毛到款129.3万（全款¥73.5万+订金¥55.8万），退款18.7万后净到款110.6万（122.9%）。引流35人（116.7%）。4-7月毛到款：52.4→61.11→77.1→129.3万（6月=净64.1+退款13万，趋势图为毛口径，与KPI卡一致）。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月毛到款129.3万（全款¥73.5万+订金¥55.8万），退款18.7万后净到款110.6万（122.9%）。引流35人（116.7%）。售卡345张（毛，未扣退卡），退卡49张，净296张，达成61.67%（净/目标480）。4-7月毛到款：52.4→61.11→77.1→129.3万（6月=净64.1+退款13万，趋势图为毛口径，与KPI卡一致）；4-7月售卡（毛）：46→181→155→345张。</div>
     </div>
   </div>
   <div class="panel">
@@ -391,7 +391,7 @@ initChart('chartTrend',{
   ],
   series:[
     {name:'小屋到款(毛)',type:'bar',data:[52.4,61.11,77.1,129.3],barWidth:18,itemStyle:{color:blue,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:blue,formatter:'{c}万'}},
-    {name:'售卡数',type:'bar',data:[46,181,155,296],barWidth:18,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:amber}},
+    {name:'售卡数',type:'bar',data:[46,181,155,345],barWidth:18,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:amber}},
     {name:'引流上会(自然人)',type:'bar',data:[17,27,23,35],barWidth:18,itemStyle:{color:teal,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:teal}},
     {name:'到款目标',type:'line',data:[20,50,65,90],lineStyle:{color:blue,type:'dashed',width:1.5},symbol:'none',yAxisIndex:0},
     {name:'售卡目标',type:'line',data:[0,170,170,480],lineStyle:{color:amber,type:'dashed',width:1.5},symbol:'none',yAxisIndex:1},
