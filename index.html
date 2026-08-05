@@ -280,7 +280,7 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
     <div class="panel-header"><span>线索转化漏斗 · 7月</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartFunnel"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月线索203条（健康大使198条+OPC 5条），优质线索27条，较6月82条增长147%，优质线索增长286%。短视频直接获客198条，直播留资8条，OPC独立获客5条。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月线索211条（视频号短视频189条+视频号直播21条+抖音直播1条），优质线索27条，较6月82条增长157.3%，优质线索增长286%。短视频直接获客189条，直播留资22条。</div>
     </div>
     <div style="margin-top:12px;max-height:300px;overflow-y:auto">
       <table><thead><tr><th>日期</th><th>客户</th><th>来源</th><th>意向类型</th><th>备注</th></tr></thead><tbody>
@@ -332,7 +332,7 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
       ③ <b>引流上会35人（116.7%），7/24 OPC沙龙15人+7/31 OPC沙龙9人为主力，商机大会本月暂未安排<br><br>
       <b>P1 · 关注</b><br>
       ① OPC到款目标5万，截止7/31为1万（百岁会员/AIOPC），7月OPC邀约133人（6月116人，环比+14.7%）。OPC到款1万（百岁会员/AIOPC），线索5条已追踪5条注册2条，需加速OPC客户转化<br>
-      ② 7月线索207条（较6月82条增长152.4%），优质线索27条（增长286%）<br>
+      ② 7月线索211条（较6月82条增长157.3%），优质线索27条（增长286%）<br>
       ③ 大兴兴悦居7月暂无扫码，活跃度需关注<br>
       ④ 黄佳佳截至目前7月到款为0（但引流贡献6人），需推动到款转化<br><br>
       <b>7月行动建议</b><br>
@@ -364,7 +364,7 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
 </div>
 
 <div class="footnote">
-  <b>数据口径说明</b>：KPI到款为<b>毛到款</b>（129.3万，按产品剔除百岁会员1万OPC）；达成率122.9%为<b>净到款</b>110.6万(129.3-退款18.7)/目标90万。趋势图到款为<b>毛口径</b>，与KPI卡一致（6月=净64.1+退款13万=77.1）。业务人员表格到款为毛到款口径。线索漏斗为7月单月数据（截止7/31，207条）：线索207→已联系207→加微信53→加社群30→意向确定27→合作0，非历史累计。<b>已联系口径</b>：9-线索情况表「是否初步对接」字段非空白（是/否）均计为已联系，7月非空207条（是206+否1）。短视频7月164条（播放18.5万），直播19场。数据来源：健康小屋-BI.xlsx。<br><span style="color:#bbb;font-size:10px">版本 v2026.08.03 | 完整交互版：KPI/业务人员/线索漏斗均可点击查看明细</span>
+  <b>数据口径说明</b>：KPI到款为<b>毛到款</b>（129.3万，按产品剔除百岁会员1万OPC）；达成率122.9%为<b>净到款</b>110.6万(129.3-退款18.7)/目标90万。趋势图到款为<b>毛口径</b>，与KPI卡一致（6月=净64.1+退款13万=77.1）。业务人员表格到款为毛到款口径。线索漏斗为7月单月数据（截止7/31，211条）：线索211→已联系209→加微信53→加社群30→意向确定27→合作0，非历史累计。<b>已联系口径</b>：9-线索情况表「是否初步对接」字段非空白（是/否）均计为已联系，7月非空209条（是208+否1）。短视频7月164条（播放18.5万），直播19场。数据来源：健康小屋-BI.xlsx。<br><span style="color:#bbb;font-size:10px">版本 v2026.08.05-1700 | 完整交互版：KPI/业务人员/线索漏斗均可点击查看明细</span>
 </div>
 
 </div>
@@ -451,8 +451,8 @@ var funnelChart = initChart('chartFunnel',{
     type:'funnel',left:'15%',width:'70%',sort:'descending',gap:2,
     label:{show:true,position:'inside',fontSize:11,formatter:'{b} {c}人',cursor:'pointer'},
     data:[
-      {value:207,name:'7月线索',itemStyle:{color:blue}},
-      {value:207,name:'已联系',itemStyle:{color:'#4096ff'}},
+      {value:211,name:'7月线索',itemStyle:{color:blue}},
+      {value:209,name:'已联系',itemStyle:{color:'#4096ff'}},
       {value:53,name:'加微信',itemStyle:{color:amber}},
       {value:30,name:'加社群',itemStyle:{color:teal}},
       {value:27,name:'意向确定',itemStyle:{color:green}},
@@ -634,10 +634,10 @@ window.goDetail = function showDetail(type, filter) {
     rows.push(['<b>合计</b>','','','<b>' + sum.toFixed(2) + '</b>','','','']);
   } else if (type === 'clue') {
     // show a summary note since full clue detail is too large to embed
-    var labels = {all:'全部207条',contacted:'已联系约207条',wechat:'加微信约53条',group:'进群/重点约30条',intent:'意向确定约27条'};
+    var labels = {all:'全部211条',contacted:'已联系209条',wechat:'加微信约53条',group:'进群/重点约30条',intent:'意向确定约27条'};
     var tips = {
-      all: '7月截止7/31累计207条线索（W29 31条+W30 74条+），来自视频号/视频号直播/短视频。较6月增长显著。具体每条线索明细请查阅智能表格"9-线索情况"。',
-      contacted: '已初步对接（9-线索情况表「是否初步对接」字段非空白，是/否均计）共207条（是206+否1），占线索207条的92.3%。W30新老账号封禁影响加微和进群，新号养号中。',
+      all: '7月截止7/31累计211条线索（W29 31条+W30 74条+），来自视频号/视频号直播/短视频。较6月增长显著。具体每条线索明细请查阅智能表格"9-线索情况"。',
+      contacted: '已初步对接（9-线索情况表「是否初步对接」字段非空白，是/否均计）共209条（是208+否1），占线索211条的99.1%。W30新老账号封禁影响加微和进群，新号养号中。',
       wechat: '加微信约53条。需关注：微信被封号期间加微受限，新号养好后目标加微率回升至25%+。',
       group: '进群或重点客户约30条，含W30高意向客户。进群率偏低，退群5人需关注账号恢复。',
       intent: '意向确定约27条。W30产出加盟/开店/OPC代理等高价值线索，金马工艺、华姐等为重点跟进对象。'
