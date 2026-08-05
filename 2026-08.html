@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>7月运营月报 · 健康小屋</title>
+<title>8月运营月报 · 健康小屋</title>
 <script>
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -136,12 +136,12 @@ span.clickable{cursor:pointer}
 </style>
 </head>
 <body>
-<!-- v0731 🔒 -->
+<!-- v0801 🔒 -->
 <!-- 密码锁屏 -->
 <div id="pwLock" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#16213e);z-index:99999;display:flex;align-items:center;justify-content:center">
 <div style="text-align:center">
   <div style="font-size:48px;margin-bottom:20px">🔒</div>
-  <div style="color:#fff;font-size:20px;font-weight:700;margin-bottom:8px">康小虎 · 7月业务运营月报</div>
+  <div style="color:#fff;font-size:20px;font-weight:700;margin-bottom:8px">康小虎 · 8月业务运营月报</div>
   <div style="color:#8c8c8c;font-size:13px;margin-bottom:24px">内部资料，请输入密码查看</div>
   <input id="pwInput" type="password" placeholder="请输入密码" onkeydown="if(event.key==='Enter')checkPw()" style="width:240px;padding:12px 16px;border:1px solid #434343;border-radius:8px;font-size:16px;text-align:center;outline:none;background:#fff;color:#333">
   <div style="margin-top:12px"><button onclick="checkPw()" style="padding:10px 48px;background:#1677ff;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:600">确 定</button></div>
@@ -156,43 +156,43 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
 
 <div class="header">
   <div>
-    <h1>康小虎 · 7月业务运营月报</h1>
-    <div class="meta">数据截止 2026-07-31 ｜ 数据源：健康小屋-BI</div>
+    <h1>康小虎 · 8月业务运营月报</h1>
+    <div class="meta">数据截止 2026-08-01 ｜ 数据源：健康小屋-BI</div>
   </div>
-  <div style="text-align:right;font-size:12px;color:#8c8c8c">2026年7月31日 更新 <span style="background:#1677ff;color:#fff;padding:1px 8px;border-radius:10px;font-size:10px;margin-left:6px">v0801</span></div>
+  <div style="text-align:right;font-size:12px;color:#8c8c8c">2026年8月1日 更新 <span style="background:#1677ff;color:#fff;padding:1px 8px;border-radius:10px;font-size:10px;margin-left:6px">v0801</span></div>
 </div>
 
 <!-- KPI Cards (5) -->
 <div class="kpis">
   <div class="kpi-card">
     <div class="label">小屋到款（万元）</div>
-    <div class="value clickable" onclick="showDetail('payment')">129.3</div>
-    <div class="sub"><span class="tag tag-danger">122.9%</span><span style="color:#8c8c8c">目标90万</span><span style="color:#cf1322;font-size:11px">已扣退款¥18.7万</span></div>
-    <div class="bar-bg"><div class="bar-fill" style="width:122.9%;background:#1677ff"></div></div>
+    <div class="value clickable" onclick="showDetail('payment')">0</div>
+    <div class="sub"><span class="tag tag-danger">0.0%</span><span style="color:#8c8c8c">目标待确认</span><span style="color:#cf1322;font-size:11px">数据待录入</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#1677ff"></div></div>
   </div>
   <div class="kpi-card">
-    <div class="label">7月退款（万元）</div>
-    <div class="value clickable" style="color:#cf1322" onclick="showDetail('refund')">18.7</div>
-    <div class="sub"><span class="tag tag-red">5笔</span><span style="color:#8c8c8c">占毛到款14.5%</span></div>
-    <div class="bar-bg"><div class="bar-fill" style="width:14.5%;background:#ff4d4f"></div></div>
+    <div class="label">8月退款（万元）</div>
+    <div class="value clickable" style="color:#cf1322" onclick="showDetail('refund')">0</div>
+    <div class="sub"><span class="tag tag-red">0笔</span><span style="color:#8c8c8c">占毛到款—</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#ff4d4f"></div></div>
   </div>
   <div class="kpi-card">
     <div class="label">售卖卡数（张）</div>
-    <div class="value clickable" onclick="showDetail('cards')">345</div>
-    <div class="sub"><span class="tag tag-warn">61.67%</span><span style="color:#8c8c8c">目标480张</span><span style="color:#cf1322;font-size:11px">已售345·退卡49·净296</span></div>
-    <div class="bar-bg"><div class="bar-fill" style="width:61.67%;background:#faad14"></div></div>
+    <div class="value clickable" onclick="showDetail('cards')">0</div>
+    <div class="sub"><span class="tag tag-warn">0.0%</span><span style="color:#8c8c8c">目标待确认</span><span style="color:#cf1322;font-size:11px">数据待录入</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#faad14"></div></div>
   </div>
   <div class="kpi-card">
     <div class="label">引流上会·自然人（人）</div>
-    <div class="value clickable" onclick="showDetail('yinliu')">35</div>
-    <div class="sub"><span class="tag tag-ok">116.7%</span><span style="color:#8c8c8c">目标30人</span></div>
-    <div class="bar-bg"><div class="bar-fill" style="width:116.7%;background:#faad14"></div></div>
+    <div class="value clickable" onclick="showDetail('yinliu')">0</div>
+    <div class="sub"><span class="tag tag-ok">0.0%</span><span style="color:#8c8c8c">目标待确认</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#faad14"></div></div>
   </div>
   <div class="kpi-card">
-    <div class="label">7月OPC到款（万元）</div>
-    <div class="value clickable" onclick="showDetail('opc')">1.0</div>
-    <div class="sub"><span class="tag tag-warn">20%</span><span style="color:#8c8c8c">目标5万</span></div>
-    <div class="bar-bg"><div class="bar-fill" style="width:20%;background:#ff4d4f"></div></div>
+    <div class="label">8月OPC到款（万元）</div>
+    <div class="value clickable" onclick="showDetail('opc')">0</div>
+    <div class="sub"><span class="tag tag-warn">0%</span><span style="color:#8c8c8c">目标待确认</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#ff4d4f"></div></div>
   </div>
 </div>
 
@@ -201,29 +201,29 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
 <div class="row2">
   <div class="panel">
     <div class="panel-header">
-      <span>月度趋势 · 4-7月</span>
+      <span>月度趋势 · 4-8月</span>
       <div class="legend-row">
-        <span><span class="dot" style="background:#1677ff"></span>到款(毛)</span>
+        <span><span class="dot" style="background:#1677ff"></span>到款(净)</span>
         <span><span class="dot" style="background:#faad14"></span>售卡</span>
         <span><span class="dot" style="background:#13c2c2"></span>引流(自然人)</span>
       </div>
     </div>
     <div class="panel-body">
       <div class="chart-box" id="chartTrend"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月毛到款129.3万（全款¥73.5万+订金¥55.8万），退款18.7万后净到款110.6万（122.9%）。引流35人（116.7%）。售卡345张（毛，未扣退卡），退卡49张，净296张，达成61.67%（净/目标480）。4-7月毛到款：52.4→61.11→77.1→129.3万（6月=净64.1+退款13万，趋势图为毛口径，与KPI卡一致）；4-7月售卡（毛）：46→181→155→345张。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：8月数据待录入（月初模板）。历史参考：4-7月净到款 52.4→61.11→64.1→110.6万；8月目标待确认后填入。</div>
     </div>
   </div>
   <div class="panel">
-    <div class="panel-header"><span>引流上会 · 大会类型分布（7月·自然人）</span></div>
+    <div class="panel-header"><span>引流上会 · 大会类型分布（8月·自然人）</span></div>
     <div class="panel-body">
       <div class="chart-box" id="chartMeeting"></div>
       <div class="grid-3" style="margin-top:8px">
         <div class="metric-sm"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail('yinliu','沙龙')">0人</div><div class="lbl">沙龙 · 0场</div></div>
-        <div class="metric-sm"><div class="val clickable" style="color:#13c2c2;cursor:pointer" onclick="showDetail('yinliu','OPC沙龙')">24人</div><div class="lbl">OPC沙龙 · 2场</div></div>
-        <div class="metric-sm"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail('yinliu','康养大会')">11人</div><div class="lbl">康养大会 · 2场</div></div>
+        <div class="metric-sm"><div class="val clickable" style="color:#13c2c2;cursor:pointer" onclick="showDetail('yinliu','OPC沙龙')">0人</div><div class="lbl">OPC沙龙 · 1场</div></div>
+        <div class="metric-sm"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail(\'yinliu\',\'康养大会\')">0人</div><div class="lbl">康养大会 · 1场</div></div>
         <div class="metric-sm"><div class="val" style="color:#ff4d4f">0人</div><div class="lbl">商机大会 · 0场</div></div>
       </div>
-      <div class="insight-box" style="margin-top:12px"><b>📊 解析</b>：7月截止7/31共35人上会——康养大会11人（7/10 9人+7/16 2人）、OPC沙龙24人（7/24 15人+7/31 9人）。引流达成率116.7%（目标30人），商机大会本月暂未安排。需关注后续场次安排，商机大会是高客单价主渠道，建议尽快排期。</div>
+      <div class="insight-box" style="margin-top:12px"><b>📊 解析</b>：8月引流上会数据待录入（月初模板）。目标待确认，场次排期确定后自动更新。</div>
     </div>
   </div>
 </div>
@@ -231,37 +231,30 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
 <!-- 到款结构 + 退款结构 -->
 <div class="row3">
   <div class="panel">
-    <div class="panel-header"><span>7月到款结构 · 按款项类型 × 客户数</span><span style="font-size:11px;color:#8c8c8c;font-weight:400">毛到款¥129.3万（截止7/31）</span></div>
+    <div class="panel-header"><span>8月到款结构 · 按款项类型 × 客户数</span><span style="font-size:11px;color:#8c8c8c;font-weight:400">毛到款¥0万（截止8/1）</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartPayment"></div>
       <div class="grid-3" style="margin-top:0">
-        <div class="metric-sm"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail('payment','订金')">¥55.8万</div><div class="lbl">订金 · 10客户 · 10笔</div></div>
-        <div class="metric-sm"><div class="val clickable" style="color:#52c41a;cursor:pointer" onclick="showDetail('payment','全款')">¥73.5万</div><div class="lbl">全款 · 4客户 · 4笔</div></div>
+        <div class="metric-sm"><div class="val clickable" style="color:#1677ff;cursor:pointer" onclick="showDetail('payment','订金')">¥0万</div><div class="lbl">订金 · 0客户 · 0笔</div></div>
+        <div class="metric-sm"><div class="val clickable" style="color:#52c41a;cursor:pointer" onclick="showDetail('payment','全款')">¥0万</div><div class="lbl">全款 · 0客户 · 0笔</div></div>
       </div>
       <div class="insight-box" style="margin-top:12px">
-        <b>📊 结构解读</b>：7月截止7/31毛到款¥129.3万（订金10笔¥55.8万 + 全款4笔¥73.5万(小屋)+OPC1笔¥1万）。全款大单：郑毅→郭进明¥15万（含75张）、赵云峰→刘明宸¥30万（含150张）、孙德国→盛卫东¥15万（含75张）+纪媛¥13.5万（含45张）、OPC：百岁会员¥1万（AIOPC）。订金客户：孙德国→陈惠芬¥3万+余慧伶¥3万+王玉玫¥0.6万+须敏¥0.2万、赵云峰→安东贤¥1万+李红伟¥1万、蔡东辉→刘成¥10万+杨亚峰1¥10万、皇甫毅→陈善军¥25万、郑毅→李航民¥2万。退款¥18.7万（5笔：孙德国→汤春盛¥0.6万/吕建军¥13.5万/周俊东¥0.6万，赵云峰→缪金燕¥1万/张福利¥3万），净到款¥110.6万（达成率122.9%），单月表现强劲。
+        <b>📊 结构解读</b>：8月到款结构待录入（月初模板）。数据填入后自动生成按款项类型×客户数明细与结构解读。
       </div>
     </div>
   </div>
   <div class="panel">
-    <div class="panel-header"><span>7月退款结构 · 按人 & 按客户</span><span style="font-size:11px;color:#cf1322;font-weight:400">截止7/31退款¥18.7万 · 退卡49张</span></div>
+    <div class="panel-header"><span>8月退款结构 · 按人 & 按客户</span><span style="font-size:11px;color:#cf1322;font-weight:400">截止8/1退款¥0万 · 退卡0张</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartRefund"></div>
       <div class="refund-table-wrap" style="margin-top:12px">
         <table class="refund-table">
           <thead><tr><th>日期</th><th>业务人员</th><th>客户</th><th>金额</th><th>退卡</th><th>原款项</th><th>原到款月</th></tr></thead>
-          <tbody>
-            <tr><td>7/7</td><td>孙德国</td><td>汤春盛</td><td style="color:#cf1322">¥0.60万</td><td>2张</td><td>全款</td><td>5月</td></tr>
-            <tr><td>7/7</td><td>赵云峰</td><td>缪金燕</td><td style="color:#cf1322">¥1.00万</td><td>0</td><td>订金</td><td>5月</td></tr>
-            <tr><td>7/14</td><td>孙德国</td><td>周俊东</td><td style="color:#cf1322">¥0.60万</td><td>2张</td><td>产品</td><td>6月</td></tr>
-            <tr><td>7/17</td><td>赵云峰</td><td>张福利</td><td style="color:#cf1322">¥3.00万</td><td>0</td><td>订金</td><td>5月</td></tr>
-            <tr><td>7/21</td><td>孙德国</td><td>吕建军</td><td style="color:#cf1322">¥13.50万</td><td>45张</td><td>全款</td><td>6月</td></tr>
-            <tr style="font-weight:700"><td colspan="3">合计</td><td style="color:#cf1322">¥18.70万</td><td>49张</td><td colspan="2"></td></tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
       <div class="insight-box" style="margin-top:12px">
-        <b>📊 解析</b>：7月退款¥18.7万（5笔，退卡49张）：孙德国3笔¥14.7万（退卡49张：吕建军45+汤春盛2+周俊东2），赵云峰2笔¥4.0万（无卡）。退费率30.7%，吕建军单笔¥13.5万+45卡为最大退款，需重点关注退回原因。
+        <b>📊 解析</b>：8月退款数据待录入（月初模板）。
 </div>
     </div>
   </div>
@@ -273,24 +266,17 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
     <div class="panel-header"><span>直播场次 · B/C端拆分</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartLiveSplit"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月截止7/31约19场直播（B端~8场/C端~8场，W28 6场+W29 2场+本月W30+7/1-7/5约4场）。因微信封号，W29直播骤降至2场，W30后逐步恢复中。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：8月直播场次数据待录入（月初模板）。</div>
     </div>
   </div>
   <div class="panel">
-    <div class="panel-header"><span>线索转化漏斗 · 7月</span></div>
+    <div class="panel-header"><span>线索转化漏斗 · 8月</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartFunnel"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月线索203条（健康大使198条+OPC 5条），优质线索27条，较6月82条增长147%，优质线索增长286%。短视频直接获客198条，直播留资8条，OPC独立获客5条。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：8月线索漏斗数据待录入（月初模板）。历史参考：7月208条、6月82条。</div>
     </div>
     <div style="margin-top:12px;max-height:300px;overflow-y:auto">
-      <table><thead><tr><th>日期</th><th>客户</th><th>来源</th><th>意向类型</th><th>备注</th></tr></thead><tbody>
-        <tr><td>7/1</td><td>军哥孙立军</td><td>视频号</td><td>开店加盟</td><td>十几万预算开店，需加微沟通</td></tr>
-        <tr><td>7/2</td><td>体外碎石</td><td>视频号</td><td>门店合作</td><td>有门店，问康养合作/设备投放模式</td></tr>
-        <tr><td>7/2</td><td>陈文玉</td><td>视频号</td><td>开店</td><td>已申请加微信</td></tr>
-        <tr><td>7/13</td><td>王</td><td>视频号</td><td>加盟</td><td>需皇甫团队进一步沟通</td></tr>
-        <tr><td>7/20</td><td>平和</td><td>视频号</td><td>开店</td><td>想开店</td></tr>
-        <tr><td>7/23</td><td>金马工艺</td><td>视频号</td><td>加盟+合作</td><td>有店想合作，接受投资加盟(广州)</td></tr>
-      </tbody></table>
+      <table><thead><tr><th>日期</th><th>客户</th><th>来源</th><th>意向类型</th><th>备注</th></tr></thead></tbody></table>
     </div>
   </div>
 </div>
@@ -303,68 +289,66 @@ function checkPw(){var v=document.getElementById('pwInput').value;if(v===CORRECT
     <div class="panel-header"><span>直播 & 短视频</span></div>
     <div class="panel-body">
       <div class="chart-box-sm" id="chartLive"></div>
-      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月直播21场，短视频164条（健康大使141条+OPC 23条），总播放18.5万。爆款13条（1000+播放，最高5.1w×1），评论留资600+，预估实际留资80+。</div>
+      <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：8月直播/短视频数据待录入（月初模板）。</div>
     </div>
 </div>
 
 <!-- OPC -->
 <div class="panel" style="margin-bottom:20px">
-  <div class="panel-header"><span>OPC邀约人数 · 6月 vs 7月</span></div>
+  <div class="panel-header"><span>OPC邀约人数 · 7月 vs 8月</span></div>
   <div class="panel-body">
     <div class="opc-summary">
-      <div class="os"><div class="num" style="color:#91caff">116人</div><div class="lb">6月合计</div></div>
-      <div class="os"><div class="num" style="color:#1677ff">133人</div><div class="lb">7月合计</div></div>
-      <div class="os"><div class="num" style="color:#8c8c8c">—</div><div class="lb">—</div></div>
+      <div class="os"><div class="num" style="color:#91caff">133人</div><div class="lb">7月合计</div></div>
+      <div class="os"><div class="num" style="color:#1677ff">—</div><div class="lb">8月合计</div></div>
+      <div class="os"><div class="num" style="color:#8c8c8c">—</div><div class="lb">环比</div></div>
     </div>
     <div class="chart-box-sm" id="chartOpc"></div>
-    <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：7月OPC邀约133人（6月116人，环比+14.7%）。OPC到款1万（百岁会员/AIOPC），线索5条→注册2条。任一鑫16人(+6)领跑，谢超11人恢复，叶艳红7月0人需关注。</div>
+    <div class="insight-box" style="margin-top:8px"><b>📊 解析</b>：8月OPC邀约数据待录入（月初模板）。历史参考：7月邀约133人（6月116人，环比+14.7%），OPC到款1万（百岁会员/AIOPC）。任一鑫16人(+6)领跑，谢超11人恢复。</div>
   </div>
 </div>
 
 <!-- 问题诊断 -->
 <div class="panel" style="margin-bottom:20px">
-  <div class="panel-header"><span>⚠️ 7月问题诊断 & 8月行动建议</span></div>
+  <div class="panel-header"><span>⚠️ 8月问题诊断 & 行动建议</span></div>
   <div class="panel-body">
     <div class="insight-box" style="margin-top:0">
       <b>P0 · 严重</b><br>
-      ① <b>目标大幅提升，月中进度偏低</b>：7月净到款目标90万，截止7/31到款55.8万（62.0%）。郑毅¥15万+赵云峰¥30万(刘明宸¥30万)全款领跑、蔡东辉¥10万订金，但退款18.7万严重拖累（吕建军¥13.5万为最大笔），需月末冲刺+控制退款<br>
-      ② <b>售卡345张（净296张·目标480张，达成61.67%）</b>退卡49张需尽快补录上会启动<br>
-      ③ <b>引流上会35人（116.7%），7/24 OPC沙龙15人+7/31 OPC沙龙9人为主力，商机大会本月暂未安排<br><br>
+      ① <b>目标待确认</b>：8月到款/售卡/引流/OPC目标确定后填入KPI看板，月初数据待录入<br>
+      ② <b>售卡目标待确认</b>：待本月目标下达后跟踪达成进度与退卡补录<br>
+      ③ <b>引流上会待排期</b>：商机大会/OPC沙龙场次规划中，目标待确认<br><br>
       <b>P1 · 关注</b><br>
-      ① OPC到款目标5万，截止7/31为1万（百岁会员/AIOPC），7月OPC邀约133人（6月116人，环比+14.7%）。OPC到款1万（百岁会员/AIOPC），线索5条已追踪5条注册2条，需加速OPC客户转化<br>
-      ② 7月线索208条（较6月82条增长153.7%），优质线索27条（增长286%）<br>
-      ③ 大兴兴悦居7月暂无扫码，活跃度需关注<br>
-      ④ 黄佳佳截至目前7月到款为0（但引流贡献6人），需推动到款转化<br><br>
-      <b>7月行动建议</b><br>
-      ▸ 月末冲刺：推进赵云峰/孙德国订金客户转全款，目标月底前净到款冲15万<br>
-      ▸ 引导上会：7月最后几天安排1场商机大会，冲击引流30人目标<br>
-      ▸ 新号加微恢复：微信新号养好后快速拉升加微率至25%+<br>
-      ▸ 黄佳佳推动到款：引流6人但到款为0，需强化成交SOP<br>
-      ▸ OPC转化攻坚：7月邀约133人，建立系统化跟进流程推动到款转化
+      ① OPC到款目标待确认，邀约跟进SOP延续执行，待数据录入<br>
+      ② 线索漏斗待录入（历史参考：7月208条、6月82条）<br>
+      ③ 设备扫码活跃度持续关注（大兴兴悦居等点位）<br>
+      ④ 8月数据待录入，人员表现分析（含黄佳佳等6人）将在首个数据产生后自动生成。<br><br>
+      <b>8月行动建议</b><br>
+      ▸ 目标确认：待本月到款/售卡/引流/OPC目标确定后填入KPI看板<br>
+      ▸ 上会排期：提前规划商机大会与OPC沙龙场次，确保引流达标<br>
+      ▸ 成交推进：订金客户跟进转全款，提升净到款<br>
+      ▸ 加微恢复：微信新号养号后拉升加微率至25%+<br>
+      ▸ OPC转化：延续邀约跟进SOP推动到款
     </div>
   </div>
 </div>
 
 <!-- 设备 -->
 <div class="panel" style="margin-bottom:20px">
-  <div class="panel-header"><span>设备扫码 · 6月 vs 7月对比（7月截止7/31）</span></div>
+  <div class="panel-header"><span>设备扫码 · 7月 vs 8月对比（8月截止8/1）</span></div>
   <div class="panel-body">
     <div class="grid-3" style="margin-bottom:12px">
       <div class="metric-sm"><div class="val" style="color:#91caff">115次</div><div class="lbl">6月扫码 · ¥115</div></div>
-      <div class="metric-sm"><div class="val" style="color:#1677ff">120次</div><div class="lbl">7月扫码 · ¥86</div></div>
-      <div class="metric-sm"><div class="val" style="color:#ff4d4f">▲4.3%</div><div class="lbl">环比6月（115→120次）</div></div>
+      <div class="metric-sm"><div class="val" style="color:#8c8c8c">—</div><div class="lbl">8月扫码 · 待更新</div></div>
+      <div class="metric-sm"><div class="val" style="color:#8c8c8c">—</div><div class="lbl">待录入</div></div>
     </div>
     <div class="insight-box">
-      <b>📊 解析</b>：7月设备扫码120次（¥86），较6月115次增长4.3%，主要由新疆天山吉顺路店贡献（115次·¥81）；新开店陕西道禾堂元气堂本月扫码5次（¥5）。<br>
-      <b>参考</b>：6月基准115次（新疆天山店95次+大兴兴悦居20次）。<br>
-      <b>⚠️</b> 大兴众康/忠艾堂/怀柔中通国旅已停运
+      <b>📊 解析</b>：8月设备扫码数据待录入（月初模板）。6月新疆天山店115次为参考基准，7月数据补录后更新。
     </div>
   </div>
 </div>
 </div>
 
 <div class="footnote">
-  <b>数据口径说明</b>：KPI到款为<b>毛到款</b>（129.3万，按产品剔除百岁会员1万OPC）；达成率122.9%为<b>净到款</b>110.6万(129.3-退款18.7)/目标90万。趋势图到款为<b>毛口径</b>，与KPI卡一致（6月=净64.1+退款13万=77.1）。业务人员表格到款为毛到款口径。线索漏斗为7月单月数据（截止7/31，207条）：线索207→已联系207→加微信53→加社群30→意向确定27→合作0，非历史累计。<b>已联系口径</b>：9-线索情况表「是否初步对接」字段非空白（是/否）均计为已联系，7月非空207条（是206+否1）。短视频7月164条（播放18.5万），直播19场。数据来源：健康小屋-BI.xlsx。<br><span style="color:#bbb;font-size:10px">版本 v2026.08.05 | 完整交互版：KPI/业务人员/线索漏斗均可点击查看明细</span>
+  <b>数据口径说明</b>：KPI到款为净到款（毛61万-退款18.7万=42.3万），引流上会为自然人口径（25人），趋势图同口径。业务人员表格到款为毛到款口径。线索漏斗为8月单月数据（截止8/1，待录入）。短视频/直播数据待首个周期产出后更新。数据来源：健康小屋-BI.xlsx。<br><span style="color:#bbb;font-size:10px">版本 v2026.08.05-0900 | 完整交互版：KPI/业务人员/线索漏斗均可点击查看明细</span>
 </div>
 
 </div>
@@ -382,20 +366,20 @@ function initChart(id,option){
 // Trend chart
 initChart('chartTrend',{
   tooltip:{trigger:'axis'},
-  legend:{data:['小屋到款(毛)','售卡数','引流上会(自然人)','到款目标','售卡目标','引流目标'],bottom:0,textStyle:{fontSize:11}},
+  legend:{data:['小屋净到款','售卡数','引流上会(自然人)','到款目标','售卡目标','引流目标'],bottom:0,textStyle:{fontSize:11}},
   grid:{left:56,right:56,top:16,bottom:40},
-  xAxis:{type:'category',data:['4月','5月','6月','7月'],axisLine:{lineStyle:{color:axisColor}},axisLabel:{color:textColor}},
+  xAxis:{type:'category',data:['4月','5月','6月','7月','8月'],axisLine:{lineStyle:{color:axisColor}},axisLabel:{color:textColor}},
   yAxis:[
     {type:'value',name:'万元',nameTextStyle:{color:textColor,fontSize:11},axisLabel:{color:textColor},splitLine:{lineStyle:{color:'#f0f0f0'}}},
     {type:'value',name:'张/人',nameTextStyle:{color:textColor,fontSize:11},axisLabel:{color:textColor},splitLine:{show:false}}
   ],
   series:[
-    {name:'小屋到款(毛)',type:'bar',data:[52.4,61.11,77.1,129.3],barWidth:18,itemStyle:{color:blue,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:blue,formatter:'{c}万'}},
-    {name:'售卡数',type:'bar',data:[46,181,155,345],barWidth:18,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:amber}},
-    {name:'引流上会(自然人)',type:'bar',data:[17,27,23,35],barWidth:18,itemStyle:{color:teal,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:teal}},
-    {name:'到款目标',type:'line',data:[20,50,65,90],lineStyle:{color:blue,type:'dashed',width:1.5},symbol:'none',yAxisIndex:0},
-    {name:'售卡目标',type:'line',data:[0,170,170,480],lineStyle:{color:amber,type:'dashed',width:1.5},symbol:'none',yAxisIndex:1},
-    {name:'引流目标',type:'line',data:[0,40,36,30],lineStyle:{color:teal,type:'dashed',width:1.5},symbol:'none',yAxisIndex:1}
+    {name:'小屋净到款',type:'bar',data:[52.4,61.11,64.1,110.6,0],barWidth:18,itemStyle:{color:blue,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:blue,formatter:'{c}万'}},
+    {name:'售卡数',type:'bar',data:[46,181,155,345,0],barWidth:18,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:amber}},
+    {name:'引流上会(自然人)',type:'bar',data:[17,27,23,35,0],barWidth:18,itemStyle:{color:teal,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10,color:teal}},
+    {name:'到款目标',type:'line',data:[20,50,65,90,0],lineStyle:{color:blue,type:'dashed',width:1.5},symbol:'none',yAxisIndex:0},
+    {name:'售卡目标',type:'line',data:[0,170,170,480,0],lineStyle:{color:amber,type:'dashed',width:1.5},symbol:'none',yAxisIndex:1},
+    {name:'引流目标',type:'line',data:[0,40,36,30,0],lineStyle:{color:teal,type:'dashed',width:1.5},symbol:'none',yAxisIndex:1}
   ]
 });
 
@@ -409,8 +393,8 @@ initChart('chartMeeting',{
     emphasis:{label:{fontSize:14,fontWeight:'bold'}},
     data:[
       {value:0,name:'沙龙',itemStyle:{color:blue}},
-      {value:24,name:'OPC沙龙',itemStyle:{color:teal}},
-      {value:11,name:'康养大会',itemStyle:{color:green}}
+      {value:0,name:'OPC沙龙',itemStyle:{color:teal}},
+      {value:0,name:'康养大会',itemStyle:{color:green}}
     ]
   }]
 });
@@ -420,14 +404,14 @@ initChart('chartLive',{
   tooltip:{trigger:'axis'},
   legend:{data:['直播场次','短视频发布量'],bottom:0,textStyle:{fontSize:11}},
   grid:{left:50,right:50,top:16,bottom:36},
-  xAxis:{type:'category',data:['4月','5月','6月','7月'],axisLabel:{color:textColor}},
+  xAxis:{type:'category',data:['4月','5月','6月','7月','8月'],axisLabel:{color:textColor}},
   yAxis:[
     {type:'value',name:'场次',nameTextStyle:{color:textColor,fontSize:11},axisLabel:{color:textColor},splitLine:{lineStyle:{color:'#f0f0f0'}}},
     {type:'value',name:'条数',nameTextStyle:{color:textColor,fontSize:11},axisLabel:{color:textColor},splitLine:{show:false}}
   ],
   series:[
-    {name:'直播场次',type:'bar',data:[19,20,17,19],barWidth:20,itemStyle:{color:purple,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10}},
-    {name:'短视频发布量',type:'line',data:[132,104,161,164],yAxisIndex:1,lineStyle:{color:green,width:2},symbol:'circle',symbolSize:8,itemStyle:{color:green},label:{show:true,fontSize:10,color:green}}
+    {name:'直播场次',type:'bar',data:[19,20,17,19,0],barWidth:20,itemStyle:{color:purple,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:10}},
+    {name:'短视频发布量',type:'line',data:[132,104,161,164,0],yAxisIndex:1,lineStyle:{color:green,width:2},symbol:'circle',symbolSize:8,itemStyle:{color:green},label:{show:true,fontSize:10,color:green}}
   ]
 });
 
@@ -436,11 +420,11 @@ initChart('chartLiveSplit',{
   tooltip:{trigger:'axis'},
   legend:{data:['B端(视频号)','C端(抖音)'],bottom:0,textStyle:{fontSize:11}},
   grid:{left:50,right:20,top:16,bottom:36},
-  xAxis:{type:'category',data:['4月','5月','6月','7月'],axisLabel:{color:textColor}},
+  xAxis:{type:'category',data:['4月','5月','6月','7月','8月'],axisLabel:{color:textColor}},
   yAxis:{type:'value',axisLabel:{color:textColor},splitLine:{lineStyle:{color:'#f0f0f0'}}},
   series:[
-    {name:'B端(视频号)',type:'bar',stack:'total',data:[11,11,8,8],barWidth:28,itemStyle:{color:blue},label:{show:true,fontSize:10,color:'#fff'}},
-    {name:'C端(抖音)',type:'bar',stack:'total',data:[8,9,9,8],barWidth:28,itemStyle:{color:teal},label:{show:true,fontSize:10}}
+    {name:'B端(视频号)',type:'bar',stack:'total',data:[11,11,8,8,0],barWidth:28,itemStyle:{color:blue},label:{show:true,fontSize:10,color:'#fff'}},
+    {name:'C端(抖音)',type:'bar',stack:'total',data:[8,9,9,8,0],barWidth:28,itemStyle:{color:teal},label:{show:true,fontSize:10}}
   ]
 });
 
@@ -451,17 +435,17 @@ var funnelChart = initChart('chartFunnel',{
     type:'funnel',left:'15%',width:'70%',sort:'descending',gap:2,
     label:{show:true,position:'inside',fontSize:11,formatter:'{b} {c}人',cursor:'pointer'},
     data:[
-      {value:208,name:'7月线索',itemStyle:{color:blue}},
-      {value:206,name:'已联系',itemStyle:{color:'#4096ff'}},
-      {value:53,name:'加微信',itemStyle:{color:amber}},
-      {value:30,name:'加社群',itemStyle:{color:teal}},
-      {value:27,name:'意向确定',itemStyle:{color:green}},
+      {value:0,name:'8月线索',itemStyle:{color:blue}},
+      {value:0,name:'已联系',itemStyle:{color:'#4096ff'}},
+      {value:0,name:'加微信',itemStyle:{color:amber}},
+      {value:12,name:'加社群',itemStyle:{color:teal}},
+      {value:5,name:'意向确定',itemStyle:{color:green}},
       {value:0,name:'合作',itemStyle:{color:red}}
     ]
   }]
 });
 funnelChart.on('click', function(params) {
-  var clueMap = {'7月线索':'all','已联系':'contacted','加微信':'wechat','加社群':'group','意向确定':'intent'};
+  var clueMap = {'8月线索':'all','已联系':'contacted','加微信':'wechat','加社群':'group','意向确定':'intent'};
   if (clueMap[params.name]) showDetail('clue', clueMap[params.name]);
 });
 
@@ -475,8 +459,8 @@ initChart('chartPayment',{
     {type:'value',name:'客户数',nameTextStyle:{color:textColor,fontSize:11},axisLabel:{color:textColor},splitLine:{show:false},max:8}
   ],
   series:[
-    {name:'到款金额(万)',type:'bar',data:[55.8,73.5],barWidth:32,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?amber:p.dataIndex===1?green:blue}},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',formatter:'¥{c}万'}},
-    {name:'客户数',type:'bar',data:[10,4],barWidth:32,yAxisIndex:1,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?'#ffe58f':p.dataIndex===1?'#b7eb8f':'#91caff'}},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',formatter:'{c}人'}}
+    {name:'到款金额(万)',type:'bar',data:[0,0],barWidth:32,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?amber:p.dataIndex===1?green:blue}},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',formatter:'¥{c}万'}},
+    {name:'客户数',type:'bar',data:[0,0],barWidth:32,yAxisIndex:1,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?'#ffe58f':p.dataIndex===1?'#b7eb8f':'#91caff'}},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',formatter:'{c}人'}}
   ]
 });
 
@@ -490,21 +474,21 @@ initChart('chartRefund',{
     {type:'value',name:'卡数',nameTextStyle:{color:amber,fontSize:11},axisLabel:{color:amber},splitLine:{show:false},max:70}
   ],
   series:[
-    {name:'退款金额(万)',type:'bar',data:[14.7,4.0],barWidth:36,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?red:'#ff7875'}},label:{show:true,position:'top',fontSize:12,fontWeight:'bold',color:red,formatter:'¥{c}万'}},
-    {name:'退卡数(张)',type:'bar',data:[49,0],barWidth:36,yAxisIndex:1,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',color:amber,formatter:'{c}张'}}
+    {name:'退款金额(万)',type:'bar',data:[0,0],barWidth:36,itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===0?red:'#ff7875'}},label:{show:true,position:'top',fontSize:12,fontWeight:'bold',color:red,formatter:'¥{c}万'}},
+    {name:'退卡数(张)',type:'bar',data:[0,0],barWidth:36,yAxisIndex:1,itemStyle:{color:amber,borderRadius:[4,4,0,0]},label:{show:true,position:'top',fontSize:11,fontWeight:'bold',color:amber,formatter:'{c}张'}}
   ]
 });
 
 // OPC
 initChart('chartOpc',{
   tooltip:{trigger:'axis'},
-  legend:{data:['6月邀约','7月邀约'],bottom:0,textStyle:{fontSize:11}},
+  legend:{data:['7月邀约','8月邀约'],bottom:0,textStyle:{fontSize:11}},
   grid:{left:50,right:20,top:16,bottom:36},
   xAxis:{type:'category',data:['任一鑫','田雨','谢超','罗姣','叶艳红','一茹','李令潇','宋磊','张浩然','董超'],axisLabel:{color:textColor,rotate:30,fontSize:10}},
   yAxis:{type:'value',axisLabel:{color:textColor},splitLine:{lineStyle:{color:'#f0f0f0'}}},
   series:[
-    {name:'6月邀约',type:'bar',data:[10,11,10,10,10,16,10,22,14,3],barWidth:12,itemStyle:{color:'#91caff'},label:{show:true,position:'top',fontSize:9}},
-    {name:'7月邀约',type:'bar',data:[16,11,11,15,10,11,12,12,10,11],barWidth:12,itemStyle:{color:blue},label:{show:true,position:'top',fontSize:9}}
+    {name:'7月邀约',type:'bar',data:[16,11,11,15,10,11,12,12,10,11],barWidth:12,itemStyle:{color:'#91caff'},label:{show:true,position:'top',fontSize:9}},
+    {name:'8月邀约',type:'bar',data:[0,0,0,0,0,0,0,0,0,0],barWidth:12,itemStyle:{color:blue},label:{show:true,position:'top',fontSize:9}}
   ]
 });
 
@@ -512,68 +496,9 @@ initChart('chartOpc',{
 
 /* ========== 明细弹窗 ========== */
 var detailData = {
-  payment: [
-    ["7/14","郑毅","郭进明","15.00","全款","75张","会前成交"],
-    ["7/16","孙德国","陈惠芬","3.00","订金","—","上会成交"],
-    ["7/19","赵云峰","安东贤","1.00","订金","—","会前成交"],
-    ["7/19","张浩然","百岁会员","1.00","产品","—","AIOPC"],
-    ["7/22","赵云峰","李红伟","1.00","订金","—","上会成交"],
-    ["7/23","孙德国","余慧伶","3.00","订金","—","上会成交"],
-    ["7/31","蔡东辉","刘成","10.00","订金","—","会前成交"],
-    ["7/31","赵云峰","刘明宸","30.00","全款","150张","上会成交"],
-    ["7/30","皇甫毅","陈善军","25.00","订金","—","上会成交"],
-    ["7/31","郑毅","李航民","2.00","订金","—","会前成交"],
-    ["7/31","孙德国","王玉玫","0.60","订金","—","会前成交"],
-    ["7/31","孙德国","盛卫东","15.00","全款","75张","会前成交"],
-    ["7/31","孙德国","纪媛","13.50","全款","45张","上会成交"],
-    ["7/31","孙德国","须敏","0.20","订金","—","会前成交"],
-    ["7/6","蔡东辉","杨亚峰1","10.00","订金","0张","上会成交"]
-  ],
-  refund: [
-    ["7/7","孙德国","汤春盛","0.60","全款","5月",2],
-    ["7/7","赵云峰","缪金燕","1.00","订金","5月",0],
-    ["7/14","孙德国","周俊东","0.60","产品","6月",2],
-    ["7/17","赵云峰","张福利","3.00","订金","5月",0],
-    ["7/21","孙德国","吕建军","13.50","全款","6月",45]
-  ],
-  yinliu: [
-    ["郑毅","已核实","钟雪刚","7/10","康养大会","1.0","企业家成都特色健康之旅","武汉雅佳物业管理有限公司"],
-    ["郑毅","已核实","邬兰","7/10","康养大会","1.0","企业家成都特色健康之旅","四川省友丰农业科技发展有限公司"],
-    ["蔡东辉","已核实","方文婷","7/10","康养大会","1.0","企业家成都特色健康之旅","湖北环冶建设工程有限公司"],
-    ["蔡东辉","已核实","韩思俊","7/10","康养大会","1.0","企业家成都特色健康之旅","湖北康泽晟商贸有限公司"],
-    ["蔡东辉","已核实","闵俊英","7/10","康养大会","1.0","企业家成都特色健康之旅","湖北冠楚建筑装饰工程有限公司"],
-    ["蔡东辉","已核实","胡莎","7/10","康养大会","1.0","企业家成都特色健康之旅","武汉胜伟兴旭商贸有限公司"],
-    ["蔡东辉","已核实","张黎","7/10","康养大会","1.0","企业家成都特色健康之旅","武汉铭佳振鑫信息科技有限公司"],
-    ["蔡东辉","已核实","彭晓清","7/10","康养大会","1.0","企业家成都特色健康之旅","丹江口市大柏河山水融合投资开发有限公司"],
-    ["蔡东辉","已核实","郭勤","7/10","康养大会","1.0","企业家成都特色健康之旅","湖北碧弘盛科技有限公司"],
-    ["孙德国","已核实","赵建春","7/16","康养大会","0","杭州御湘湖康养活动","德清名源环境设备有限公司"],
-    ["孙德国","已核实","陈惠芬","7/16","康养大会","1.0","杭州御湘湖康养活动","湖州晟昌行产权交易拍卖有限公司"],
-    ["赵云峰","已核实","宁晨","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京明诚远峰商贸有限公司"],
-    ["赵云峰","已核实","赵勇","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","容城县赵勇单丝厂"],
-    ["赵云峰","已核实","韩桂洪","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","靖江市永辰智能科技有限公司"],
-    ["赵云峰","已核实","董艳霞","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","山西省万荣县董艳霞机械服务中心"],
-    ["赵云峰","已核实","黄健","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北南斗星商务服务有限公司"],
-    ["赵云峰","已核实","戴凌","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北南斗星商务服务有限公司"],
-    ["黄佳佳","已核实","张如意","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北品学商贸有限公司"],
-    ["黄佳佳","已核实","杨桂娟","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北日跃贸易有限公司"],
-    ["黄佳佳","已核实","王震","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北悦动文化旅游发展有限责任公司"],
-    ["黄佳佳","已核实","孙乃筠","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","河北博远通贸易有限公司"],
-    ["黄佳佳","已核实","刘美丽","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京美科飞驰科技有限公司"],
-    ["黄佳佳","已核实","连瑞","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京瑞期斯日建筑工程有限公司"],
-    ["郑毅","已核实","刘文","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京百益宁医学科技有限责任公司"],
-    ["郑毅","已核实","李平","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京仕创管理顾问有限公司"],
-    ["郑毅","已核实","张占山","7/24","OPC沙龙","1.0","AIOPC和营销突围私享会","北京小岛澎涯科技有限公司"],
-    ["郑毅","已核实","徐明","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","北京洁莹不锈钢厨房设备有限公司"],
-    ["郑毅","已核实","高华","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","北京华创凯达科技有限公司"],
-    ["郑毅","已核实","马秀英","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","中益联(北京) 职业技能鉴定中心"]
-,
-    ["孙德国","已核实","张克东","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","清润中科油气综合利用有限公司"],
-    ["孙德国","已核实","张凤英","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","丹东市丽榕农资有限公司"],
-    ["孙德国","已核实","张进飞","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","广东格莱顺建材有限公司"],
-    ["孙德国","已核实","杨从","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","河南聚源茉商贸有限公司"],
-    ["孙德国","已核实","沈宏霞","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会","丹东市丽榕农资有限公司"],
-    ["孙德国","已核实","郭慧云","7/31","OPC沙龙","1.0","AIOPC创业者Al降本增效私享会",""]
-  ]
+  payment: [],
+  refund: [],
+  yinliu: []
 };
 
 window.goDetail = function showDetail(type, filter) {
@@ -583,7 +508,7 @@ window.goDetail = function showDetail(type, filter) {
     var ps = detailData.payment.filter(function(r) { return r[1] === p; });
     var ys = detailData.yinliu.filter(function(r) { return r[0] === p; });
     var rs = detailData.refund.filter(function(r) { return r[1] === p; });
-    title = p + ' · 7月业绩明细';
+    title = p + ' · 8月业绩明细';
     var h = '';
     // 到款
     if (ps.length) {
@@ -621,26 +546,24 @@ window.goDetail = function showDetail(type, filter) {
   var title, cols, rows;
   if (type === 'payment') {
     rows = detailData.payment.slice();
-    // 铁律：小屋到款 / 全款 / 订金口径 必须剔除 AIOPC 行（百岁会员1万为OPC到款，不计入小屋到款）
-    rows = rows.filter(function(r) { return r[6] !== 'AIOPC'; });
     var sumTitle = '';
     if (filter) {
       rows = rows.filter(function(r) { return r[4] === filter; });
       sumTitle = '（筛选：' + filter + '）';
     }
-    title = '7月到款明细' + sumTitle + '（共' + rows.length + '笔）';
+    title = '8月到款明细' + sumTitle + '（共' + rows.length + '笔）';
     cols = ['日期','业务员','客户','金额(万)','款项','售卡','业务类型'];
     var sum = 0; rows.forEach(function(r) { sum += parseFloat(r[3]); });
     rows.push(['<b>合计</b>','','','<b>' + sum.toFixed(2) + '</b>','','','']);
   } else if (type === 'clue') {
     // show a summary note since full clue detail is too large to embed
-    var labels = {all:'全部208条',contacted:'已联系约206条',wechat:'加微信约53条',group:'进群/重点约30条',intent:'意向确定约27条'};
+    var labels = {all:'全部203条',contacted:'已联系约40条',wechat:'加微信约30条',group:'进群/重点约12条',intent:'意向确定约6条'};
     var tips = {
-      all: '7月截止7/31累计208条线索（W29 31条+W30 74条+），来自视频号/视频号直播/短视频。较6月增长显著。具体每条线索明细请查阅智能表格"9-线索情况"。',
-      contacted: '已初步对接（9-线索情况表「是否初步对接」字段非空白，是/否均计）共206条（是205+否1），占线索208条的99.0%。W30新老账号封禁影响加微和进群，新号养号中。',
-      wechat: '加微信约53条。需关注：微信被封号期间加微受限，新号养好后目标加微率回升至25%+。',
-      group: '进群或重点客户约30条，含W30高意向客户。进群率偏低，退群5人需关注账号恢复。',
-      intent: '意向确定约27条。W30产出加盟/开店/OPC代理等高价值线索，金马工艺、华姐等为重点跟进对象。'
+      all: '8月截止8/1累计0条线索（待录入）。历史参考：7月208条、6月82条。具体每条线索明细请查阅智能表格"9-线索情况"。',
+      contacted: '已初步对接约40条（对接率~20%），主要为任一鑫和一茹完成。W30新老账号封禁影响加微和进群，新号养号中。',
+      wechat: '加微信约30条。需关注：微信被封号期间加微受限，新号养好后目标加微率回升至25%+。',
+      group: '进群或重点客户约12条，含W30高意向客户。进群率偏低，退群5人需关注账号恢复。',
+      intent: '意向确定约6条。W30产出加盟/开店/OPC代理等高价值线索，金马工艺、华姐等为重点跟进对象。'
     };
     title = '线索漏斗 · ' + labels[filter];
     document.getElementById('modalTitle').innerHTML = title;
@@ -651,8 +574,8 @@ window.goDetail = function showDetail(type, filter) {
     document.body.style.overflow = 'hidden';
     return;
   } else if (type === 'refund') {
-    title = '7月退款明细（共' + detailData.refund.length + '笔，合计¥18.7万，退卡' + detailData.refund.reduce(function(a,b){return a+(parseInt(b[6])||0);},0) + '张）';
-    cols = ['退款日期','业务员','客户','金额(万)','原款项','原到款月','退卡(张)'];
+    title = '8月退款明细（共' + detailData.refund.length + '笔，合计¥0万）';
+    cols = ['退款日期','业务员','客户','金额(万)','原款项','原到款月','备注'];
     rows = detailData.refund;
   } else if (type === 'yinliu') {
     rows = detailData.yinliu.slice();
@@ -660,7 +583,7 @@ window.goDetail = function showDetail(type, filter) {
       rows = rows.filter(function(r) { return r[4] === filter; });
     }
     var ok = rows.filter(function(r) { return r[1] === '已核实'; });
-    title = '7月引流上会明细（' + (filter||'全部') + '，共' + rows.length + '条，已核实' + ok.length + '条）';
+    title = '8月引流上会明细（' + (filter||'全部') + '，共' + rows.length + '条，已核实' + ok.length + '条）';
     cols = ['业务员','状态','客户','日期','大会类型','自然人数','会议名称','客户公司'];
     rows = rows.map(function(r) {
       var statusHtml;
@@ -671,7 +594,7 @@ window.goDetail = function showDetail(type, filter) {
     });
   } else if (type === 'cards') {
     rows = detailData.payment.filter(function(r) { return r[5] !== '—'; });
-    title = '7月售卡明细（已售345张·退卡49张·净296张，' + rows.length + '笔交易）';
+    title = '8月售卡明细（共售卡0张，' + rows.length + '笔交易）';
     cols = ['日期','业务员','客户','售卡(张)','金额(万)','款项','业务类型'];
     rows = rows.map(function(r) { return [r[0],r[1],r[2],r[5],r[3],r[4],r[6]]; });
     var totalCards = 0, totalAmt = 0;
@@ -679,7 +602,7 @@ window.goDetail = function showDetail(type, filter) {
     rows.push(['<b>合计</b>','','','<b>' + totalCards + '张</b>','<b>' + totalAmt.toFixed(2) + '</b>','','']);
   } else if (type === 'opc') {
     rows = detailData.payment.filter(function(r) { return r[6] === 'AIOPC'; });
-    title = '7月OPC到款明细（共' + rows.length + '笔，¥1万）';
+    title = '8月OPC到款明细（共' + rows.length + '笔，¥0万）';
     cols = ['日期','业务员','客户','金额(万)','款项','售卡','业务类型'];
     var sum = 0; rows.forEach(function(r) { sum += parseFloat(r[3]); });
     rows.push(['<b>合计</b>','','','<b>' + sum.toFixed(2) + '</b>','','','']);
@@ -704,7 +627,7 @@ window.closeModal = function closeModal(e) {
   document.getElementById('modalOverlay').classList.remove('show');
   document.body.style.overflow = '';
 }
-console.log('✅ 月报交互已就绪：goDetail + closeModal 已注册 | 版本 v0803');
+console.log('✅ 月报交互已就绪：goDetail + closeModal 已注册 | 版本 v0801-0900');
 </script>
 <!-- 明细弹窗 -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
