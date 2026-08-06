@@ -339,24 +339,14 @@
     color: #fff; animation: pulse 1.5s infinite;
   }
   .record-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  /* 操作区卡片：已触达 + 录音 归整到一个区块，整页更合理 */
+  /* 操作区卡片：录音归整到一个区块，整页更合理 */
   .action-card {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 16px 20px; margin-bottom: 16px; box-shadow: var(--shadow); text-align: center;
   }
   .record-zone { margin-top: 2px; }
-  /* 已触达标记按钮：未点击=实心绿（醒目 CTA），已点击=浅绿（已完成） */
-  .reached-btn {
-    width: 100%; margin: 0 0 14px; padding: 13px 16px;
-    border-radius: 10px; border: 1.5px solid var(--primary);
-    background: var(--primary); color: #fff;
-    font-size: 14px; font-weight: 600; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background .15s, border-color .15s, color .15s;
-  }
-  .reached-btn:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
-  .reached-btn.on { background: var(--primary-light); border-color: #b8e0cd; color: var(--primary); }
-  .reached-btn.on:hover { background: #dcefe7; }
+  /* 回传按钮区块：置于面板最底部，作为最后一步提交动作 */
+  .sync-area { margin-top: 16px; }
   @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(226, 75, 75, 0.4); }
     50% { box-shadow: 0 0 0 16px rgba(226, 75, 75, 0); }
@@ -594,12 +584,13 @@ const WEBHOOK_FIELDS = {
   age:      'faUSXZ',   // 年龄（根据声音估计）(单选：30以下/30-40/40-50/50-60/60以上)
   remark:   'fXGIQi',   // 备注 (文本)
   score:    'fIAeZQ',   // 通话评分 (数字：取该客户多段录音最高分)
+  evaluation: 'fe5eon', // 通话评价 (文本：取最高分那段录音的总体点评 summary)
   phone:    'fuvsCp',   // 手机号 (文本)
   date:     'fEDPIZ'    // 回传日期 (日期时间)
 };
 
 // 版本号：每次部署刷新一次，方便确认浏览器是否吃到最新版
-const APP_VERSION = '2026-08-06a';
+const APP_VERSION = '2026-08-06c';
 
 // ========== Team ==========
 const TEAM = ['一茹','赵云峰','皇甫毅','孙德国','蔡东辉','郑毅','黄佳佳','李熙怡','任一鑫','党凤梅','罗姣','李令潇','叶艳红','宋磊','张浩然','董超','谢超','田雨'];
@@ -1838,6 +1829,7 @@ function init() {
   if (localStorage.getItem('outbound_reset_v') !== RESET_VERSION) {
     localStorage.removeItem('outbound_calls');   // 网站内的通话/录音列表
     localStorage.removeItem('outbound_synced');  // 回传按钮变暗状态（测试回传全部作废，按钮复原）
+    localStorage.removeItem('outbound_reached'); // 左侧「已触达」变灰状态（与回传联动，一并清除）
     localStorage.setItem('outbound_reset_v', RESET_VERSION);
   }
 
@@ -2098,25 +2090,6 @@ function toggleScriptStep(i) {
   if (sub) sub.textContent = '跟着念 · 点标题打钩记录进度（' + doneCount + '/' + total + '）';
 }
 
-function toggleReached() {
-  if (!selectedLead) return;
-  const id = selectedLead.record_id;
-  if (!id) return;
-  if (leadReached[id]) delete leadReached[id]; else leadReached[id] = true;
-  try { localStorage.setItem('outbound_reached', JSON.stringify(leadReached)); } catch(e) {}
-  const on = !!leadReached[id];
-  // 左侧列表卡片原地更新（不重渲染，保留列表滚动位置）
-  document.querySelectorAll('.lead-card').forEach(c => {
-    if (c.dataset.rid === id) c.classList.toggle('reached', on);
-  });
-  // 按钮原地更新（文案 + 样式）
-  const btn = document.getElementById('reachedBtn');
-  if (btn) {
-    btn.classList.toggle('on', on);
-    btn.textContent = on ? '✅ 已触达（点击取消）' : '📞 标记为已触达';
-  }
-}
-
 function resetScript() {
   if (!selectedLead) return;
   scriptChecked[selectedLead.record_id] = {};
@@ -2185,7 +2158,6 @@ function renderMain() {
           </div>
         </div>
         <div class="action-card">
-          <button class="reached-btn ${leadReached[l.record_id] ? 'on' : ''}" id="reachedBtn" onclick="toggleReached()">${leadReached[l.record_id] ? '✅ 已触达（点击取消）' : '📞 标记为已触达'}</button>
           <div class="record-zone">
             <div id="timerDisplay" class="timer" style="display:none;">00:00</div>
             <button class="record-btn" id="recordBtn" onclick="toggleRecording()">开始录音</button>
@@ -2240,10 +2212,12 @@ function renderMain() {
               <label>备注</label>
               <textarea id="exRemark" rows="2" placeholder="可填写通话要点、客户意向等" ${synced ? 'disabled' : ''} onchange="saveExtra('remark',this.value)"></textarea>
             </div>
+        </div>
+        <div id="recordingsBlock">${renderLeadRecordings(l)}</div>
+        <div class="sync-area">
             <button class="sync-btn" id="syncBtn" ${synced ? 'disabled' : ''} onclick="syncLeadExtra()">${synced ? '✅ 已回传' : '🚀 回传客户信息'}</button>
             <div class="sync-status" id="syncStatus">${synced ? '该客户已回传，按钮已禁用' : ''}</div>
         </div>
-        <div id="recordingsBlock">${renderLeadRecordings(l)}</div>
       </div>
       </div>
       <div class="script-col" id="scriptCol">${renderScriptPanel(l)}</div>
@@ -2330,16 +2304,22 @@ async function syncLeadExtra() {
   const phoneDigits = String(phone).replace(/\D/g, '');
   if (phoneDigits) values[F.phone] = [{ type: 'text', text: phoneDigits }];
   values[F.date] = timeStr;  // 回传日期：年月日格式，写入当天日期
-  // 通话评分：该客户多段录音取最高分（数字型字段）
+  // 通话评分 / 通话评价：该客户多段录音取最高分那段，评分写数字、评价写其总体点评 summary（文本）
   let maxScore = null;
+  let bestSummary = '';
   for (const c of calls) {
     const match = (phone && c.lead_phone === phone) || (name && c.lead_name === name);
     if (!match) continue;
-    if (c.analysis && typeof c.analysis.score === 'number') {
-      if (maxScore === null || c.analysis.score > maxScore) maxScore = c.analysis.score;
+    const a = c.analysis;
+    if (!a) continue;
+    if (typeof a.score === 'number' && (maxScore === null || a.score > maxScore)) {
+      maxScore = a.score;
+      if (a.summary) bestSummary = a.summary;
     }
+    if (!bestSummary && a.summary) bestSummary = a.summary;  // 兜底：无评分但有评价文字
   }
   if (maxScore !== null) values[F.score] = maxScore;  // 数字型字段：单元格值为 double，直接传标量数字（不能包数组，否则报 2022017）
+  if (bestSummary) values[F.evaluation] = [{ type: 'text', text: bestSummary }];  // 文本字段：按文本格式发送
   const payload = { add_records: [ { values: values } ] };
   const btn = document.getElementById('syncBtn');
   const st = document.getElementById('syncStatus');
@@ -2358,11 +2338,14 @@ async function syncLeadExtra() {
     if (ok) {
       st.style.color = 'green';
       st.textContent = '✅ 回传成功 · ' + timeStr;
-      toast('客户信息已回传智能表格' + (maxScore !== null ? (' · 通话评分 ' + maxScore) : ''), 'success');
+      toast('客户信息已回传智能表格' + (maxScore !== null ? (' · 通话评分 ' + maxScore) : '') + (bestSummary ? ' · 通话评价已写入' : ''), 'success');
       // 标记为已回传，禁用重复回传
       syncedLeads[l.record_id] = timeStr;
       try { localStorage.setItem('outbound_synced', JSON.stringify(syncedLeads)); } catch(e) {}
-      renderMain();  // 重渲染：按钮变「已回传」并禁用
+      // 回传即视为已触达：左侧线索卡片变灰 + 「✓ 已触达」徽标（原「标记为已触达」按钮已移除，改由回传联动）
+      leadReached[l.record_id] = true;
+      try { localStorage.setItem('outbound_reached', JSON.stringify(leadReached)); } catch(e) {}
+      renderMain();  // 重渲染：按钮变「已回传」并禁用，左侧卡片按 leadReached 变灰
     } else {
       st.style.color = 'red';
       st.textContent = '❌ 回传失败: ' + (msg || ('HTTP ' + resp.status));
