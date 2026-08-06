@@ -1,0 +1,3008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康小虎 · 外呼工作台</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --primary: #1a7f5a;
+    --primary-light: #e8f5ef;
+    --primary-dark: #14624a;
+    --danger: #e24b4b;
+    --warning: #d85a30;
+    --text: #1a1a1a;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --border: #e8e8e8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 10px;
+  }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .app { display: none; }
+  .app.active { display: flex; height: 100vh; }
+
+  /* Login */
+  .login-screen {
+    display: none;
+    align-items: center; justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e8f5ef 0%, #d4ede3 100%);
+  }
+  .login-screen.active { display: flex; }
+  .login-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 400px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  .login-card h1 {
+    font-size: 22px; font-weight: 600;
+    color: var(--primary); margin-bottom: 8px;
+  }
+  .login-card .subtitle {
+    font-size: 13px; color: var(--text-muted); margin-bottom: 32px;
+  }
+  .login-card select {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px; background: var(--bg);
+    cursor: pointer; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+  }
+  .login-card button {
+    width: 100%; padding: 12px;
+    border: none; border-radius: var(--radius);
+    background: var(--primary); color: #fff;
+    font-size: 16px; font-weight: 500;
+    cursor: pointer; margin-top: 20px;
+    transition: opacity 0.15s;
+  }
+  .login-card button:hover { opacity: 0.9; }
+  .login-card button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Banner */
+  .offline-banner {
+    background: #f0f7f4; color: var(--primary);
+    text-align: center; padding: 8px;
+    font-size: 12px; border-bottom: 1px solid #d4ede3;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 360px; min-width: 360px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sidebar-header h2 {
+    font-size: 16px; font-weight: 600; color: var(--primary);
+  }
+  .sidebar-header .user-badge {
+    font-size: 12px; color: var(--text-muted);
+    background: var(--bg); padding: 4px 12px; border-radius: 20px;
+  }
+  .lead-list { flex: 1; overflow-y: auto; padding: 12px; }
+  .lead-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .lead-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+  .lead-card.active { border-color: var(--primary); background: var(--primary-light); }
+  .lead-card .row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .lead-card .name { font-size: 15px; font-weight: 600; }
+  .lead-card .platform {
+    font-size: 11px; color: var(--primary);
+    background: var(--primary-light); padding: 2px 8px; border-radius: 4px;
+  }
+  .lead-card .row2 {
+    display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary);
+  }
+  .lead-card .phone { font-family: "SF Mono", "Menlo", monospace; }
+  .lead-card .lead-time { white-space: nowrap; }
+  /* 已触达：列表卡片变暗 + 删除线 + 绿色徽标 */
+  .lead-card.reached { opacity: 0.45; filter: grayscale(0.4); }
+  .lead-card.reached:hover { opacity: 0.7; filter: none; }
+  .lead-card.reached .name { text-decoration: line-through; text-decoration-color: #999; }
+  .lead-card .reached-badge {
+    display: none; font-size: 11px; color: #fff; background: #2f855a;
+    padding: 1px 7px; border-radius: 4px; font-weight: 600; white-space: nowrap;
+  }
+  .lead-card.reached .reached-badge { display: inline-block; }
+
+  .search-bar {
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
+  }
+  .search-bar input {
+    width: 100%; padding: 8px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 13px; background: var(--bg);
+  }
+  .mine-filter {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #555; padding: 8px 12px 2px; cursor: pointer;
+    user-select: none;
+  }
+  .mine-filter input { cursor: pointer; width: 14px; height: 14px; }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .main-header {
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .main-header .tabs { display: flex; gap: 8px; }
+  .main-header .tab {
+    padding: 6px 16px; border-radius: 6px;
+    font-size: 13px; cursor: pointer; border: none;
+    background: transparent; color: var(--text-secondary);
+  }
+  .main-header .tab.active {
+    background: var(--primary-light); color: var(--primary); font-weight: 500;
+  }
+  .stats-bar {
+    display: flex; gap: 20px;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .stats-bar b { color: var(--text); }
+
+  .main-content {
+    flex: 1; overflow-y: auto; padding: 24px;
+    text-align: center;
+  }
+
+  /* Call Panel */
+  .call-panel { text-align: center; max-width: 500px; width: 100%; margin: 0 auto; }
+  .call-panel .empty-state {
+    color: var(--text-muted); padding: 60px 0;
+  }
+  .call-panel .empty-state .icon {
+    font-size: 48px; margin-bottom: 16px; opacity: 0.3;
+  }
+  .call-panel .lead-info {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px; margin-bottom: 16px; text-align: left; box-shadow: var(--shadow);
+  }
+  .call-panel .lead-info .label {
+    font-size: 12px; color: var(--text-muted); margin-bottom: 4px;
+  }
+  .call-panel .lead-info .value { font-size: 15px; font-weight: 500; }
+  .call-panel .lead-info .phone-value {
+    font-size: 20px; font-family: "SF Mono", "Menlo", monospace;
+    color: var(--primary); font-weight: 600; letter-spacing: 1px;
+  }
+
+  /* ===== 两栏作业布局：左作业 / 右话术 ===== */
+  .call-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 20px; align-items: start;
+    max-width: 1140px; margin: 0 auto; text-align: left;
+  }
+  .work-col { min-width: 0; text-align: left; }
+  .work-col .call-panel { max-width: none; }
+  .script-col { min-width: 0; position: sticky; top: 0; }
+  @media (max-width: 1180px) {
+    .call-layout { grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+    .script-col { position: static; }
+  }
+
+  /* ===== 话术面板 ===== */
+  .script-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden; text-align: left;
+  }
+  .script-head {
+    padding: 12px 16px 13px;
+    background: linear-gradient(135deg, #1a7f5a 0%, #26a173 100%); color: #fff;
+  }
+  .script-head .t {
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .script-head .t span.time {
+    font-size: 11px; font-weight: 400; background: rgba(255,255,255,.2);
+    padding: 2px 8px; border-radius: 10px; flex: 0 0 auto;
+  }
+  .script-head .sub { font-size: 11px; opacity: .85; margin-top: 3px; }
+  .script-bar {
+    height: 4px; background: rgba(255,255,255,.25);
+    border-radius: 2px; margin-top: 9px; overflow: hidden;
+  }
+  .script-bar i { display: block; height: 100%; background: #fff; width: 0; transition: width .25s ease; }
+  .script-rule {
+    margin: 12px 12px 10px; padding: 10px 12px;
+    background: #fff8ef; border: 1px solid #f7ddbc; border-left: 3px solid var(--warning);
+    border-radius: 8px; font-size: 12px; line-height: 1.75; color: #7c4a1c;
+  }
+  .script-rule b { color: var(--warning); }
+  .script-rule em {
+    font-style: normal; background: #fff; border: 1px solid #f0d4ae;
+    padding: 1px 5px; border-radius: 4px; color: #6b3f16;
+  }
+  .script-body { padding: 0 12px; max-height: calc(100vh - 300px); overflow-y: auto; }
+  .step-card {
+    border: 1px solid var(--border); border-radius: 9px;
+    margin-bottom: 10px; overflow: hidden; background: #fff;
+    transition: border-color .2s, background .2s;
+  }
+  .step-card.core { border-color: #f0c877; }
+  .step-card.done { border-color: var(--primary); background: #f8fdfb; }
+  .step-top {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 11px; cursor: pointer; user-select: none; background: #fafbfc;
+  }
+  .step-card.core .step-top { background: #fffaf0; }
+  .step-card.done .step-top { background: var(--primary-light); }
+  .step-chk {
+    width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto;
+    border: 1.5px solid #ccc; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: transparent; line-height: 1;
+  }
+  .step-card.done .step-chk { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .step-name { font-size: 13px; font-weight: 600; flex: 1; min-width: 0; }
+  .step-card.done .step-name { color: var(--primary); }
+  .step-tag {
+    font-size: 10px; font-weight: 600; color: #a06a10;
+    background: #fdf0d5; border: 1px solid #f0c877;
+    padding: 1px 6px; border-radius: 9px; flex: 0 0 auto;
+  }
+  .step-sec {
+    font-size: 11px; color: var(--text-muted); background: #fff;
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 1px 7px; flex: 0 0 auto; font-family: "SF Mono", "Menlo", monospace;
+  }
+  .step-goal { font-size: 11.5px; color: var(--text-secondary); padding: 9px 11px 0; }
+  .step-goal b { color: var(--text); font-weight: 600; }
+  .step-say {
+    margin: 8px 11px; padding: 11px 12px 11px 13px;
+    background: #f3f8f5; border-left: 3px solid var(--primary);
+    border-radius: 0 8px 8px 0; font-size: 13.5px; line-height: 1.9;
+    color: #15402c; position: relative;
+  }
+  .step-say .copy {
+    position: absolute; top: 6px; right: 6px;
+    font-size: 10.5px; padding: 2px 7px; border-radius: 5px;
+    border: 1px solid var(--border); background: #fff;
+    color: var(--text-secondary); cursor: pointer;
+    opacity: 0; transition: opacity .15s;
+  }
+  .step-say:hover .copy { opacity: 1; }
+  .step-say .copy:hover { border-color: var(--primary); color: var(--primary); }
+  .step-say em {
+    font-style: normal; background: #fff3c4;
+    padding: 0 3px; border-radius: 3px; font-weight: 600; color: #6b4a00;
+  }
+  .step-say strong { color: var(--primary); font-weight: 700; }
+  .step-why { margin: 0 11px 10px; }
+  .step-why summary {
+    font-size: 11.5px; color: var(--text-muted);
+    cursor: pointer; list-style: none; outline: none;
+  }
+  .step-why summary::-webkit-details-marker { display: none; }
+  .step-why summary::before { content: '▸ '; }
+  .step-why[open] summary::before { content: '▾ '; }
+  .step-why p {
+    font-size: 11.5px; color: var(--text-secondary); line-height: 1.75;
+    margin-top: 6px; padding-left: 9px; border-left: 2px solid var(--border);
+  }
+  .script-foot { padding: 2px 12px 12px; }
+  .script-reset {
+    width: 100%; padding: 7px; font-size: 12px;
+    border: 1px dashed var(--border); background: #fff;
+    border-radius: 7px; color: var(--text-muted); cursor: pointer;
+  }
+  .script-reset:hover { border-color: var(--primary); color: var(--primary); }
+  .script-src {
+    font-size: 10.5px; color: var(--text-muted);
+    text-align: center; margin-top: 7px; line-height: 1.5;
+  }
+
+  .record-btn {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 4px solid var(--primary);
+    background: var(--card); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600;
+    color: var(--primary); transition: all 0.2s;
+    margin: 0 auto 16px;
+  }
+  .record-btn:hover { background: var(--primary-light); }
+  .record-btn.recording {
+    background: var(--danger); border-color: var(--danger);
+    color: #fff; animation: pulse 1.5s infinite;
+  }
+  .record-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* 操作区卡片：已触达 + 录音 归整到一个区块，整页更合理 */
+  .action-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; margin-bottom: 16px; box-shadow: var(--shadow); text-align: center;
+  }
+  .record-zone { margin-top: 2px; }
+  /* 已触达标记按钮：未点击=实心绿（醒目 CTA），已点击=浅绿（已完成） */
+  .reached-btn {
+    width: 100%; margin: 0 0 14px; padding: 13px 16px;
+    border-radius: 10px; border: 1.5px solid var(--primary);
+    background: var(--primary); color: #fff;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .reached-btn:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+  .reached-btn.on { background: var(--primary-light); border-color: #b8e0cd; color: var(--primary); }
+  .reached-btn.on:hover { background: #dcefe7; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(226, 75, 75, 0.4); }
+    50% { box-shadow: 0 0 0 16px rgba(226, 75, 75, 0); }
+  }
+  .call-panel .timer {
+    font-size: 28px; font-weight: 600;
+    font-family: "SF Mono", "Menlo", monospace;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .call-panel .hint {
+    font-size: 12px; color: var(--text-muted); margin-top: 16px;
+  }
+  .call-panel .hint.recording-hint { color: var(--danger); }
+  .call-panel .extra-info {
+    margin: 16px 0 4px; padding: 18px 20px; border: 1px solid var(--border);
+    border-radius: var(--radius); background: var(--card); text-align: left; box-shadow: var(--shadow);
+  }
+  .call-panel .extra-title {
+    font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px;
+  }
+  .call-panel .extra-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .call-panel .extra-field label {
+    display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;
+  }
+  .call-panel .extra-field select,
+  .call-panel .extra-field input,
+  .call-panel .extra-field textarea {
+    width: 100%; padding: 7px 10px; font-size: 13px;
+    border: 1px solid var(--border); border-radius: 8px; background: #fff;
+    box-sizing: border-box; font-family: inherit; resize: vertical;
+  }
+  .call-panel .extra-field.extra-remark { grid-column: 1 / -1; margin-top: 4px; }
+  .call-panel .sync-btn {
+    width: 100%; margin-top: 12px; padding: 11px; font-size: 14px; font-weight: 600;
+    color: #fff; background: var(--primary); border: none; border-radius: 10px; cursor: pointer;
+  }
+  .call-panel .sync-btn:hover { background: var(--primary-dark); }
+  .call-panel .sync-btn:disabled { opacity: .6; cursor: default; }
+  .call-panel .sync-status { margin-top: 8px; font-size: 12px; min-height: 16px; }
+  .call-panel .synced-note {
+    font-size: 12px; color: #2f9e44; background: #ebfbee;
+    border: 1px solid #b2f2bb; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .call-panel .extra-field select:disabled,
+  .call-panel .extra-field input:disabled { background: #f1f3f5; color: #868e96; cursor: not-allowed; }
+
+  /* Upload progress bar */
+  .upload-bar {
+    width: 100%; max-width: 400px;
+    background: var(--border); border-radius: 4px;
+    height: 4px; margin: 12px auto; overflow: hidden;
+  }
+  .upload-bar .fill {
+    height: 100%; background: var(--primary);
+    width: 0%; transition: width 0.3s;
+  }
+  .upload-status {
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .upload-status.success { color: var(--primary); }
+  .upload-status.error { color: var(--danger); }
+  .upload-status.uploading { color: var(--warning); }
+
+  /* 录音回放 + 转写分析 */
+  .recordings-block { margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 14px; }
+  .recordings-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+  .recordings-empty { font-size: 12px; color: var(--text-muted); padding: 8px 0; }
+  .rec-item { position: relative; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .rec-del { position: absolute; top: 8px; right: 8px; z-index: 2; padding: 4px 9px; font-size: 12px; font-weight: 600; color: #fff; background: var(--danger); border: none; border-radius: 8px; cursor: pointer; }
+  .rec-del:hover { background: #c92a2a; }
+  .rec-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .rec-audio { width: 100%; margin-bottom: 8px; }
+  .rec-noaudio { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .rec-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .score-pill { display: inline-block; min-width: 34px; text-align: center; background: #fff0f6; color: #c2255c; border: 1px solid #faa2c1; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .rec-status { font-size: 12px; color: var(--text-muted); margin: 8px 0; min-height: 16px; }
+  .rec-analysis:empty { display: none; }
+  .analysis-card { background: #f8f9fa; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .analysis-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .score-big { font-size: 32px; font-weight: 800; line-height: 1; }
+  .score-unit { font-size: 14px; font-weight: 600; margin-left: 2px; }
+  .analysis-summary { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .dims { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .dim-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .dim-name { width: 72px; color: var(--text-secondary); flex: none; }
+  .dim-bar { flex: 1; height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .dim-bar i { display: block; height: 100%; border-radius: 999px; }
+  .dim-val { width: 42px; text-align: right; color: var(--text-muted); flex: none; }
+  .proscons { display: flex; gap: 12px; }
+  .pc { flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+  .pc-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .pc.pros .pc-title { color: #2f9e44; }
+  .pc.cons .pc-title { color: #e8590c; }
+  .pc ul { margin: 0; padding-left: 18px; }
+  .pc li { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+  .transcript { margin-top: 10px; font-size: 12px; }
+  .transcript summary { cursor: pointer; color: var(--text-secondary); }
+  .transcript-body { margin-top: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.7; color: var(--text-secondary); max-height: 320px; overflow-y: auto; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+  .analysis-engine { margin-top: 10px; font-size: 11px; color: var(--text-secondary); opacity: .7; text-align: right; }
+  .analysis-warn { margin: 8px 0; padding: 8px 10px; font-size: 12px; line-height: 1.6; color: #8a6d0b; background: #fff8e1; border: 1px solid #ffe08a; border-radius: 8px; word-break: break-all; }
+
+  /* History */
+  .calls-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .calls-table th {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted); font-weight: 500; font-size: 12px;
+  }
+  .calls-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 8px 16px; border-radius: 6px;
+    border: none; font-size: 13px; cursor: pointer; font-weight: 500;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn-secondary { background: var(--primary-light); color: var(--primary); border: 1px solid #b8e0cd; }
+  .btn-secondary:hover { background: #dcefe7; }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+
+  .file-link {
+    color: var(--primary); font-size: 12px;
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+  }
+  .file-link:hover { text-decoration: underline; }
+
+  .toast {
+    position: fixed; top: 20px; right: 20px;
+    background: var(--text); color: #fff;
+    padding: 12px 20px; border-radius: var(--radius);
+    font-size: 13px; z-index: 1000;
+    opacity: 0; transform: translateY(-10px);
+    transition: all 0.3s;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: var(--primary); }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: var(--warning); }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen active" id="loginScreen">
+  <div class="login-card">
+    <h1>🌿 康小虎 · 外呼工作台</h1>
+    <p class="subtitle">线索电话跟进 · 录音自动上传 · AI智能分析</p>
+    <p id="syncedHint" style="font-size:12px;color:#1a7f5a;margin-top:2px;">📡 正在加载线索列表…</p>
+    <select id="userSelect">
+      <option value="">选择你的名字</option>
+    </select>
+    <button id="loginBtn" disabled>进入工作台</button>
+  </div>
+</div>
+
+<!-- Main App -->
+  <div class="app" id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>线索列表</h2>
+      <span class="user-badge" id="currentUser"></span>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索姓名/手机号/平台...">
+    </div>
+    <div class="lead-list" id="leadList"></div>
+  </aside>
+
+  <!-- Main Area -->
+  <main class="main">
+    <div class="main-header">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('call')">外呼</button>
+        <button class="tab" onclick="switchTab('history')">通话记录</button>
+      </div>
+      <div class="stats-bar">
+        <span>通话: <b id="callCount">0</b></span>
+        <span>线索: <b id="leadCount">0</b></span>
+        <span>已上传: <b id="uploadedCount">0</b></span>
+      </div>
+    </div>
+    <div class="main-content" id="mainContent"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== Config ==========
+const GITHUB_REPO = 'yiru220/outbound-workbench';
+const GITHUB_BRANCH = 'main';
+const RECORDINGS_PATH = 'recordings';
+
+// ========== Webhook：回传客户补充信息到企微智能表格 ==========
+const WEBHOOK_URL = 'https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartsheet/webhook?key=13q3vpbak4k1uyFxoToaopH15jRjtaPaQ3LH74X7z3KRp7nLRZlCUVGk1T8OJc6AWGfXV3uIfbqfMb3t1ExEov1MaCgqwFX2dQHTShxleZ2r';
+// 回传代理地址（Cloudflare Worker，用于绕过浏览器跨域）。已内置并部署，全员免配置立即生效。
+const WEBHOOK_PROXY_URL = 'https://outbound-webhook-proxy.yiru220.workers.dev';
+
+// GitHub 上传统一走 Cloudflare Worker 代理（同一个 Worker 的 /github 路由）。
+// Token 由 Worker 持有（Cloudflare Secret），前端不存放，全员免配置即可上传。
+const WORKER_BASE = 'https://outbound-webhook-proxy.yiru220.workers.dev';
+const GITHUB_PROXY_URL = WORKER_BASE + '/github';
+// 录音转写 + AI 分析代理（同一个 Worker 的 /transcribe 路由）。
+// 后端优先级（免费优先，Worker 内自动回退）：硅基流动 → Cloudflare Workers AI → OpenAI。
+const TRANSCRIBE_PROXY_URL = WORKER_BASE + '/transcribe';
+
+// 把 GitHub blob 页链接转为 raw 直链（用于浏览器播放与 Worker 拉取音频）。
+function rawUrlOf(call) {
+  if (call.github_raw) return call.github_raw;
+  if (!call.github_url) return '';
+  return call.github_url
+    .replace('https://github.com/', 'https://raw.githubusercontent.com/')
+    .replace('/blob/', '/');
+}
+// 回传字段映射：本表字段 key -> 目标表「字段ID」(来自「11-线索回执表」真实配置)。
+// 用 field_id 而非列名，避免列名存在空格/异体字导致 webhook 报 field not exists。
+const WEBHOOK_FIELDS = {
+  gender:   'fUGe6b',   // 性别 (单选)
+  province: 'fu0uQ1',   // 省 (单选)
+  city:     'fz0DpX',   // 市 (文本)
+  hasStore: 'fVBgw9',   // 是否自有门店 (单选)
+  keyCustomer: 'fcMF2G', // 重点客户 (单选：是/否)
+  inviteGroup: 'fyGPwu', // 邀约进群 (单选：已邀约/拒绝进群/其他)
+  age:      'faUSXZ',   // 年龄（根据声音估计）(单选：30以下/30-40/40-50/50-60/60以上)
+  remark:   'fXGIQi',   // 备注 (文本)
+  score:    'fIAeZQ',   // 通话评分 (数字：取该客户多段录音最高分)
+  phone:    'fuvsCp',   // 手机号 (文本)
+  date:     'fEDPIZ'    // 回传日期 (日期时间)
+};
+
+// 版本号：每次部署刷新一次，方便确认浏览器是否吃到最新版
+const APP_VERSION = '2026-08-06a';
+
+// ========== Team ==========
+const TEAM = ['一茹','赵云峰','皇甫毅','孙德国','蔡东辉','郑毅','黄佳佳','李熙怡','任一鑫','党凤梅','罗姣','李令潇','叶艳红','宋磊','张浩然','董超','谢超','田雨'];
+
+// ========== Real Leads (synced from 智能表格 9-线索情况 — 55 条已分配对接人) ==========
+const REAL_LEADS = [
+  {
+    "record_id": "r3xlOW",
+    "account_name": "韩东言",
+    "phone": "18999101036",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "电话",
+    "feedback": "新疆喀什有房子，只想做免费投放，不愿投资",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1767715200000",
+    "remark1": "德国老师对接的，客户在新疆，想寻找设备厂家合作，需求设备 0 元投放，双方分成。没有团队。",
+    "remark2": "新疆喀什有房子，只想做免费投放，不愿投资",
+    "owner_id": "TJ951594",
+    "owner_name": "孙德国"
+  },
+  {
+    "record_id": "rRzZwb",
+    "account_name": "王明军",
+    "phone": "18601956411",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "多次无人接听",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1775577600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951713",
+    "owner_name": "郑毅"
+  },
+  {
+    "record_id": "r9q0oZ",
+    "account_name": "药食同源调理",
+    "phone": "19556864913",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "想寻求平台的合作，推广自己的产品",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "同意",
+    "time": "1775664000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951713",
+    "owner_name": "郑毅"
+  },
+  {
+    "record_id": "r4x8jR",
+    "account_name": "翔子",
+    "phone": "17397770999",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "对健康赛道想了解了解，并没有加盟的意愿。",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1775664000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951713",
+    "owner_name": "郑毅"
+  },
+  {
+    "record_id": "r7QplW",
+    "account_name": "未知",
+    "phone": "16685412341",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "电话+微信",
+    "feedback": "客户有场地，想要以样板店形式合作，但不想每月给公司保底收益，想按自然使用量分成",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1774972800000",
+    "remark1": "赵云峰：已建联，客户不考虑加盟，只考虑投放合作。对保底收益不接受。",
+    "remark2": "客户有场地，想要以样板店形式合作，但不想每月给公司保底收益，想按自然使用量分成",
+    "owner_id": "TJ947180",
+    "owner_name": "赵云峰"
+  },
+  {
+    "record_id": "rKj2GE",
+    "account_name": "请叫致远呀",
+    "phone": "16622161928",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "客户多次沟通。客户正在考虑是否要合作。",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776096000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ947180",
+    "owner_name": "赵云峰"
+  },
+  {
+    "record_id": "r9uua0",
+    "account_name": "yangweimin1015",
+    "phone": "yangweimin1015",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "yangweimin1015",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "微信添加没有回通过。",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776700800000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ947180",
+    "owner_name": "赵云峰"
+  },
+  {
+    "record_id": "rDxgeM",
+    "account_name": "万昌大米",
+    "phone": "18243250176",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "客户对项目只是了解，对加盟的形式不是特别认可。",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776873600000",
+    "remark1": "孙德国：",
+    "remark2": "",
+    "owner_id": "TJ951594",
+    "owner_name": "孙德国"
+  },
+  {
+    "record_id": "ruHyRO",
+    "account_name": "玄至尊养发黄静",
+    "phone": "18872013986",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "电话",
+    "feedback": "客户电话挂断，未接，稍后继续拨打",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776873600000",
+    "remark1": "赵云峰：",
+    "remark2": "客户电话挂断，未接，稍后继续拨打",
+    "owner_id": "00019974",
+    "owner_name": "蔡东辉"
+  },
+  {
+    "record_id": "r46Dv4",
+    "account_name": "Aanew",
+    "phone": "15690782251",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776873600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951515",
+    "owner_name": "黄佳佳"
+  },
+  {
+    "record_id": "rH88Oc",
+    "account_name": "陈洪奇",
+    "phone": "13549399995",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776873600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951515",
+    "owner_name": "黄佳佳"
+  },
+  {
+    "record_id": "reg8Gj",
+    "account_name": "赋能教练陈新厚",
+    "phone": "13357036881",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "待定",
+    "time": "1776873600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951515",
+    "owner_name": "黄佳佳"
+  },
+  {
+    "record_id": "rw8Nki",
+    "account_name": "菊芳",
+    "phone": "y641937",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号直播",
+    "follow_method": "",
+    "feedback": "客户是做家政工作的。想结合大健康行业，整体做了介绍，添加了微信，发了资料。对加盟的费用不认可。",
+    "is_cooperating": "否",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1777219200000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ950378",
+    "owner_name": "皇甫毅"
+  },
+  {
+    "record_id": "rgf0VA",
+    "account_name": "谈笑自若",
+    "phone": "13324439994",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "已申请加微信，还没通过",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "是",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ949238",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rxO2kJ",
+    "account_name": "兰英",
+    "phone": "18640484846",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rRgJno",
+    "account_name": "杨姐",
+    "phone": "13913913993（可加微）",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rDg4v1",
+    "account_name": "史静",
+    "phone": "13576264001",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ914769",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rfBjVt",
+    "account_name": "勇敢的心",
+    "phone": "13279732898",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ944828",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rtOL7u",
+    "account_name": "宇航人姜哥",
+    "phone": "15284914050",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951758",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rzG1oE",
+    "account_name": "陈一刀",
+    "phone": "18512354349",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rWH9Ss",
+    "account_name": "77卡店香港阳光",
+    "phone": "18068382699",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951753",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rc4DHr",
+    "account_name": "肖成军",
+    "phone": "15823106337",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rWETYD",
+    "account_name": "叶承",
+    "phone": "15225961059",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rJxoIK",
+    "account_name": "开心快乐",
+    "phone": "zy10039（微信）",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rmxyHQ",
+    "account_name": "裕丰盛满天星琼",
+    "phone": "13502898282",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785513600000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rhRrr0",
+    "account_name": "望驼",
+    "phone": "18973156557",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785600000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "r3DpYp",
+    "account_name": "张哥",
+    "phone": "18030869337",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785600000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ914769",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rJNAYN",
+    "account_name": "肤素健康穿戴",
+    "phone": "13906717569",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785600000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rXsiNs",
+    "account_name": "珠珠",
+    "phone": "17621399269",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785600000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rSqohe",
+    "account_name": "ling",
+    "phone": "13815420666",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785600000000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ914769",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rHsoCJ",
+    "account_name": "千年糊涂",
+    "phone": "16625157244",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rZ6HMz",
+    "account_name": "海风",
+    "phone": "13775481748",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rYQkuo",
+    "account_name": "成功",
+    "phone": "13244365272",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951758",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rNT44q",
+    "account_name": "年轻的心",
+    "phone": "15892159493",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ914769",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rgCRfE",
+    "account_name": "武",
+    "phone": "13501555388",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rbCdzy",
+    "account_name": "郑志莲",
+    "phone": "13677168075",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ914769",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rJxQ9f",
+    "account_name": "猫咪",
+    "phone": "18841183694",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rKw7ej",
+    "account_name": "萱姿造型佰草圃头疗",
+    "phone": "15509343924",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rc0AoA",
+    "account_name": "麦穗",
+    "phone": "18600015602",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rL1fVx",
+    "account_name": "周姐记录生活点滴",
+    "phone": "13130087196",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rckPui",
+    "account_name": "李桂",
+    "phone": "13508090577",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rfdC6W",
+    "account_name": "杨永春",
+    "phone": "16663542718",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951573",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rEO4PI",
+    "account_name": "祖传秘方",
+    "phone": "18743330032",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "ryTNM5",
+    "account_name": "刘姐讲保险",
+    "phone": "18016152639",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rIzOcx",
+    "account_name": "家政服务xx",
+    "phone": "18515678292",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rbDr50",
+    "account_name": "旦旦",
+    "phone": "13474356868",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rjtmpc",
+    "account_name": "欢喜",
+    "phone": "18003746298",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ952080",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rZ1MUy",
+    "account_name": "潇钥",
+    "phone": "15181623458",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ952080",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rVFUd3",
+    "account_name": "美宏美妆",
+    "phone": "13575619677",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ952080",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rlqcPi",
+    "account_name": "李惠军",
+    "phone": "18641166411",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ944828",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rpZ8mh",
+    "account_name": "洪峰物业",
+    "phone": "13805639814",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ944828",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rIVaBR",
+    "account_name": "周保军",
+    "phone": "13418647872",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ944828",
+    "owner_name": ""
+  },
+  {
+    "record_id": "rwidfc",
+    "account_name": "蒋士清",
+    "phone": "13781671728",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "r05hYT",
+    "account_name": "睿智心理",
+    "phone": "13906329131",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ943925",
+    "owner_name": ""
+  },
+  {
+    "record_id": "reFhbj",
+    "account_name": "旭日东升",
+    "phone": "13936679977",
+    "name": "",
+    "gender": "",
+    "age": "",
+    "wechat_id": "",
+    "platform": "视频号",
+    "follow_method": "",
+    "feedback": "",
+    "is_cooperating": "",
+    "is_key": "",
+    "is_contacted": "",
+    "joined_group": "",
+    "time": "1785686400000",
+    "remark1": "",
+    "remark2": "",
+    "owner_id": "TJ951758",
+    "owner_name": ""
+  }
+];
+
+// ========== State ==========
+let currentUser = '';
+let selectedLead = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordStartTime = null;
+let timerInterval = null;
+let currentTab = 'call';
+let leads = [];
+let calls = [];
+let USER_MAP = {};
+// 省下拉选项（26 个省/直辖市 + 其他），可按实际覆盖省份增减
+const PROVINCES = ['广东','江苏','浙江','山东','河南','四川','湖北','湖南','河北','福建','安徽','上海','北京','天津','重庆','辽宁','陕西','江西','广西','云南','贵州','山西','黑龙江','吉林','甘肃','海南'];
+// 客户补充信息（性别/省/市/是否自有门店/重点客户/邀约进群/年龄），按 record_id 存储于 localStorage
+let leadExtras = {};
+try { leadExtras = JSON.parse(localStorage.getItem('outbound_extras') || '{}'); } catch(e) { leadExtras = {}; }
+// 已回传记录：record_id -> 回传日期(YYYY-MM-DD)，用于禁用重复回传
+let syncedLeads = {};
+try { syncedLeads = JSON.parse(localStorage.getItem('outbound_synced') || '{}'); } catch(e) { syncedLeads = {}; }
+// 已触达标记：record_id -> true，用于区分「已联络 / 未联系」线索（本地持久化，刷新不丢）
+let leadReached = {};
+try { leadReached = JSON.parse(localStorage.getItem('outbound_reached') || '{}'); } catch(e) { leadReached = {}; }
+
+// GitHub 上传统一走 Worker 代理（GITHUB_PROXY_URL），前端不存放 Token。
+// 此处 token 仅作为「关闭代理时」的直连兜底（选填，由用户在设置里填）。
+function getGHToken() {
+  return (localStorage.getItem('outbound_gh_token') || '').trim();
+}
+function setGHToken(token) {
+  localStorage.setItem('outbound_gh_token', token || '');
+}
+function getProxyUrl() {
+  return (localStorage.getItem('outbound_proxy_url') || '').trim();
+}
+function setProxyUrl(u) {
+  localStorage.setItem('outbound_proxy_url', u || '');
+}
+
+// ========== User mapping (owner_id -> name) ==========
+// Loaded from user_map.json at runtime. Falls back to inline owner_name / raw id.
+function ownerNameOf(id) {
+  const m = (USER_MAP[id] || '').trim();
+  return m;
+}
+function ownerIdForName(name) {
+  if (!name) return null;
+  for (const k in USER_MAP) {
+    if (USER_MAP[k] && USER_MAP[k] === name) return k;
+  }
+  return null;
+}
+// Compact chip for the lead list card —— 显示「初步联系人（owner_name）」姓名
+function ownerChip(l) {
+  const name = l.owner_name || ownerNameOf(l.owner_id) || '';
+  if (!name) return '';
+  return `<div style="font-size:11px;color:#1a7f5a;margin-top:4px;">对接人: ${name}</div>`;
+}
+// Detail block for the call panel
+function ownerChipDetail(l) {
+  const id = l.owner_id || '';
+  const name = ownerNameOf(id) || l.owner_name || '';
+  if (!name && !id) return '';
+  const color = name ? '#1a7f5a' : '#aaa';
+  const label = name || id;
+  return `<div style="margin-top:12px;"><div class="label">负责人</div><div class="value" style="font-size:13px;color:${color};">${label}</div></div>`;
+}
+
+// ========== Init ==========
+function init() {
+  // 一次性清空测试数据（2026-08-05g）：此前所有录音与回传均为测试数据，全部清除。
+  // 仅每个浏览器首次加载时执行一次（按 RESET_VERSION 判定），服务器文件已另行删除。
+  const RESET_VERSION = '2026-08-05g-clear-test';
+  if (localStorage.getItem('outbound_reset_v') !== RESET_VERSION) {
+    localStorage.removeItem('outbound_calls');   // 网站内的通话/录音列表
+    localStorage.removeItem('outbound_synced');  // 回传按钮变暗状态（测试回传全部作废，按钮复原）
+    localStorage.setItem('outbound_reset_v', RESET_VERSION);
+  }
+
+  // Load calls
+  try {
+    const saved = localStorage.getItem('outbound_calls');
+    calls = saved ? JSON.parse(saved) : [];
+  } catch(e) { calls = []; }
+
+  // Load user mapping (owner_id -> name) from user_map.json, then build dropdown
+  function buildUserDropdown() {
+    const select = document.getElementById('userSelect');
+    select.innerHTML = '';
+    const names = Array.from(new Set(Object.values(USER_MAP).filter(Boolean)));
+    const src = names.length ? names : TEAM;
+    src.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n; opt.textContent = n;
+      select.appendChild(opt);
+    });
+    select.onchange = () => {
+      document.getElementById('loginBtn').disabled = !select.value;
+    };
+    document.getElementById('loginBtn').onclick = login;
+  }
+  try {
+    fetch('./user_map.json').then(r => r.ok ? r.json() : null).then(m => {
+      if (m && typeof m === 'object') USER_MAP = m;
+      buildUserDropdown();
+    }).catch(() => { buildUserDropdown(); });
+  } catch(e) { buildUserDropdown(); }
+  document.getElementById('searchInput').oninput = renderLeads;
+}
+
+function login() {
+  currentUser = document.getElementById('userSelect').value;
+  if (!currentUser) return;
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('currentUser').textContent = currentUser;
+  loadLeads().then(data => {
+    // 按登录人隔离：只显示「初步联系人（owner_name）」为当前登录人的线索，不可见他人线索
+    const me = (currentUser || '').trim();
+    leads = (data || []).filter(l => (l.owner_name || '').trim() === me);
+    updateStats();
+    renderLeads();
+    renderMain();
+  });
+}
+
+// 客户列表加载：优先每日同步的 leads.json，失败回退内置快照 REAL_LEADS。
+// 多源兜底：先同域 ./leads.json（GitHub Pages），再 raw 直链，最后内置快照。
+async function loadLeads() {
+  const ts = '_=' + Date.now();
+  const sources = [
+    './leads.json?' + ts,
+    'https://raw.githubusercontent.com/yiru220/outbound-workbench/main/leads.json?' + ts
+  ];
+  for (const url of sources) {
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (r.ok) {
+        const data = await r.json();
+        if (Array.isArray(data) && data.length) {
+          const hint = document.getElementById('syncedHint');
+          if (hint) hint.textContent = '📡 已同步真实线索 ' + data.length + ' 条（每日 10:00 自动更新）';
+          return data;
+        }
+      }
+    } catch (e) { /* 尝试下一个源 */ }
+  }
+  const hint = document.getElementById('syncedHint');
+  if (hint) hint.textContent = '📡 内置线索快照 ' + REAL_LEADS.length + ' 条（离线模式，每日 10:00 联网更新）';
+  return [...REAL_LEADS];
+}
+
+// ========== Render ==========
+function updateStats() {
+  // 仅统计当前登录人相关的数据（线索已按本人过滤；通话/已上传按 user_name 过滤）
+  const myCalls = calls.filter(c => c.user_name === currentUser);
+  document.getElementById('callCount').textContent = myCalls.length;
+  document.getElementById('leadCount').textContent = leads.length;
+  const uploaded = myCalls.filter(c => c.uploaded).length;
+  document.getElementById('uploadedCount').textContent = uploaded;
+}
+
+function renderLeads() {
+  const search = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filtered = leads.filter(l => {
+    if (!search) return true;
+    return (l.name + l.phone + l.account_name + l.platform + l.feedback).toLowerCase().includes(search);
+  });
+
+  const container = document.getElementById('leadList');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px 0;color:#999;font-size:13px;">没有匹配的线索</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(l => {
+    const isActive = selectedLead && selectedLead.record_id === l.record_id;
+    const leadTime = l.time ? fmtDate(new Date(Number(l.time))) : '—';
+    return `
+      <div class="lead-card ${isActive ? 'active' : ''} ${leadReached[l.record_id] ? 'reached' : ''}" data-rid="${l.record_id}" onclick="selectLead('${l.record_id}')">
+        <div class="row1">
+          <span class="name">${l.name || l.account_name || '未命名'}</span>
+          <span class="platform">${l.platform || ''}</span>
+        </div>
+        <div class="row2">
+          <span class="phone">${l.phone || '无号码'}</span>
+          <span class="lead-time">🕒 ${leadTime}</span>
+          <span class="reached-badge">✓ 已触达</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectLead(recordId) {
+  selectedLead = leads.find(l => l.record_id === recordId);
+  renderLeads();
+  renderMain();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderMain();
+}
+
+// ========== 通话话术（来源：《视频号线索初接话术及流程》） ==========
+// {N} 会在渲染时替换为当前客户称呼；<em> 高亮关键动作词，<strong> 高亮核心卖点
+const CALL_SCRIPT = {
+  title: '📞 高效电话转化法',
+  time: '全程 60-90 秒',
+  rule: '<b>情绪高于内容，先给钩子再给行动。</b><br>'
+      + '❌ 别一上来就说"您好，我是XX公司的"<br>'
+      + '✅ 先自然问候：<em>"您好，上午好，看到您视频号联系我们想咨询项目合作"</em>',
+  steps: [
+    {
+      name: '身份唤醒',
+      sec: '5-10秒',
+      goal: '建立联系，<b>不让用户反感挂断</b>',
+      say: '喂，<em>{N}</em>您好，我是刚才在视频号里给您发私信/留下联系方式的<strong>合作顾问</strong>。刚才看您<em>评论了我们的XX视频</em>，所以赶紧给您回个电话。',
+      why: '结合平台（视频号）和具体互动行为（点赞、评论、留资）作为切入点，这不仅是一个合规的引流"由头"，也瞬间提醒了用户你是谁，让他觉得不是骚扰电话。',
+    },
+    {
+      name: '价值给予',
+      sec: '30-40秒',
+      core: true,
+      goal: '给出无法拒绝的"诱饵"，把重点从<b>"加入社群"转移到"领取专属福利"</b>',
+      say: '您不是一直对<strong>大健康方面项目</strong>感兴趣吗？我手头上正好有一份关于<strong>26年大健康的内部实操教学和行情资料</strong>，这是我们<em>特意给感兴趣的老板准备的</em>，我直接发到我们内部的<strong>粉丝专属群</strong>里面了，里面都是和您一样对大健康感兴趣的老板，您看我拉您进群大家一起交流交流？',
+      why: '视频号的核心在于信任关系。群发的消息用户很难重视，但电话里"1对1"送出的专属福利，赋予了极高的"专属感"。话术要明确告诉用户："这不是谁都能领的，是专门为你准备的。"',
+    },
+    {
+      name: '简化路径',
+      sec: '10-15秒',
+      goal: '把"加微信"变得<b>无脑、简单、直接</b> —— 在通话过程中就完成添加',
+      say: '您这个手机号就是您的微信么？您现在去看一下您的手机微信，有个<em>"好友申请"</em>。您<em>点一下"通过"</em>，然后我把您拉到群里，您直接自己领就行了，<strong>特简单</strong>！',
+      why: '这个环节的核心是"精简"。通过电话口述添加微信，引导用户仅需点击"通过"。话术中明确指示动作（"点一下通过"），能极大地降低用户的行动阻力。',
+    },
+  ],
+};
+
+// 步骤勾选状态（按线索维度，仅存内存：每次刷新/换人重新开始）
+let scriptChecked = {};
+
+// 生成电话里念得出口的称呼：
+//   纯中文姓名 → 张先生 / 李女士 / 王老板（依据已填性别，未填用「老板」更稳妥）
+//   复姓识别 → 欧阳先生（而不是「欧先生」）
+//   阿/小/老 开头的昵称 → 原样称呼（「阿伟」不该变成「阿老板」）
+//   公司名、长昵称 → 直接用「老板」，避免电话里照读一长串
+const COMPOUND_SURNAMES = ['欧阳','司马','上官','诸葛','东方','独孤','慕容','宇文',
+  '皇甫','尉迟','公孙','令狐','夏侯','长孙','轩辕','南宫','西门','百里'];
+
+function leadSalutation(l) {
+  const raw = (l && (l.name || l.account_name) || '').trim();
+  if (!raw) return '您';
+  const gender = (leadExtras[l && l.record_id] || {}).gender;
+  const suffix = gender === '女' ? '女士' : (gender === '男' ? '先生' : '老板');
+
+  // 昵称型：阿伟 / 小李 / 老王 —— 直接叫，别加后缀
+  if (/^[阿小老][\u4e00-\u9fa5]{1,2}$/.test(raw)) return raw;
+  // 复姓：欧阳志远 → 欧阳先生
+  const cs = COMPOUND_SURNAMES.find(s => raw.startsWith(s));
+  if (cs && /^[\u4e00-\u9fa5]{3,4}$/.test(raw)) return cs + suffix;
+  // 常规中文姓名：张伟 → 张老板
+  if (/^[\u4e00-\u9fa5]{2,4}$/.test(raw)) return raw[0] + suffix;
+  // 公司名 / 长昵称：只称呼后缀
+  if (/^[\u4e00-\u9fa5]{5,}$/.test(raw) || raw.length > 6) return suffix;
+  return raw;  // 短英文名等，原样念
+}
+
+function renderScriptPanel(l) {
+  const salute = leadSalutation(l);
+  const id = l ? l.record_id : '_';
+  const checked = scriptChecked[id] || {};
+  const doneCount = CALL_SCRIPT.steps.filter((_, i) => checked[i]).length;
+  const pct = Math.round(doneCount / CALL_SCRIPT.steps.length * 100);
+
+  const stepsHtml = CALL_SCRIPT.steps.map((s, i) => {
+    const done = !!checked[i];
+    const sayHtml = s.say.replace(/\{N\}/g, escapeHtml(salute));
+    return `
+      <div class="step-card ${done ? 'done' : ''} ${s.core ? 'core' : ''}" id="stepCard${i}">
+        <div class="step-top" onclick="toggleScriptStep(${i})">
+          <div class="step-chk">✓</div>
+          <div class="step-name">${i + 1}. ${s.name}</div>
+          ${s.core ? '<div class="step-tag">核心</div>' : ''}
+          <div class="step-sec">${s.sec}</div>
+        </div>
+        <div class="step-goal">🎯 ${s.goal}</div>
+        <div class="step-say">
+          <button class="copy" onclick="copyScriptLine(${i})">复制</button>
+          <span id="sayText${i}">${sayHtml}</span>
+        </div>
+        <details class="step-why"><summary>为什么这么说</summary><p>${escapeHtml(s.why)}</p></details>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="script-panel">
+      <div class="script-head">
+        <div class="t"><span>${CALL_SCRIPT.title}</span><span class="time">${CALL_SCRIPT.time}</span></div>
+        <div class="sub" id="scriptSub">跟着念 · 点标题打钩记录进度（${doneCount}/${CALL_SCRIPT.steps.length}）</div>
+        <div class="script-bar"><i id="scriptBarFill" style="width:${pct}%"></i></div>
+      </div>
+      <div class="script-rule">${CALL_SCRIPT.rule}</div>
+      <div class="script-body">${stepsHtml}</div>
+      <div class="script-foot">
+        <button class="script-reset" onclick="resetScript()">↺ 重置勾选（下一通电话）</button>
+        <div class="script-src">话术来源：《视频号线索初接话术及流程》</div>
+      </div>
+    </div>`;
+}
+
+function refreshScriptPanel() {
+  const col = document.getElementById('scriptCol');
+  if (col && selectedLead) col.innerHTML = renderScriptPanel(selectedLead);
+}
+
+function toggleScriptStep(i) {
+  if (!selectedLead) return;
+  const id = selectedLead.record_id;
+  scriptChecked[id] = scriptChecked[id] || {};
+  scriptChecked[id][i] = !scriptChecked[id][i];
+  // 原地更新勾选状态与进度条，避免整块重渲染导致话术面板滚动位置被重置
+  const card = document.getElementById('stepCard' + i);
+  if (card) card.classList.toggle('done', !!scriptChecked[id][i]);
+  const checked = scriptChecked[id];
+  const total = CALL_SCRIPT.steps.length;
+  const doneCount = CALL_SCRIPT.steps.filter((_, k) => checked[k]).length;
+  const pct = Math.round(doneCount / total * 100);
+  const fill = document.getElementById('scriptBarFill');
+  if (fill) fill.style.width = pct + '%';
+  const sub = document.getElementById('scriptSub');
+  if (sub) sub.textContent = '跟着念 · 点标题打钩记录进度（' + doneCount + '/' + total + '）';
+}
+
+function toggleReached() {
+  if (!selectedLead) return;
+  const id = selectedLead.record_id;
+  if (!id) return;
+  if (leadReached[id]) delete leadReached[id]; else leadReached[id] = true;
+  try { localStorage.setItem('outbound_reached', JSON.stringify(leadReached)); } catch(e) {}
+  const on = !!leadReached[id];
+  // 左侧列表卡片原地更新（不重渲染，保留列表滚动位置）
+  document.querySelectorAll('.lead-card').forEach(c => {
+    if (c.dataset.rid === id) c.classList.toggle('reached', on);
+  });
+  // 按钮原地更新（文案 + 样式）
+  const btn = document.getElementById('reachedBtn');
+  if (btn) {
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '✅ 已触达（点击取消）' : '📞 标记为已触达';
+  }
+}
+
+function resetScript() {
+  if (!selectedLead) return;
+  scriptChecked[selectedLead.record_id] = {};
+  refreshScriptPanel();
+}
+
+function copyScriptLine(i) {
+  const el = document.getElementById('sayText' + i);
+  if (!el) return;
+  const text = el.innerText || el.textContent || '';
+  const done = () => toast('话术已复制', 'success');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); cb && cb(); } catch (e) { toast('复制失败，请手动选中', 'error'); }
+  document.body.removeChild(ta);
+}
+
+function renderMain() {
+  const container = document.getElementById('mainContent');
+
+  if (currentTab === 'call') {
+    if (!selectedLead) {
+      container.innerHTML = `
+        <div class="call-panel">
+          <div class="empty-state">
+            <div class="icon">📞</div>
+            <p style="font-size:15px;font-weight:500;">选择一个线索开始外呼</p>
+            <p style="font-size:13px;color:#999;">从左侧列表点击要拨打的客户</p>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const l = selectedLead;
+    const synced = syncedLeads[l.record_id];
+    const leadTimeStr = l.time ? fmtDate(new Date(Number(l.time))) : '—';
+    container.innerHTML = `
+     <div class="call-layout">
+      <div class="work-col">
+      <div class="call-panel">
+        <div class="lead-info">
+          <div style="display:flex;gap:28px;align-items:flex-end;flex-wrap:wrap;">
+            <div style="min-width:0;flex:1 1 auto;">
+              <div class="label">客户名称</div>
+              <div class="value" style="font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.name || l.account_name || '未命名'}</div>
+            </div>
+            <div style="flex:0 0 auto;">
+              <div class="label">联系方式</div>
+              <div class="phone-value">${l.phone || '无号码'}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:20px;margin-top:12px;">
+            <div><div class="label">平台</div><div class="value" style="font-size:13px;">${l.platform || '-'}</div></div>
+            <div><div class="label">线索时间</div><div class="value" style="font-size:13px;">${leadTimeStr}</div></div>
+          </div>
+        </div>
+        <div class="action-card">
+          <button class="reached-btn ${leadReached[l.record_id] ? 'on' : ''}" id="reachedBtn" onclick="toggleReached()">${leadReached[l.record_id] ? '✅ 已触达（点击取消）' : '📞 标记为已触达'}</button>
+          <div class="record-zone">
+            <div id="timerDisplay" class="timer" style="display:none;">00:00</div>
+            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">开始录音</button>
+            <div id="uploadArea"></div>
+            <div class="hint" id="recordHint">点击后开始录音，用手机拨打客户，开启外放</div>
+          </div>
+        </div>
+        <div class="extra-info">
+            <div class="extra-title">📇 客户补充信息（填完点回传）</div>
+            ${synced ? `<div class="synced-note">✅ 该客户已于 <b>${synced}</b> 回传，无需重复回传</div>` : ''}
+            <div class="extra-grid">
+              <div class="extra-field">
+                <label>性别</label>
+                <select id="exGender" ${synced ? 'disabled' : ''} onchange="saveExtra('gender',this.value)">
+                  <option value="">未填</option><option>男</option><option>女</option><option>未知</option>
+                </select>
+              </div>
+              <div class="extra-field">
+                <label>年龄（根据声音估计）</label>
+                <select id="exAge" ${synced ? 'disabled' : ''} onchange="saveExtra('age',this.value)">
+                  <option value="">未填</option><option>30以下</option><option>30-40</option><option>40-50</option><option>50-60</option><option>60以上</option>
+                </select>
+              </div>
+              <div class="extra-field">
+                <label>省</label>
+                <select id="exProvince" ${synced ? 'disabled' : ''} onchange="saveExtra('province',this.value)"></select>
+              </div>
+              <div class="extra-field">
+                <label>市</label>
+                <input id="exCity" type="text" placeholder="如 深圳" ${synced ? 'disabled' : ''} onchange="saveExtra('city',this.value)">
+              </div>
+              <div class="extra-field">
+                <label>重点客户</label>
+                <select id="exKeyCustomer" ${synced ? 'disabled' : ''} onchange="saveExtra('keyCustomer',this.value)">
+                  <option value="">未填</option><option>是</option><option>否</option>
+                </select>
+              </div>
+              <div class="extra-field">
+                <label>邀约进群</label>
+                <select id="exInviteGroup" ${synced ? 'disabled' : ''} onchange="saveExtra('inviteGroup',this.value)">
+                  <option value="">未填</option><option>已邀约</option><option>拒绝进群</option><option>其他</option>
+                </select>
+              </div>
+              <div class="extra-field">
+                <label>是否自有门店</label>
+                <select id="exStore" ${synced ? 'disabled' : ''} onchange="saveExtra('hasStore',this.value)">
+                  <option value="">未填</option><option>是</option><option>否</option>
+                </select>
+              </div>
+            </div>
+            <div class="extra-field extra-remark">
+              <label>备注</label>
+              <textarea id="exRemark" rows="2" placeholder="可填写通话要点、客户意向等" ${synced ? 'disabled' : ''} onchange="saveExtra('remark',this.value)"></textarea>
+            </div>
+            <button class="sync-btn" id="syncBtn" ${synced ? 'disabled' : ''} onclick="syncLeadExtra()">${synced ? '✅ 已回传' : '🚀 回传客户信息'}</button>
+            <div class="sync-status" id="syncStatus">${synced ? '该客户已回传，按钮已禁用' : ''}</div>
+        </div>
+        <div id="recordingsBlock">${renderLeadRecordings(l)}</div>
+      </div>
+      </div>
+      <div class="script-col" id="scriptCol">${renderScriptPanel(l)}</div>
+     </div>`;
+      initExtraFields(l);
+      autoLoadAnalyses(l);
+  } else {
+    // History tab
+    const myCalls = calls.filter(c => c.user_name === currentUser);
+    if (myCalls.length === 0) {
+      container.innerHTML = '<div class="call-panel"><div class="empty-state"><div class="icon">📋</div><p style="font-size:15px;font-weight:500;">暂无通话记录</p><p style="font-size:13px;color:#999;">完成一次外呼后会出现在这里</p></div></div>';
+      return;
+    }
+    container.innerHTML = `<div style="width:100%;max-width:800px;">
+      <table class="calls-table">
+        <thead><tr><th>客户</th><th>电话</th><th>时间</th><th>时长</th><th>存储状态</th><th>操作</th></tr></thead>
+        <tbody>${myCalls.slice().reverse().map(c => renderCallRow(c)).join('')}</tbody>
+      </table>
+      <p style="margin-top:16px;font-size:12px;color:#999;text-align:center;">
+        录音自动上传至 <code>yiru220/outbound-workbench/${RECORDINGS_PATH}/</code> · AI分析待接入
+      </p>
+    </div>`;
+  }
+}
+
+// ========== Lead extra info (性别/省/市/是否自有门店) ==========
+function saveExtra(key, val) {
+  if (!selectedLead) return;
+  const id = selectedLead.record_id;
+  if (!id) return;
+  leadExtras[id] = leadExtras[id] || {};
+  leadExtras[id][key] = val;
+  try { localStorage.setItem('outbound_extras', JSON.stringify(leadExtras)); } catch(e) {}
+  // 性别影响话术里的称呼（X先生 / X女士 / X老板），实时刷新话术面板
+  if (key === 'gender') refreshScriptPanel();
+}
+function initExtraFields(l) {
+  if (!l) return;
+  const ex = leadExtras[l.record_id] || {};
+  // 省：下拉选项（26 省 + 其他），仅首次填充
+  const prov = document.getElementById('exProvince');
+  if (prov && prov.options.length === 0) {
+    const mk = (v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = (t == null ? v : t); return o; };
+    prov.appendChild(mk('', '未填'));
+    PROVINCES.forEach(p => prov.appendChild(mk(p)));
+    prov.appendChild(mk('其他'));
+  }
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  set('exGender', ex.gender);
+  set('exProvince', ex.province);
+  set('exCity', ex.city);
+  set('exStore', ex.hasStore);
+  set('exKeyCustomer', ex.keyCustomer);
+  set('exInviteGroup', ex.inviteGroup);
+  set('exAge', ex.age);
+  set('exRemark', ex.remark);
+}
+// 回传时间：目标表为日期类型，年月日格式 YYYY-MM-DD
+function fmtDate(d) {
+  const p = n => (n < 10 ? '0' + n : '' + n);
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+}
+async function syncLeadExtra() {
+  if (!selectedLead) return;
+  const l = selectedLead;
+  if (syncedLeads[l.record_id]) { toast('该客户已回传，无需重复回传'); return; }
+  const phone = (l.phone || '').trim();
+  if (!phone) { toast('该线索没有手机号，无法回传'); return; }
+  const name = (l.name || l.account_name || '').trim();
+  const ex = leadExtras[l.record_id] || {};
+  const timeStr = fmtDate(new Date());
+  const F = WEBHOOK_FIELDS;
+  // 企微智能表格写入格式：单选=[{text:值}]，文本=[{type:"text",text:值}]
+  // 手机号/市均为文本字段，必须按文本格式发送；空值字段不发送，避免校验失败
+  const values = {};
+  if (ex.gender)   values[F.gender]   = [{ text: ex.gender }];
+  if (ex.province) values[F.province] = [{ text: ex.province }];
+  if (ex.city)     values[F.city]     = [{ type: 'text', text: ex.city }];
+  if (ex.hasStore) values[F.hasStore] = [{ text: ex.hasStore }];
+  if (ex.keyCustomer) values[F.keyCustomer] = [{ text: ex.keyCustomer }];
+  if (ex.inviteGroup) values[F.inviteGroup] = [{ text: ex.inviteGroup }];
+  if (ex.age) values[F.age] = [{ text: ex.age }];
+  if (ex.remark) values[F.remark] = [{ type: 'text', text: ex.remark }];
+  const phoneDigits = String(phone).replace(/\D/g, '');
+  if (phoneDigits) values[F.phone] = [{ type: 'text', text: phoneDigits }];
+  values[F.date] = timeStr;  // 回传日期：年月日格式，写入当天日期
+  // 通话评分：该客户多段录音取最高分（数字型字段）
+  let maxScore = null;
+  for (const c of calls) {
+    const match = (phone && c.lead_phone === phone) || (name && c.lead_name === name);
+    if (!match) continue;
+    if (c.analysis && typeof c.analysis.score === 'number') {
+      if (maxScore === null || c.analysis.score > maxScore) maxScore = c.analysis.score;
+    }
+  }
+  if (maxScore !== null) values[F.score] = maxScore;  // 数字型字段：单元格值为 double，直接传标量数字（不能包数组，否则报 2022017）
+  const payload = { add_records: [ { values: values } ] };
+  const btn = document.getElementById('syncBtn');
+  const st = document.getElementById('syncStatus');
+  btn.disabled = true; st.style.color = ''; st.textContent = '⏳ 回传中...';
+  // 优先走代理（解决跨域），其次用常量里的地址，最后回退直连
+  const target = getProxyUrl() || WEBHOOK_PROXY_URL || WEBHOOK_URL;
+  try {
+    const resp = await fetch(target, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const txt = await resp.text();
+    let ok = false, msg = '';
+    try { const j = JSON.parse(txt); ok = (j.errcode === 0); msg = j.errmsg || ''; } catch(e) { ok = resp.ok; }
+    if (ok) {
+      st.style.color = 'green';
+      st.textContent = '✅ 回传成功 · ' + timeStr;
+      toast('客户信息已回传智能表格' + (maxScore !== null ? (' · 通话评分 ' + maxScore) : ''), 'success');
+      // 标记为已回传，禁用重复回传
+      syncedLeads[l.record_id] = timeStr;
+      try { localStorage.setItem('outbound_synced', JSON.stringify(syncedLeads)); } catch(e) {}
+      renderMain();  // 重渲染：按钮变「已回传」并禁用
+    } else {
+      st.style.color = 'red';
+      st.textContent = '❌ 回传失败: ' + (msg || ('HTTP ' + resp.status));
+    }
+  } catch(e) {
+    st.style.color = 'red';
+    const viaProxy = !!(getProxyUrl() || WEBHOOK_PROXY_URL);
+    st.textContent = '❌ ' + (viaProxy ? ('代理请求失败: ' + e.message) : ('跨域错误: ' + e.message + '（请联系管理员确认上传代理是否已配置）'));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderCallRow(c) {
+  let statusHtml = '';
+  let actionsHtml = '';
+
+  if (c.uploaded && c.github_url) {
+    statusHtml = `<a class="file-link" href="${c.github_url}" target="_blank">📁 已上传</a>`;
+    actionsHtml = `<button class="btn btn-sm btn-ghost" onclick="copyLink('${c.github_url}')">复制链接</button>`;
+  } else if (c.upload_error) {
+    statusHtml = `<span style="color:var(--danger);font-size:12px;" title="${c.upload_error}">❌ 上传失败</span>`;
+    actionsHtml = `<button class="btn btn-sm btn-primary" onclick="retryUpload('${c.call_id}')">重试</button>`;
+  } else {
+    statusHtml = `<span style="color:var(--text-muted);font-size:12px;">📦 仅本地</span>`;
+    actionsHtml = getGHToken()
+      ? `<button class="btn btn-sm btn-primary" onclick="retryUpload('${c.call_id}')">上传</button>`
+      : `<button class="btn btn-sm btn-ghost" onclick="downloadAudio('${c.call_id}')">下载</button>`;
+  }
+
+  const scoreBadge = (c.analysis && c.analysis.score != null)
+    ? `<span class="score-pill" title="综合得分">${c.analysis.score}</span> ` : '';
+  const analysisBtn = `<button class="btn btn-sm btn-secondary" onclick="transcribeCall('${c.call_id}')">🎯 转写分析</button>`;
+  return `
+    <tr>
+      <td>${scoreBadge}${c.lead_name || '-'}</td>
+      <td style="font-family:monospace;">${c.lead_phone || '-'}</td>
+      <td style="font-size:12px;">${c.started_at || '-'}</td>
+      <td>${c.duration || '-'}</td>
+      <td>${statusHtml}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${analysisBtn}
+        ${actionsHtml}
+        <button class="btn btn-sm btn-danger" onclick="deleteCall('${c.call_id}')">删除</button>
+      </td>
+    </tr>
+  `;
+}
+
+// ========== 录音回放 + 一键转写分析 ==========
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, m =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+
+// 该客户的历史通话录音区块
+function renderLeadRecordings(l) {
+  const phone = (l.phone || '').trim();
+  const name = (l.name || l.account_name || '').trim();
+  const list = calls.filter(c =>
+    (phone && c.lead_phone === phone) || (name && c.lead_name === name)
+  );
+  if (list.length === 0) {
+    return `<div class="recordings-block"><div class="recordings-title">📼 该客户的通话录音</div><div class="recordings-empty">尚未为该客户录制通话</div></div>`;
+  }
+  list.sort((a, b) => String(b.started_at || '').localeCompare(String(a.started_at || '')));
+  return `<div class="recordings-block">
+    <div class="recordings-title">📼 该客户的通话录音（${list.length}）</div>
+    ${list.map(c => renderRecordingItem(c)).join('')}
+  </div>`;
+}
+
+// 仅刷新「该客户的通话录音」区块（不动话术面板，保留滚动位置）
+function refreshRecordingsBlock() {
+  if (!selectedLead) return;
+  const box = document.getElementById('recordingsBlock');
+  if (!box) return;
+  box.innerHTML = renderLeadRecordings(selectedLead);
+}
+
+// 录音列表变化后的统一刷新：call 页只刷新录音区块；history 页整体重渲染
+function refreshAfterCallChange() {
+  if (currentTab === 'call') refreshRecordingsBlock();
+  else renderMain();
+}
+
+function renderRecordingItem(c) {
+  const src = rawUrlOf(c) || (c.audio_data && c.audio_data.startsWith('data:') ? c.audio_data : '');
+  const hasAudio = !!src;
+  const time = c.started_at || '-';
+  const dur = c.duration || '-';
+  const analyzed = c.analysis && (c.analysis.score != null || c.analysis.transcript);
+  return `
+  <div class="rec-item" id="rec-${c.call_id}">
+    <button class="rec-del" onclick="deleteCall('${c.call_id}')" title="删除本地与服务器录音">🗑️ 删除</button>
+    <div class="rec-meta"><b>${escapeHtml(time)}</b> · 时长 ${escapeHtml(dur)} · ${escapeHtml(c.user_name || '')}</div>
+    ${hasAudio
+      ? `<audio class="rec-audio" controls preload="none" src="${src}"></audio>`
+      : `<div class="rec-noaudio">无可播放音频（本地录音已丢失或未上传）</div>`}
+    <div class="rec-actions">
+      <button class="btn btn-sm btn-secondary" id="txbtn-${c.call_id}" onclick="transcribeCall('${c.call_id}')" ${hasAudio ? '' : 'disabled title="无可分析音频"'}>🎯 转写分析</button>
+      ${analyzed && c.analysis.score != null ? `<span class="score-pill" title="综合得分">${c.analysis.score}分</span>` : ''}
+    </div>
+    <div class="rec-status" id="txstatus-${c.call_id}">${analyzed ? '' : '点击上方按钮，自动转文字 + 打分 + 优缺点分析'}</div>
+    <div class="rec-analysis" id="analysis-${c.call_id}">${analyzed ? renderAnalysis(c.analysis) : ''}</div>
+  </div>`;
+}
+
+function renderAnalysis(a) {
+  const score = (a.score != null) ? a.score : '—';
+  const scoreColor = (a.score >= 80) ? '#2f9e44' : (a.score >= 60 ? '#f08c00' : '#e03131');
+  const dims = (a.dimensions || []).map(d => {
+    const pct = Math.max(0, Math.min(100, (d.score / 10) * 100));
+    const dc = d.score >= 8 ? '#2f9e44' : (d.score >= 6 ? '#f08c00' : '#e03131');
+    return `<div class="dim-row"><span class="dim-name">${escapeHtml(d.name)}</span><span class="dim-bar"><i style="width:${pct}%;background:${dc}"></i></span><span class="dim-val">${d.score}/10</span></div>`;
+  }).join('');
+  const pros = (a.strengths || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+  const cons = (a.weaknesses || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+  const transcript = a.transcript || '';
+  const engine = [a.provider_label, a.asr_model, a.llm_model].filter(Boolean).join(' · ');
+  return `
+    <div class="analysis-card">
+      <div class="analysis-head">
+        <div class="score-big" style="color:${scoreColor}">${score}<span class="score-unit">分</span></div>
+        <div class="analysis-summary">${escapeHtml(a.summary || '')}</div>
+      </div>
+      ${a.analysis_error ? `<div class="analysis-warn">⚠️ 已成功转写，但 AI 评分失败：${escapeHtml(a.analysis_error)}</div>` : ''}
+      ${dims ? `<div class="dims">${dims}</div>` : ''}
+      ${(pros || cons) ? `<div class="proscons">
+        <div class="pc pros"><div class="pc-title">✅ 优点</div><ul>${pros}</ul></div>
+        <div class="pc cons"><div class="pc-title">🔧 待改进</div><ul>${cons}</ul></div>
+      </div>` : ''}
+      ${transcript ? `<details class="transcript"><summary>📝 转写全文</summary><div class="transcript-body">${escapeHtml(transcript)}</div></details>` : ''}
+      ${engine ? `<div class="analysis-engine">引擎：${escapeHtml(engine)}</div>` : ''}
+    </div>`;
+}
+
+// 调用 Worker /transcribe：转写 + 打分 + 优缺点分析，结果存本机并同步 GitHub
+async function transcribeCall(callId) {
+  const call = calls.find(c => c.call_id === callId);
+  if (!call) return;
+  const btn = document.getElementById('txbtn-' + callId);
+  const statusEl = document.getElementById('txstatus-' + callId);
+  const raw = rawUrlOf(call);
+  const audio = (!raw && call.audio_data) ? call.audio_data : null;
+  if (!raw && !audio) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger)">无可分析音频</span>';
+    return;
+  }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ 分析中...'; }
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--warning)">正在转写并分析，请稍候（约 10-30 秒）...</span>';
+  try {
+    const resp = await fetch(TRANSCRIBE_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(raw
+        ? { url: raw, name: (call.github_path || 'audio.webm').split('/').pop() }
+        : { audio: audio, name: 'audio.webm' }),
+    });
+    const j = await resp.json().catch(() => ({}));
+    if (!resp.ok || j.error) throw new Error(j.error || ('HTTP ' + resp.status));
+    call.analysis = {
+      transcript: j.transcript || '',
+      score: (j.score != null) ? j.score : null,
+      dimensions: j.dimensions || [],
+      strengths: j.strengths || [],
+      weaknesses: j.weaknesses || [],
+      summary: j.summary || '',
+      provider_label: j.provider_label || '',
+      asr_model: j.asr_model || '',
+      llm_model: j.llm_model || '',
+      analysis_error: j.analysis_error || '',
+      analyzed_at: new Date().toISOString(),
+    };
+    updateCallInStorage(call);
+    const box = document.getElementById('analysis-' + callId);
+    if (box) box.innerHTML = renderAnalysis(call.analysis);
+    if (statusEl) statusEl.textContent = '';
+    if (call.github_path) {
+      try {
+        const apath = call.github_path.replace(/\.webm$/i, '.analysis.json');
+        await uploadTextToGitHub(apath, JSON.stringify(call.analysis, null, 2),
+          `📊 录音分析: ${call.lead_name || ''} ${call.started_at || ''}`);
+      } catch (e) { console.warn('分析 JSON 同步失败(不影响本地):', e); }
+    }
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 重新分析'; }
+    if (currentTab === 'history') renderMain();
+    if (call.analysis.analysis_error) {
+      toast('已转写，但 AI 评分失败（详见卡片提示）', 'error');
+    } else {
+      toast('分析完成 · 综合 ' + (call.analysis.score != null ? call.analysis.score + '分' : '—'), 'success');
+    }
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = '🎯 重新分析'; }
+    // 旧版 Worker 的特征报错：说明 Cloudflare 上仍是老代码，给出可执行指引而不是丢一句看不懂的错
+    const stale = /OPENAI_API_KEY 未配置/.test(e.message || '');
+    const msg = stale
+      ? 'Cloudflare 上的 Worker 还是旧版本（GitHub 仓库已更新，但线上没重新部署）。<br>'
+        + '解决：Cloudflare 控制台 → Workers &amp; Pages → <b>outbound-webhook-proxy</b> → '
+        + 'Deployments 里点 <b>Redeploy / Deploy</b>（或在 Settings 里加一个 Secret 保存，也会触发部署）。<br>'
+        + '自检地址：<a href="' + WORKER_BASE + '/health" target="_blank">' + WORKER_BASE + '/health</a>'
+        + '，能看到 version 就是新版。'
+      : '分析失败: ' + escapeHtml(e.message);
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--danger)">' + msg + '</span>';
+    toast(stale ? 'Worker 未更新，请在 Cloudflare 重新部署' : ('分析失败: ' + e.message), 'error');
+  }
+}
+
+// 把文本（UTF-8 安全）推到 GitHub（复用上传代理）
+async function uploadTextToGitHub(path, text, message) {
+  if (!GITHUB_PROXY_URL) throw new Error('上传代理未配置');
+  const content = btoa(unescape(encodeURIComponent(text)));
+  const resp = await fetch(GITHUB_PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, content, message, branch: GITHUB_BRANCH }),
+  });
+  if (!resp.ok) {
+    const e = await resp.json().catch(() => ({}));
+    throw new Error(e.error || ('HTTP ' + resp.status));
+  }
+  return resp.json();
+}
+
+// 跨设备：本地无分析但有 GitHub 分析 JSON 时，自动拉取补全
+async function autoLoadAnalyses(l) {
+  if (!l) return;
+  const phone = (l.phone || '').trim();
+  const name = (l.name || l.account_name || '').trim();
+  const list = calls.filter(c =>
+    (phone && c.lead_phone === phone) || (name && c.lead_name === name));
+  for (const c of list) {
+    if (c.analysis && (c.analysis.score != null || c.analysis.transcript)) continue;
+    const raw = rawUrlOf(c);
+    if (!raw) continue;
+    const aurl = raw.replace(/\.webm$/i, '.analysis.json');
+    try {
+      const r = await fetch(aurl);
+      if (!r.ok) continue;
+      const a = await r.json();
+      if (!a || typeof a !== 'object') continue;
+      c.analysis = a;
+      updateCallInStorage(c);
+      const box = document.getElementById('analysis-' + c.call_id);
+      if (box) box.innerHTML = renderAnalysis(a);
+      const btn = document.getElementById('txbtn-' + c.call_id);
+      if (btn) btn.textContent = '🔄 重新分析';
+      const st = document.getElementById('txstatus-' + c.call_id);
+      if (st) st.textContent = '';
+    } catch (e) { /* 忽略，按需手动分析 */ }
+  }
+}
+
+// ========== Recording ==========
+async function toggleRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecording();
+    return;
+  }
+  await startRecording();
+}
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    let mimeType = 'audio/webm;codecs=opus';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'audio/webm';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'audio/mp4';
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+    mediaRecorder.onstop = () => {
+      saveAndUpload();
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.onerror = (e) => {
+      console.error('Recorder error:', e);
+      toast('录音出错', 'error');
+    };
+
+    mediaRecorder.start(1000);
+    recordStartTime = Date.now();
+
+    const btn = document.getElementById('recordBtn');
+    btn.textContent = '停止录音';
+    btn.classList.add('recording');
+
+    document.getElementById('timerDisplay').style.display = 'block';
+    document.getElementById('recordHint').textContent = '录音中... 用手机拨打客户，开启外放';
+    document.getElementById('recordHint').classList.add('recording-hint');
+
+    timerInterval = setInterval(updateTimer, 1000);
+    toast('录音已开始 — 请用手机拨打客户并开外放');
+  } catch (e) {
+    console.error(e);
+    toast('无法访问麦克风，请检查浏览器权限', 'error');
+  }
+}
+
+function stopRecording() {
+  if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+  mediaRecorder.stop();
+  clearInterval(timerInterval);
+
+  const btn = document.getElementById('recordBtn');
+  btn.textContent = '保存中...';
+  btn.classList.remove('recording');
+  btn.disabled = true;
+
+  document.getElementById('recordHint').textContent = '录音已停止，正在保存...';
+  document.getElementById('recordHint').classList.remove('recording-hint');
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+  const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
+  const s = (elapsed % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+}
+
+function saveAndUpload() {
+  const mimeType = mediaRecorder.mimeType || 'audio/webm';
+  const ext = mimeType.includes('mp4') ? 'm4a' : 'webm';
+  const audioBlob = new Blob(audioChunks, { type: mimeType });
+  const callId = 'call_' + Date.now();
+  const duration = Math.floor((Date.now() - recordStartTime) / 1000);
+  const startedAt = new Date(recordStartTime).toLocaleString('zh-CN');
+
+  // Show upload area
+  const uploadArea = document.getElementById('uploadArea');
+  if (uploadArea) {
+    uploadArea.innerHTML = `
+      <div class="upload-bar"><div class="fill" id="uploadFill"></div></div>
+      <div class="upload-status uploading" id="uploadStatus">⏳ 正在上传到 GitHub...</div>`;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async function() {
+    const call = {
+      call_id: callId,
+      lead_name: selectedLead ? (selectedLead.name || selectedLead.account_name) : '未知',
+      lead_phone: selectedLead ? selectedLead.phone : '',
+      user_name: currentUser,
+      started_at: startedAt,
+      duration: formatDuration(duration),
+      duration_sec: duration,
+      audio_data: reader.result,
+      audio_type: mimeType,
+      audio_size: audioBlob.size,
+      created: Date.now(),
+      uploaded: false,
+      github_url: null,
+      upload_error: null,
+    };
+    calls.push(call);
+
+    // Keep only last 200 calls
+    if (calls.length > 200) calls = calls.slice(-200);
+
+    try {
+      localStorage.setItem('outbound_calls', JSON.stringify(calls));
+    } catch(e) {
+      // Remove oldest calls to make room
+      calls = calls.slice(-100);
+      try { localStorage.setItem('outbound_calls', JSON.stringify(calls)); } catch(e2) {
+        toast('存储空间不足，请清理旧录音', 'error');
+      }
+    }
+
+    updateStats();
+    refreshRecordingsBlock();  // 录音刚保存即显示在「该客户的通话录音」区块
+
+    // Try GitHub upload
+    const token = getGHToken();
+    // 统一走 Cloudflare Worker 代理上传（Token 由 Worker 持有，前端不存放，全员免配置）。
+    // 代理地址可用即视为已配置；若没有代理但前端填了兜底 Token 也允许直连。
+    if (GITHUB_PROXY_URL || token) {
+      try {
+        await uploadToGitHub(call, reader.result);
+      } catch(e) {
+        console.error('GitHub upload failed:', e);
+        call.upload_error = e.message;
+        updateCallInStorage(call);
+        updateUploadUI('error', e.message);
+        toast('上传失败: ' + e.message, 'error');
+        refreshAfterCallChange();
+      }
+    } else {
+      updateUploadUI('local', 'GitHub Token 未配置，录音仅保存在本地');
+      toast(`录音已保存 (${formatDuration(duration)}) · 未配置上传`, 'warning');
+    }
+
+    // Reset UI
+    const btn = document.getElementById('recordBtn');
+    btn.textContent = '开始录音';
+    btn.disabled = false;
+    document.getElementById('timerDisplay').style.display = 'none';
+    document.getElementById('recordHint').textContent = '点击后开始录音，用手机拨打客户，开启外放';
+  };
+  reader.readAsDataURL(audioBlob);
+}
+
+function updateUploadUI(status, msg) {
+  const fill = document.getElementById('uploadFill');
+  const statusEl = document.getElementById('uploadStatus');
+  if (!fill || !statusEl) return;
+
+  if (status === 'uploading') {
+    fill.style.width = '50%';
+    statusEl.className = 'upload-status uploading';
+    statusEl.textContent = '⏳ 正在上传到 GitHub...';
+  } else if (status === 'success') {
+    fill.style.width = '100%';
+    statusEl.className = 'upload-status success';
+    statusEl.textContent = '✅ ' + msg;
+  } else if (status === 'error') {
+    fill.style.width = '100%';
+    fill.style.background = 'var(--danger)';
+    statusEl.className = 'upload-status error';
+    statusEl.textContent = '❌ ' + msg;
+  } else {
+    fill.style.width = '0%';
+    statusEl.className = 'upload-status uploading';
+    statusEl.textContent = '📦 ' + msg;
+  }
+}
+
+// ========== GitHub API Upload ==========
+async function uploadToGitHub(call, dataUrl) {
+  // Build file path: outbound/recordings/YYYY-MM/username/客户名_上传人_YYYYMMDD_HHMMSS.webm
+  const now = new Date();
+  const month = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const recStart = new Date(recordStartTime);
+  const pad = (n) => String(n).padStart(2, '0');
+  const ymdhms = `${recStart.getFullYear()}${pad(recStart.getMonth()+1)}${pad(recStart.getDate())}_${pad(recStart.getHours())}${pad(recStart.getMinutes())}${pad(recStart.getSeconds())}`;
+  const safeName = (call.lead_name || '未知客户').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 20);
+  const safeUser = (call.user_name || '未知').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 15);
+  const fileName = `${safeName}_${safeUser}_${ymdhms}.webm`;
+  const filePath = `${RECORDINGS_PATH}/${month}/${call.user_name}/${fileName}`;
+
+  // Extract base64 content (strip data URL prefix)
+  const base64Content = dataUrl.split(',')[1];
+
+  updateUploadUI('uploading');
+
+  // 统一通过 Cloudflare Worker 代理上传（Token 由 Worker 持有，前端不存放，全员免配置）。
+  // 若代理地址为空，则回退为带 Token 的直连（选填兜底）。
+  const message = `📞 外呼录音: ${call.lead_name} | ${call.user_name} | ${call.started_at}`;
+  let resp;
+  if (GITHUB_PROXY_URL) {
+    resp = await fetch(GITHUB_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        path: filePath,
+        content: base64Content,
+        message: message,
+        branch: GITHUB_BRANCH,
+      }),
+    });
+  } else {
+    const token = getGHToken();
+    if (!token) throw new Error('未配置 GitHub Token（且上传代理未启用）');
+    resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+      },
+      body: JSON.stringify({ message, content: base64Content, branch: GITHUB_BRANCH }),
+    });
+  }
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    if (resp.status === 401) throw new Error('上传代理 Token 未配置或无效，请联系管理员设置 Cloudflare Secret GITHUB_TOKEN');
+    if (resp.status === 403) throw new Error('Token 权限不足，需要 contents:write 权限');
+    if (resp.status === 409) throw new Error('文件已存在: ' + filePath);
+    throw new Error(err.message || `上传失败 (HTTP ${resp.status})`);
+  }
+
+  const result = await resp.json();
+  const githubUrl = result.content.html_url || result.content.url;
+
+  // Update call record
+  call.uploaded = true;
+  call.github_url = githubUrl;
+  call.github_raw = rawUrlOf({ github_url: githubUrl });
+  call.github_path = filePath;
+  call.upload_error = null;
+  updateCallInStorage(call);
+
+  updateStats();
+  updateUploadUI('success', `已上传 → ${filePath}`);
+  toast(`✅ 录音已自动上传到 GitHub`, 'success');
+
+  refreshAfterCallChange();  // 切换音频源为 GitHub 链接 / 或刷新历史页
+}
+
+function updateCallInStorage(call) {
+  const idx = calls.findIndex(c => c.call_id === call.call_id);
+  if (idx >= 0) calls[idx] = call;
+  try { localStorage.setItem('outbound_calls', JSON.stringify(calls)); } catch(e) {}
+}
+
+async function retryUpload(callId) {
+  const call = calls.find(c => c.call_id === callId);
+  if (!call || !call.audio_data) {
+    toast('录音数据不存在', 'error');
+    return;
+  }
+  if (call.uploaded) {
+    toast('已上传，无需重试');
+    return;
+  }
+
+  toast('正在重新上传...', 'warning');
+  try {
+    await uploadToGitHub(call, call.audio_data);
+  } catch(e) {
+    call.upload_error = e.message;
+    updateCallInStorage(call);
+    toast('上传失败: ' + e.message, 'error');
+  }
+  renderMain();
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    toast('链接已复制');
+  }).catch(() => {
+    toast('复制失败，请手动复制', 'error');
+  });
+}
+
+function downloadAudio(callId) {
+  const call = calls.find(c => c.call_id === callId);
+  if (!call || !call.audio_data) {
+    toast('录音数据不存在', 'error');
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = call.audio_data;
+  const d = new Date(call.created || Date.now());
+  const p = (n) => String(n).padStart(2, '0');
+  const ts = `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+  const su = (call.user_name || '未知').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
+  const sn = (call.lead_name || '未知客户').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
+  a.download = `${sn}_${su}_${ts}.webm`;
+  a.click();
+}
+
+async function deleteCall(callId) {
+  const call = calls.find(c => c.call_id === callId);
+  if (!call) return;
+  if (!confirm('确定删除这条录音？将从本地与服务器（GitHub 仓库）一并删除，不可恢复。')) return;
+
+  // 1) 本地删除
+  calls = calls.filter(c => c.call_id !== callId);
+  try { localStorage.setItem('outbound_calls', JSON.stringify(calls)); } catch (e) {}
+  updateStats();
+
+  // 2) 服务器删除（录音 + 分析 JSON 兄弟文件）；任一处失败仅提示，不影响本地删除
+  let serverOk = true, serverMsg = '';
+  if (call.github_path) {
+    const paths = [call.github_path, call.github_path.replace(/\.webm$/i, '.analysis.json')];
+    for (const p of paths) {
+      try { await deleteGitHubFile(p); }
+      catch (e) { serverOk = false; serverMsg = e.message; }
+    }
+  }
+
+  refreshAfterCallChange();
+  if (serverOk) toast('已删除（本地 + 服务器）', 'success');
+  else toast('本地已删除；服务器删除失败：' + (serverMsg || '未知错误') + '（可能 Worker 未更新或文件已不存在）', 'error');
+}
+
+// 通过 Worker 代理（或前端 token 兜底）删除 GitHub 仓库中的文件；404 视为已删除
+async function deleteGitHubFile(path) {
+  const message = '🗑️ 删除录音: ' + path;
+  const target = getProxyUrl() || GITHUB_PROXY_URL;
+  if (target) {
+    const resp = await fetch(target, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', path, message, branch: GITHUB_BRANCH }),
+    });
+    if (resp.status === 404) return;
+    if (!resp.ok) {
+      const j = await resp.json().catch(() => ({}));
+      throw new Error(j.error || ('HTTP ' + resp.status));
+    }
+    return;
+  }
+  const token = getGHToken();
+  if (!token) throw new Error('未配置上传代理或 GitHub Token');
+  const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`;
+  const h = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' };
+  const g = await fetch(apiUrl, { headers: h });
+  if (g.status === 404) return;
+  if (!g.ok) throw new Error('获取文件失败 HTTP ' + g.status);
+  const gj = await g.json();
+  const d = await fetch(apiUrl, {
+    method: 'DELETE',
+    headers: { ...h, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, branch: GITHUB_BRANCH, sha: gj.sha }),
+  });
+  if (d.status === 404) return;
+  if (!d.ok) throw new Error('删除失败 HTTP ' + d.status);
+}
+
+function formatDuration(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return m > 0 ? `${m}分${s}秒` : `${s}秒`;
+}
+
+// ========== Toast ==========
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + type + ' show';
+  clearTimeout(el._timeout);
+  el._timeout = setTimeout(() => { el.className = 'toast'; }, 4000);
+}
+
+// Start
+init();
+
+// 显示版本徽标（右下角），便于确认是否加载到最新版
+(function(){
+  var bar = document.getElementById('versionBar');
+  if (bar) bar.textContent = 'v' + APP_VERSION;
+})();
+</script>
+<div id="versionBar" style="position:fixed;bottom:6px;right:10px;font-size:11px;color:#999;opacity:0.7;z-index:50;pointer-events:none;"></div>
+</body>
+</html>
