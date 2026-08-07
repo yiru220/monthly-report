@@ -9,180 +9,269 @@
 <title>康小虎业务经营工作台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f6;color:#1a1a2e;line-height:1.55;-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}
-.page{max-width:1180px;margin:0 auto;padding:0 24px 60px}
+.page{max-width:1200px;margin:0 auto;padding:0 24px 56px}
+
+/* ===== Top command bar ===== */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid #e6e9f0;padding:12px 24px;display:flex;align-items:center;gap:14px}
+.topbar .wrap{max-width:1200px;margin:0 auto;width:100%;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:#141414;font-size:15px}
+.brand .mk{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#1677ff,#0958d9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
+.topbar .spacer{flex:1}
+.stat-chip{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#595959;background:#f5f7fa;border:1px solid #ebedf2;padding:5px 12px;border-radius:20px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.green{background:#52c41a;box-shadow:0 0 0 3px rgba(82,196,26,.22)}
+.dot.gray{background:#bfbfbf}
+.dot.blue{background:#1677ff;box-shadow:0 0 0 3px rgba(22,119,255,.2)}
 
 /* ===== Hero ===== */
-.hero{background:linear-gradient(135deg,#1677ff 0%,#0958d9 100%);border-radius:0 0 24px 24px;padding:44px 48px 40px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 30px rgba(22,119,255,.25)}
-.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);border-radius:50%}
-.hero-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.brand-mark{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
-.brand-name{font-size:15px;font-weight:600;letter-spacing:1px;opacity:.95}
-.pill{margin-left:auto;background:rgba(255,255,255,.16);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500}
-.hero h1{font-size:34px;font-weight:800;letter-spacing:1px;margin-bottom:8px}
-.hero .sub{font-size:14px;opacity:.85;max-width:640px}
-.hero-meta{margin-top:18px;display:flex;gap:24px;font-size:12.5px;opacity:.9;flex-wrap:wrap}
-.hero-meta b{font-weight:700}
-.hero-meta .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#52c41a;margin-right:6px;box-shadow:0 0 0 3px rgba(82,196,26,.25)}
+.hero{margin-top:26px;background:linear-gradient(125deg,#0b2a6b 0%,#0e3a8c 45%,#1677ff 100%);border-radius:20px;padding:34px 38px;color:#fff;position:relative;overflow:hidden;box-shadow:0 14px 40px rgba(14,58,140,.28)}
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);border-radius:50%}
+.hero .eyebrow{font-size:12.5px;letter-spacing:3px;opacity:.8;text-transform:uppercase;position:relative}
+.hero h1{font-size:32px;font-weight:800;letter-spacing:1px;margin:8px 0 6px;position:relative}
+.hero .sub{font-size:14px;opacity:.88;max-width:620px;position:relative}
+.hero-line{margin-top:18px;display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;position:relative}
+.hero-line b{font-weight:700}
+.hero-line .sep{opacity:.35}
 
 /* ===== Section ===== */
-.section{margin-top:36px}
-.section-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.section-head .bar{width:4px;height:18px;border-radius:2px;background:#1677ff}
-.section-head h2{font-size:18px;font-weight:700;color:#141414}
+.section{margin-top:30px}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-head .bar{width:4px;height:17px;border-radius:2px;background:#1677ff}
+.section-head h2{font-size:16.5px;font-weight:700;color:#141414}
 .section-head .hint{font-size:12px;color:#8c8c8c;margin-left:auto}
 
-/* ===== Cards ===== */
+/* ===== Snapshot KPI strip ===== */
+.snap{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.kpi{background:#fff;border-radius:14px;padding:16px 16px 15px;border:1px solid #eceff4;position:relative;overflow:hidden}
+.kpi .kl{font-size:12px;color:#8c8c8c;display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.kpi .kv{font-size:25px;font-weight:800;color:#141414;line-height:1.1}
+.kpi .kv small{font-size:12px;font-weight:600;color:#8c8c8c;margin-left:3px}
+.kpi .kt{font-size:11.5px;color:#8c8c8c;margin-top:3px}
+.kpi .bar{height:6px;background:#f0f2f5;border-radius:3px;margin-top:10px;overflow:hidden}
+.kpi .bar>i{display:block;height:100%;border-radius:3px;background:#1677ff;font-size:0}
+.kpi .pct{position:absolute;top:16px;right:16px;font-size:12px;font-weight:700;color:#1677ff}
+.kpi.warn .pct{color:#d48806}.kpi.warn .bar>i{background:#faad14}
+.kpi.bad .pct{color:#cf1322}.kpi.bad .bar>i{background:#ff4d4f}
+.kpi.cyan .pct{color:#13a8a8}.kpi.cyan .bar>i{background:#13c2c2}
+
+/* ===== Module grid ===== */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.card{background:#fff;border-radius:14px;padding:22px 22px 20px;border:1px solid #f0f0f0;display:block;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s;overflow:hidden}
-.card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.10);border-color:#bcd4ff}
-.card::before{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:#1677ff;opacity:0;transition:opacity .18s}
-.card:hover::before{opacity:1}
-.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;background:#e6f0ff}
-.card-title{font-size:16px;font-weight:700;color:#141414;display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.card-desc{font-size:12.5px;color:#595959;line-height:1.7;min-height:42px}
-.card-foot{margin-top:14px;font-size:12.5px;color:#1677ff;font-weight:600;display:flex;align-items:center;gap:4px}
-.card-foot .arrow{transition:transform .18s}
-.card:hover .card-foot .arrow{transform:translateX(4px)}
-.badge{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:10px;line-height:1.6}
-.badge-live{background:#f6ffed;color:#389e0d}
-.badge-new{background:#fffbe6;color:#d48806}
-.badge-soon{background:#fafafa;color:#8c8c8c;border:1px solid #f0f0f0}
+.mod{background:#fff;border-radius:14px;padding:20px 20px 18px;border:1px solid #eceff4;display:flex;flex-direction:column;transition:transform .16s,box-shadow .16s,border-color .16s;position:relative}
+a.mod:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(20,40,90,.10);border-color:#bcd4ff}
+.mod .top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.mod .ic{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#e6f0ff;flex-shrink:0}
+.mod.teal .ic{background:#e6fffb}
+.mod .tt{font-size:15.5px;font-weight:700;color:#141414}
+.mod .st{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;margin-top:2px}
+.mod .st.on{color:#389e0d}.mod .st.soon{color:#8c8c8c}
+.mod .ds{font-size:12.5px;color:#595959;line-height:1.65;flex:1;margin-bottom:12px}
+.mod .go{font-size:13px;font-weight:700;color:#1677ff;display:flex;align-items:center;gap:5px}
+.mod.teal .go{color:#13a8a8}
+.mod .go .ar{transition:transform .16s}
+a.mod:hover .go .ar{transform:translateX(4px)}
+.mod.disabled{cursor:default;background:#fafbfc;border-style:dashed}
+.mod.disabled .ic{background:#f0f0f0;filter:grayscale(1)}
+.mod.disabled .tt,.mod.disabled .ds{color:#8c8c8c}
+.mod.disabled .go{color:#bfbfbf}
 
-/* teal accent for platform cards */
-.card.teal .card-icon{background:#e6fffb}
-.card.teal::before{background:#13c2c2}
-.card.teal:hover{border-color:#9be3df}
-.card.teal .card-foot{color:#13a8a8}
-
-/* disabled (coming soon) */
-.card.disabled{cursor:default;background:#fafafa;border-style:dashed;border-color:#e8e8e8}
-.card.disabled:hover{transform:none;box-shadow:none}
-.card.disabled .card-icon{background:#f0f0f0;filter:grayscale(1)}
-.card.disabled .card-title,.card.disabled .card-desc{color:#8c8c8c}
-.card.disabled .card-foot{color:#bfbfbf}
-
-/* ===== History dock ===== */
-.history{background:#fff;border-radius:14px;border:1px solid #f0f0f0;padding:18px 22px}
-.history-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;padding:7px 0}
-.history-row+.history-row{border-top:1px dashed #f0f0f0}
-.history-label{color:#8c8c8c;font-size:12.5px;min-width:64px}
-.chip{display:inline-flex;align-items:center;padding:5px 14px;border-radius:8px;background:#f5f8ff;color:#0958d9;font-size:12.5px;font-weight:500;transition:background .15s}
-.chip:hover{background:#e6f0ff}
-.chip.gray{background:#fafafa;color:#595959}
+/* ===== System panel ===== */
+.sys{background:#fff;border-radius:14px;border:1px solid #eceff4;padding:20px 22px}
+.sys h3{font-size:14px;font-weight:700;color:#141414;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sys-row{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13px;border-top:1px dashed #f0f0f0}
+.sys-row:first-of-type{border-top:none}
+.sys-row .nm{font-weight:600;color:#1a1a2e;min-width:120px}
+.sys-row .meta{color:#8c8c8c;font-size:12px;flex:1}
+.sys-row .badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:10px}
+.badge.ok{background:#f6ffed;color:#389e0d}
+.badge.wait{background:#fafafa;color:#8c8c8c;border:1px solid #eee}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
 
 /* ===== Footer ===== */
-.foot{margin-top:46px;text-align:center;font-size:11.5px;color:#bfbfbf;border-top:1px solid #eee;padding-top:18px;line-height:1.8}
-.foot .lock{font-size:13px}
+.foot{margin-top:40px;text-align:center;font-size:11.5px;color:#bfbfbf;border-top:1px solid #e6e9f0;padding-top:16px;line-height:1.8}
+.foot .lk{font-size:13px}
 
-@media(max-width:860px){.hero{border-radius:0 0 18px 18px;padding:32px 24px}.hero h1{font-size:26px}.grid,.grid-2{grid-template-columns:1fr}.page{padding:0 16px 48px}}
+@media(max-width:900px){
+.topbar .stat-chip.hide{display:none}
+.hero{padding:26px 22px;border-radius:16px}.hero h1{font-size:25px}
+.snap{grid-template-columns:repeat(2,1fr)}
+.grid{grid-template-columns:1fr}
+.two{grid-template-columns:1fr}
+.page{padding:0 16px 44px}
+}
 </style>
 </head>
 <body>
+
+<!-- ===== Top command bar ===== -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="mk">康</span> 业务经营工作台</div>
+    <div class="spacer"></div>
+    <span class="stat-chip"><span class="dot green"></span>系统正常</span>
+    <span class="stat-chip hide">账期 <b style="color:#141414">2026-08</b></span>
+    <span class="stat-chip" id="clock">🕐 --:--:--</span>
+  </div>
+</div>
+
 <div class="page">
 
-  <!-- ===== HERO ===== -->
+  <!-- ===== Hero ===== -->
   <div class="hero">
-    <div class="hero-top">
-      <div class="brand-mark">康</div>
-      <div class="brand-name">康小虎 · 健康小屋</div>
-      <div class="pill">📌 内部资料</div>
-    </div>
+    <div class="eyebrow">KANG XIAOHU · OPERATIONS COMMAND CENTER</div>
     <h1>康小虎业务经营工作台</h1>
-    <div class="sub">一站式经营数据中枢 —— 月报 / 周报 / 外呼平台 / 主题分析，所有经营视图统一入口。</div>
-    <div class="hero-meta">
-      <div><span class="dot"></span>系统状态 <b>正常</b></div>
+    <div class="sub">经营数据中枢 · 驾驶舱视图 —— 月报 / 周报 / 外呼 / 主题分析，全部经营视图统一调度入口。</div>
+    <div class="hero-line">
+      <div><span class="dot green"></span> 系统 <b>正常运行</b></div>
+      <div class="sep">|</div>
       <div>当前账期 <b>2026 年 8 月</b></div>
-      <div>月报数据截止 <b>2026-08-07</b></div>
-      <div id="clock">本地时间 <b>--</b></div>
+      <div class="sep">|</div>
+      <div>在线模块 <b>4 / 5</b></div>
+      <div class="sep">|</div>
+      <div>月报最后同步 <b>2026-08-07 17:00</b></div>
     </div>
   </div>
 
-  <!-- ===== 报表中心 ===== -->
+  <!-- ===== 经营快照 ===== -->
   <div class="section">
     <div class="section-head">
-      <span class="bar"></span><h2>报表中心</h2>
-      <span class="hint">经营结果与过程追踪</span>
+      <span class="bar"></span><h2>经营快照</h2>
+      <span class="hint">数据截止 2026-08-07 · 同步自月度运营月报（MTD 口径）</span>
+    </div>
+    <div class="snap">
+      <div class="kpi">
+        <div class="kl"><span class="dot blue"></span>小屋到款</div>
+        <div class="kv">1.0<small>万</small></div>
+        <div class="kt">目标 145 万</div>
+        <span class="pct">0.7%</span>
+        <div class="bar"><i style="width:0.7%"></i></div>
+      </div>
+      <div class="kpi warn">
+        <div class="kl"><span class="dot gray"></span>售卖卡数</div>
+        <div class="kv">0<small>张</small></div>
+        <div class="kt">目标 700 张</div>
+        <span class="pct">0.0%</span>
+        <div class="bar"><i style="width:0%"></i></div>
+      </div>
+      <div class="kpi warn">
+        <div class="kl"><span class="dot gray"></span>引流上会</div>
+        <div class="kv">0<small>人</small></div>
+        <div class="kt">目标 50 人</div>
+        <span class="pct">0.0%</span>
+        <div class="bar"><i style="width:0%"></i></div>
+      </div>
+      <div class="kpi cyan">
+        <div class="kl"><span class="dot blue"></span>线索总量</div>
+        <div class="kv">82<small>条</small></div>
+        <div class="kt">已联系 12 · 对接率 14.6%</div>
+        <span class="pct">14.6%</span>
+        <div class="bar"><i style="width:14.6%"></i></div>
+      </div>
+      <div class="kpi bad">
+        <div class="kl"><span class="dot gray"></span>OPC 到款</div>
+        <div class="kv">0.0<small>万</small></div>
+        <div class="kt">目标 5 万</div>
+        <span class="pct">0.0%</span>
+        <div class="bar"><i style="width:0%"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 模块中枢 ===== -->
+  <div class="section">
+    <div class="section-head">
+      <span class="bar"></span><h2>模块中枢</h2>
+      <span class="hint">点击进入对应工作台</span>
     </div>
     <div class="grid">
-      <a class="card" href="2026-08.html">
-        <div class="card-icon">📊</div>
-        <div class="card-title">月度运营月报 <span class="badge badge-live">当前</span></div>
-        <div class="card-desc">8 月业务经营全貌：到款 / 售卡 / 引流 / OPC 实时追踪，含趋势、人员明细与穿透弹窗。</div>
-        <div class="card-foot">进入 8 月月报 <span class="arrow">→</span></div>
+      <a class="mod" href="2026-08.html">
+        <div class="top">
+          <div class="ic">📊</div>
+          <div><div class="tt">月度运营月报</div><div class="st on"><span class="dot green"></span>在线 · 当前 8 月</div></div>
+        </div>
+        <div class="ds">全月经营结果：到款 / 售卡 / 引流 / OPC 实时追踪，含趋势、人员明细与穿透弹窗。</div>
+        <div class="go">进入月报 <span class="ar">→</span></div>
       </a>
-      <a class="card" href="w30.html">
-        <div class="card-icon">📅</div>
-        <div class="card-title">周度运营周报 <span class="badge badge-new">W30</span></div>
-        <div class="card-desc">第 30 周经营快照：本周核心指标、环比异动与重点事项复盘。</div>
-        <div class="card-foot">进入 W30 周报 <span class="arrow">→</span></div>
+      <a class="mod" href="w30.html">
+        <div class="top">
+          <div class="ic">📅</div>
+          <div><div class="tt">周度运营周报</div><div class="st on"><span class="dot green"></span>在线 · 第 30 周</div></div>
+        </div>
+        <div class="ds">本周经营快照：核心指标、环比异动与重点事项复盘。</div>
+        <div class="go">进入周报 <span class="ar">→</span></div>
       </a>
-      <div class="card disabled">
-        <div class="card-icon">🔍</div>
-        <div class="card-title">线索主题分析报告 <span class="badge badge-soon">即将上线</span></div>
-        <div class="card-desc">按来源 / 意向 / 转化主题拆解线索质量，定位高价值人群与承接瓶颈。</div>
-        <div class="card-foot">模块开发中 <span class="arrow">…</span></div>
+      <div class="mod disabled">
+        <div class="top">
+          <div class="ic">🔍</div>
+          <div><div class="tt">线索主题分析报告</div><div class="st soon"><span class="dot gray"></span>即将上线</div></div>
+        </div>
+        <div class="ds">按来源 / 意向 / 转化主题拆解线索质量，定位高价值人群与承接瓶颈。</div>
+        <div class="go">模块开发中 <span class="ar">…</span></div>
       </div>
+      <a class="mod teal" href="outbound-workbench/">
+        <div class="top">
+          <div class="ic">📞</div>
+          <div><div class="tt">外呼工作台</div><div class="st on"><span class="dot green"></span>在线</div></div>
+        </div>
+        <div class="ds">外呼作业与录音管理中枢：通话记录、客户跟进、话术与质检沉淀。</div>
+        <div class="go">进入外呼平台 <span class="ar">→</span></div>
+      </a>
+      <a class="mod teal" href="ai-proposal-os/">
+        <div class="top">
+          <div class="ic">🤖</div>
+          <div><div class="tt">AI 方案中心</div><div class="st on"><span class="dot green"></span>在线</div></div>
+        </div>
+        <div class="ds">康小虎 AI 一体化方案：采集层 / 洞察层 / 决策层成效演示与能力说明。</div>
+        <div class="go">进入 AI 方案 <span class="ar">→</span></div>
+      </a>
+      <a class="mod" href="2026-07.html">
+        <div class="top">
+          <div class="ic">🗂️</div>
+          <div><div class="tt">历史存档</div><div class="st on"><span class="dot green"></span>在线</div></div>
+        </div>
+        <div class="ds">往期月报（2026-07 / 2026-06）与周报（W27–W30）快速查阅。</div>
+        <div class="go">浏览存档 <span class="ar">→</span></div>
+      </a>
     </div>
   </div>
 
-  <!-- ===== 业务平台 ===== -->
+  <!-- ===== 系统动态 ===== -->
   <div class="section">
     <div class="section-head">
-      <span class="bar" style="background:#13c2c2"></span><h2>业务平台</h2>
-      <span class="hint">一线作业与智能化工具</span>
+      <span class="bar" style="background:#13c2c2"></span><h2>系统动态</h2>
+      <span class="hint">模块在线状态 · 待办</span>
     </div>
-    <div class="grid-2">
-      <a class="card teal" href="outbound-workbench/">
-        <div class="card-icon">📞</div>
-        <div class="card-title">外呼工作台</div>
-        <div class="card-desc">外呼作业与录音管理中枢：通话记录、客户跟进、话术与质检沉淀。</div>
-        <div class="card-foot">进入外呼平台 <span class="arrow">→</span></div>
-      </a>
-      <a class="card teal" href="ai-proposal-os/">
-        <div class="card-icon">🤖</div>
-        <div class="card-title">AI 方案中心</div>
-        <div class="card-desc">康小虎 AI 一体化方案演示与能力说明：采集层 / 洞察层 / 决策层成效展示。</div>
-        <div class="card-foot">进入 AI 方案 <span class="arrow">→</span></div>
-      </a>
-    </div>
-  </div>
-
-  <!-- ===== 历史存档 ===== -->
-  <div class="section">
-    <div class="section-head">
-      <span class="bar" style="background:#8c8c8c"></span><h2>历史存档</h2>
-      <span class="hint">往期报表快速查阅</span>
-    </div>
-    <div class="history">
-      <div class="history-row">
-        <span class="history-label">月度月报</span>
-        <a class="chip" href="2026-08.html">2026-08（当前）</a>
-        <a class="chip gray" href="2026-07.html">2026-07</a>
-        <a class="chip gray" href="2026-06.html">2026-06</a>
+    <div class="two">
+      <div class="sys">
+        <h3>📡 模块在线状态</h3>
+        <div class="sys-row"><span class="nm">月度运营月报</span><span class="meta">2026-08 · v0807 · 8/7 17:00 同步</span><span class="badge ok">在线</span></div>
+        <div class="sys-row"><span class="nm">周度运营周报</span><span class="meta">第 30 周</span><span class="badge ok">在线</span></div>
+        <div class="sys-row"><span class="nm">外呼工作台</span><span class="meta">实时录音同步中</span><span class="badge ok">在线</span></div>
+        <div class="sys-row"><span class="nm">AI 方案中心</span><span class="meta">演示环境</span><span class="badge ok">在线</span></div>
+        <div class="sys-row"><span class="nm">线索主题分析报告</span><span class="meta">需求已确认，待开发</span><span class="badge wait">待上线</span></div>
       </div>
-      <div class="history-row">
-        <span class="history-label">周度周报</span>
-        <a class="chip" href="w30.html">W30（当前）</a>
-        <a class="chip gray" href="w29.html">W29</a>
-        <a class="chip gray" href="w28.html">W28</a>
-        <a class="chip gray" href="w27.html">W27</a>
+      <div class="sys">
+        <h3>📌 待办 / 提醒</h3>
+        <div class="sys-row"><span class="nm">线索分析模块</span><span class="meta">上线后自动点亮本卡片</span><span class="badge wait">规划中</span></div>
+        <div class="sys-row"><span class="nm">8 月目标进度</span><span class="meta">到款 0.7% / 售卡 0% / 引流 0% — 月初节奏</span><span class="badge ok">跟踪中</span></div>
+        <div class="sys-row"><span class="nm">外呼录音同步</span><span class="meta">CRM 实时推送，已接入</span><span class="badge ok">正常</span></div>
+        <div class="sys-row"><span class="nm">数据安全</span><span class="meta">报表模块含访问密码</span><span class="badge ok">已加密</span></div>
       </div>
     </div>
   </div>
 
   <div class="foot">
-    <div class="lock">🔒 内部经营资料 · 请勿外传</div>
+    <div class="lk">🔒 内部经营资料 · 请勿外传</div>
     康小虎业务经营工作台 ｜ 数据源：健康小屋-BI ｜ 部署于 health-cabin.cn<br>
-    报表模块含访问密码，请向运营负责人索取。
+    经营快照为数据截止时点的同步视图，完整实时明细请进入对应月报 / 周报模块。
   </div>
 
 </div>
 
 <script>
-function tick(){var d=new Date();var p=function(n){return (n<10?'0':'')+n};var s=p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());var el=document.getElementById('clock');if(el)el.innerHTML='本地时间 <b>'+s+'</b>';}
+function tick(){var d=new Date();var p=function(n){return (n<10?'0':'')+n};var s=p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());var el=document.getElementById('clock');if(el)el.innerHTML='🕐 '+s;}
 tick();setInterval(tick,1000);
 </script>
 </body>
