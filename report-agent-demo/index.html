@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能报告生成 Agent · 产品演示</title>
+<style>
+  :root{
+    --bg:#0b0e14;
+    --bg-soft:#11162066;
+    --panel:#141a26;
+    --panel-light:#1b2231;
+    --accent:#5b8cff;
+    --accent-2:#7ee8c7;
+    --text:#e9edf5;
+    --text-dim:#93a0b8;
+    --border:#232b3d;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 10% -10%, #1c2a4a55, transparent),
+      radial-gradient(900px 500px at 90% 0%, #16352f55, transparent),
+      var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* NAV */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(160%) blur(10px);
+    background:#0b0e14cc;
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    height:68px;max-width:1180px;margin:0 auto;padding:0 24px;
+  }
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:.3px;}
+  .logo-badge{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;font-size:15px;color:#0b0e14;font-weight:800;
+  }
+  .nav-links{display:flex;gap:30px;font-size:14px;color:var(--text-dim);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:6px;
+    background:linear-gradient(135deg,var(--accent),#8a6bff);
+    color:#fff;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:600;
+    box-shadow:0 8px 24px -8px #5b8cff80;
+  }
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero{padding:96px 0 64px;text-align:center;position:relative;overflow:hidden;}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--border);background:var(--panel);
+    padding:7px 16px;border-radius:999px;font-size:13px;color:var(--text-dim);
+    margin-bottom:28px;
+  }
+  .pill span.dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 8px var(--accent-2);}
+  .hero h1{
+    font-size:clamp(32px,5vw,54px);font-weight:800;letter-spacing:-.02em;
+    line-height:1.2;max-width:860px;margin:0 auto 20px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.sub{
+    max-width:620px;margin:0 auto 36px;color:var(--text-dim);font-size:17px;
+  }
+  .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),#8a6bff);color:#fff;
+    padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;
+    box-shadow:0 12px 30px -10px #5b8cffaa;
+  }
+  .btn-ghost{
+    border:1px solid var(--border);padding:14px 28px;border-radius:12px;
+    font-weight:600;font-size:15px;color:var(--text);background:var(--panel);
+  }
+
+  /* STAT STRIP */
+  .stats{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;padding:36px 0 0;}
+  .stat{text-align:center;}
+  .stat b{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat div{font-size:13px;color:var(--text-dim);margin-top:4px;}
+
+  /* MOCK PREVIEW */
+  .preview{
+    margin:64px auto 0;max-width:980px;border-radius:20px;overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 40px 80px -40px #000a;
+    background:var(--panel);
+  }
+  .preview-bar{
+    display:flex;gap:8px;align-items:center;padding:12px 16px;
+    border-bottom:1px solid var(--border);background:#0f131c;
+  }
+  .preview-bar span{width:10px;height:10px;border-radius:50%;background:#3a4154;}
+  .preview-body{padding:28px;display:grid;grid-template-columns:200px 1fr;gap:20px;}
+  .preview-side{display:flex;flex-direction:column;gap:10px;}
+  .preview-side .item{
+    padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text-dim);
+    background:var(--panel-light);
+  }
+  .preview-side .item.active{color:var(--text);background:#223049;border:1px solid #2d4066;}
+  .preview-main h4{font-size:15px;margin-bottom:14px;}
+  .skeleton{height:12px;border-radius:6px;background:linear-gradient(90deg,#1c2436,#232c42,#1c2436);background-size:200% 100%;animation:shimmer 2.2s infinite;margin-bottom:10px;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .chart-mock{height:120px;border-radius:10px;background:var(--panel-light);display:flex;align-items:flex-end;gap:6px;padding:12px;margin-top:16px;}
+  .chart-mock i{flex:1;background:linear-gradient(180deg,var(--accent),var(--accent-2));border-radius:4px 4px 0 0;opacity:.85;}
+  @media (max-width:720px){ .preview-body{grid-template-columns:1fr;} .preview-side{display:none;} }
+
+  /* SECTION HEADS */
+  section{padding:100px 0;}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 56px;}
+  .section-tag{color:var(--accent-2);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+  .section-head h2{font-size:clamp(26px,3.6vw,38px);font-weight:800;letter-spacing:-.01em;margin-bottom:14px;}
+  .section-head p{color:var(--text-dim);font-size:16px;}
+
+  /* MODULES GRID */
+  .modules{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media (max-width:980px){ .modules{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .modules{grid-template-columns:1fr;} }
+  .module-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:26px 22px;transition:transform .25s, border-color .25s, background .25s;
+    position:relative;overflow:hidden;
+  }
+  .module-card:hover{transform:translateY(-6px);border-color:#3a4a6e;background:var(--panel-light);}
+  .module-card .num{
+    position:absolute;top:16px;right:18px;font-size:12px;font-weight:700;color:var(--text-dim);
+    opacity:.5;
+  }
+  .module-icon{
+    width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:22px;margin-bottom:18px;
+  }
+  .module-card h3{font-size:16px;font-weight:700;margin-bottom:8px;}
+  .module-card p{font-size:13.5px;color:var(--text-dim);}
+
+  /* WORKFLOW */
+  .flow{display:flex;align-items:flex-start;justify-content:space-between;gap:0;overflow-x:auto;padding-bottom:12px;}
+  .flow-step{flex:1;min-width:150px;text-align:center;position:relative;padding:0 10px;}
+  .flow-step .circle{
+    width:52px;height:52px;border-radius:50%;background:var(--panel-light);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-weight:800;font-size:17px;
+    color:var(--accent-2);
+  }
+  .flow-step h4{font-size:14px;font-weight:700;margin-bottom:6px;}
+  .flow-step p{font-size:12.5px;color:var(--text-dim);}
+  .flow-step:not(:last-child)::after{
+    content:"";position:absolute;top:26px;left:calc(50% + 36px);right:-50%;height:1px;
+    background:linear-gradient(90deg,var(--border),transparent);
+  }
+
+  /* COMPARE TABLE */
+  .compare{
+    width:100%;border-collapse:collapse;background:var(--panel);border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--border);font-size:14px;
+  }
+  .compare th,.compare td{padding:16px 20px;text-align:left;border-bottom:1px solid var(--border);}
+  .compare th{color:var(--text-dim);font-weight:600;font-size:13px;background:#0f131c;}
+  .compare td.good{color:var(--accent-2);font-weight:700;}
+  .compare td.bad{color:#7a8296;}
+  .compare tr:last-child td{border-bottom:none;}
+
+  /* CTA */
+  .cta-box{
+    background:linear-gradient(135deg,#17203a,#1b2b2a);
+    border:1px solid var(--border);border-radius:24px;padding:64px 40px;text-align:center;
+  }
+  .cta-box h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;margin-bottom:14px;}
+  .cta-box p{color:var(--text-dim);margin-bottom:30px;}
+
+  footer{border-top:1px solid var(--border);padding:40px 0;text-align:center;color:var(--text-dim);font-size:13px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><div class="logo-badge">R</div>ReportMind Agent</div>
+    <div class="nav-links">
+      <a href="#modules">核心模块</a>
+      <a href="#workflow">工作流程</a>
+      <a href="#compare">效果对比</a>
+      <a href="#cta">立即体验</a>
+    </div>
+    <a class="nav-cta" href="#cta">预约演示 →</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="pill"><span class="dot"></span> AI Agent · 一句话生成专业报告</div>
+    <h1>把 <span class="grad">数据、分析与排版</span><br>交给一个 Agent 完成</h1>
+    <p class="sub">ReportMind 是面向企业的智能报告生成 Agent，8 大模块协同工作，从数据接入到多格式导出，分钟级产出可直接汇报的专业报告。</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#cta">免费试用</a>
+      <a class="btn-ghost" href="#modules">查看核心能力</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>8</b><div>核心功能模块</div></div>
+      <div class="stat"><b>5分钟</b><div>生成一份完整报告</div></div>
+      <div class="stat"><b>12+</b><div>行业报告模板</div></div>
+      <div class="stat"><b>99.2%</b><div>数据提取准确率</div></div>
+    </div>
+
+    <div class="preview">
+      <div class="preview-bar"><span></span><span></span><span></span></div>
+      <div class="preview-body">
+        <div class="preview-side">
+          <div class="item active">📊 数据总览</div>
+          <div class="item">📈 趋势分析</div>
+          <div class="item">🧩 用户画像</div>
+          <div class="item">📝 结论建议</div>
+          <div class="item">📎 附录数据</div>
+        </div>
+        <div class="preview-main">
+          <h4>2026年第三季度经营分析报告</h4>
+          <div class="skeleton" style="width:92%"></div>
+          <div class="skeleton" style="width:78%"></div>
+          <div class="skeleton" style="width:85%"></div>
+          <div class="chart-mock">
+            <i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i>
+            <i style="height:80%"></i><i style="height:60%"></i><i style="height:95%"></i>
+            <i style="height:70%"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="modules">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Core Modules</div>
+      <h2>8 大核心模块，构成完整报告生成链路</h2>
+      <p>每个模块独立可配置，又能无缝协同，覆盖从原始数据到最终交付的全流程。</p>
+    </div>
+    <div class="modules">
+
+      <div class="module-card">
+        <div class="num">01</div>
+        <div class="module-icon" style="background:#5b8cff22;color:#5b8cff;">🔌</div>
+        <h3>数据接入模块</h3>
+        <p>支持 Excel、数据库、API、BI 工具一键连接，自动清洗与标准化多源异构数据。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">02</div>
+        <div class="module-icon" style="background:#7ee8c722;color:#7ee8c7;">🧠</div>
+        <h3>需求理解模块</h3>
+        <p>基于自然语言理解用户的报告意图，自动拆解为分析维度、指标与结构大纲。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">03</div>
+        <div class="module-icon" style="background:#ffb86b22;color:#ffb86b;">📐</div>
+        <h3>数据分析模块</h3>
+        <p>内置统计建模与异常检测算法，自动完成同比环比、归因分析与趋势预测。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">04</div>
+        <div class="module-icon" style="background:#ff6b9c22;color:#ff6b9c;">📊</div>
+        <h3>图表生成模块</h3>
+        <p>依据数据特征智能匹配最优图表类型，自动生成可交互、可编辑的可视化图表。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">05</div>
+        <div class="module-icon" style="background:#8a6bff22;color:#8a6bff;">✍️</div>
+        <h3>文案撰写模块</h3>
+        <p>基于大模型将数据洞察转化为专业、流畅的分析文案，支持多种语气与行业风格。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">06</div>
+        <div class="module-icon" style="background:#5bd1ff22;color:#5bd1ff;">🎨</div>
+        <h3>排版设计模块</h3>
+        <p>内置企业级设计模板库，自动完成图文排布、配色与品牌元素适配，告别手动调版。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">07</div>
+        <div class="module-icon" style="background:#ffd36622;color:#ffd366;">📤</div>
+        <h3>多格式导出模块</h3>
+        <p>一键导出 PDF、PPT、Word、网页等多种格式，适配汇报、分享与存档等不同场景。</p>
+      </div>
+
+      <div class="module-card">
+        <div class="num">08</div>
+        <div class="module-icon" style="background:#9ad17e22;color:#9ad17e;">👥</div>
+        <h3>协作与版本管理模块</h3>
+        <p>支持多人在线协作、评论与审批流，自动记录版本历史，报告迭代全程可追溯。</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="workflow" style="background:#0e121b;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Workflow</div>
+      <h2>从数据到报告，仅需 5 个步骤</h2>
+      <p>Agent 自动串联 8 大模块，全流程无需人工干预，也可在任意环节插入人工审核。</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="circle">1</div>
+        <h4>接入数据</h4>
+        <p>连接数据源，自动清洗</p>
+      </div>
+      <div class="flow-step">
+        <div class="circle">2</div>
+        <h4>理解需求</h4>
+        <p>解析意图，生成大纲</p>
+      </div>
+      <div class="flow-step">
+        <div class="circle">3</div>
+        <h4>分析建模</h4>
+        <p>统计分析与归因</p>
+      </div>
+      <div class="flow-step">
+        <div class="circle">4</div>
+        <h4>生成内容</h4>
+        <p>图表 + 文案自动产出</p>
+      </div>
+      <div class="flow-step">
+        <div class="circle">5</div>
+        <h4>排版导出</h4>
+        <p>一键导出多种格式</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Comparison</div>
+      <h2>相比人工制作，效率提升超 10 倍</h2>
+    </div>
+    <table class="compare">
+      <thead>
+        <tr><th>对比维度</th><th>传统人工制作</th><th>ReportMind Agent</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>单份报告耗时</td><td class="bad">4-8 小时</td><td class="good">5 分钟内</td></tr>
+        <tr><td>数据处理方式</td><td class="bad">手动整理，易出错</td><td class="good">自动清洗，准确率 99.2%</td></tr>
+        <tr><td>图表制作</td><td class="bad">逐个手工绘制</td><td class="good">智能匹配，自动生成</td></tr>
+        <tr><td>文案撰写</td><td class="bad">依赖个人经验</td><td class="good">AI 生成，风格可控</td></tr>
+        <tr><td>多格式输出</td><td class="bad">需重复排版</td><td class="good">一键导出全格式</td></tr>
+        <tr><td>团队协作</td><td class="bad">邮件/群聊来回传递</td><td class="good">在线协作+版本追溯</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>让下一份报告，交给 Agent 来写</h2>
+      <p>预约 15 分钟演示，体验从数据到成稿的完整流程</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="mailto:demo@reportmind.ai">预约演示</a>
+        <a class="btn-ghost" href="#modules">再看一次模块</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 ReportMind Agent · 本页面为产品演示 Demo，数据与截图均为模拟展示
+</footer>
+
+</body>
+</html>
