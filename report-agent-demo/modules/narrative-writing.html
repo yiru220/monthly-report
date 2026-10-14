@@ -167,7 +167,7 @@
   </div>
 </section>
 <script>
-const AI_PROXY_ENDPOINT = ""; // 与 report-generator.html 保持一致：部署智谱代理后填入同一 Worker 地址
+const AI_PROXY_ENDPOINT = "https://ai-report-narrative-proxy.yiru220.workers.dev"; // 与 app.js 保持一致：Cloudflare Worker 代理地址（智谱 GLM-4-Flash）
 async function genDemo(){
   const btn=document.getElementById('btnDemo'),out=document.getElementById('demoOut');
   btn.disabled=true;out.textContent='正在生成…';

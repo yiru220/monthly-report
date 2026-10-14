@@ -14,7 +14,7 @@
   // 再把统计摘要发给这个地址，由大模型生成更自然的分析文案；
   // 留空，或者请求失败/超时，则自动回退到规则模板文案，不影响报告正常生成。
   // ---------------------------------------------------------------
-  const AI_PROXY_ENDPOINT = ""; // 例如 "https://service-xxxx-1234567890.ap-shanghai.apigateway.myqcloud.com/release/ai-report-narrative-proxy"
+  const AI_PROXY_ENDPOINT = "https://ai-report-narrative-proxy.yiru220.workers.dev"; // 与 modules/narrative-writing.html 保持一致
   const AI_REQUEST_TIMEOUT_MS = 15000;
 
   // ---------------------------------------------------------------
