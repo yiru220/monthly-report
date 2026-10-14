@@ -2,6 +2,10 @@
 
 本云函数作用：接收前端算好的统计摘要（纯数字结构，不含任何上传数据原文），带着智谱 API Key 去调用 GLM-4-Flash，生成分析文案，再把文案返回给前端。**Key 只存在于云函数环境变量里，不会出现在任何前端代码或公网可见文件中。**
 
+支持两种调用模式（与前端契约一致）：
+- **首次生成**：`POST {stats, instruction?}` —— 基于统计摘要生成报告文案，可附带额外要求。
+- **对话改写**：`POST {stats, currentReport, instruction}` —— 基于已有报告正文 + 修改指令，输出修订后的完整报告。
+
 ## 一、创建云函数
 
 1. 打开腾讯云函数控制台：<https://console.cloud.tencent.com/scf>
@@ -22,7 +26,7 @@
 | 键 | 值 | 说明 |
 |---|---|---|
 | `ZHIPU_API_KEY` | 你的智谱 API Key | **不要**写在代码里，只能写在这里 |
-| `ALLOWED_ORIGIN` | `https://health-cabin.cn` | 允许跨域访问的来源，就填你的报告工具部署的域名 |
+| `ALLOWED_ORIGIN` | `https://yiru220.github.io` | 允许跨域访问的来源，就填你的报告工具部署的域名（GitHub Pages 是 yiru220.github.io，别填已下线的 health-cabin.cn） |
 
 ## 三、配置触发器（让它能被 HTTP 调用）
 

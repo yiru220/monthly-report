@@ -14,8 +14,12 @@
   // 再把统计摘要发给这个地址，由大模型生成更自然的分析文案；
   // 留空，或者请求失败/超时，则自动回退到规则模板文案，不影响报告正常生成。
   // ---------------------------------------------------------------
-  const AI_PROXY_ENDPOINT = "https://ai-report-narrative-proxy.yiru220.workers.dev"; // 与 modules/narrative-writing.html 保持一致
-  const AI_REQUEST_TIMEOUT_MS = 30000; // AI 生成通常 5~20 秒，前端必须比 Worker 侧(20s)长，否则会 abort
+  // AI 文案代理地址：
+  //   - 默认走腾讯云函数 SCF（国内直连、稳定，不受 workers.dev DNS 污染影响）
+  //   - 拿到 SCF 的 API 网关触发器地址后，把下面字符串替换成那个地址即可
+  //   - 留空则完全关闭 AI 润色，仅用规则模板文案
+  const AI_PROXY_ENDPOINT = ""; // TODO: 填入腾讯云函数 SCF 的 API 网关地址，形如 https://service-xxx-xxx.ap-shanghai.apigateway.myqcloud.com/release/ai-report-narrative-proxy
+  const AI_REQUEST_TIMEOUT_MS = 30000; // AI 生成通常 5~20 秒，前端超时必须长于服务端(20s)，否则会 abort
 
   // ---------------------------------------------------------------
   // 全局状态
