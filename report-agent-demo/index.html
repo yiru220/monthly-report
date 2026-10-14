@@ -6,125 +6,95 @@
 <title>智能报告生成 Agent · 产品演示</title>
 <style>
   :root{
-    --bg:#0b0e14;
-    --bg-soft:#11162066;
-    --panel:#141a26;
-    --panel-light:#1b2231;
-    --accent:#5b8cff;
-    --accent-2:#7ee8c7;
-    --text:#e9edf5;
-    --text-dim:#93a0b8;
-    --border:#232b3d;
-    --radius:16px;
+    --bg:#0b0e14; --panel:#141a26; --panel-light:#1b2231;
+    --accent:#5b8cff; --accent-2:#7ee8c7; --accent-3:#8a6bff;
+    --text:#e9edf5; --text-dim:#93a0b8; --border:#232b3d; --radius:18px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Helvetica,Arial,sans-serif;
     background:
-      radial-gradient(900px 500px at 10% -10%, #1c2a4a55, transparent),
-      radial-gradient(900px 500px at 90% 0%, #16352f55, transparent),
+      radial-gradient(900px 520px at 12% -12%, #1c2a4a55, transparent),
+      radial-gradient(900px 520px at 88% 0%, #16352f55, transparent),
       var(--bg);
-    color:var(--text);
-    line-height:1.6;
+    color:var(--text);line-height:1.65;position:relative;
   }
-  a{color:inherit;text-decoration:none;}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(#ffffff0a 1px, transparent 1px);background-size:24px 24px;}
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px;}
 
   /* NAV */
-  header{
-    position:sticky;top:0;z-index:50;
-    backdrop-filter:saturate(160%) blur(10px);
-    background:#0b0e14cc;
-    border-bottom:1px solid var(--border);
-  }
-  nav{
-    display:flex;align-items:center;justify-content:space-between;
-    height:68px;max-width:1180px;margin:0 auto;padding:0 24px;
-  }
+  header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(12px);background:#0b0e14cc;border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1180px;margin:0 auto;padding:0 24px;}
   .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:.3px;}
-  .logo-badge{
-    width:30px;height:30px;border-radius:9px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    display:flex;align-items:center;justify-content:center;font-size:15px;color:#0b0e14;font-weight:800;
-  }
+  .logo-badge{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:16px;color:#0b0e14;font-weight:800;box-shadow:0 6px 16px -6px #5b8cff88;}
   .nav-links{display:flex;gap:30px;font-size:14px;color:var(--text-dim);}
   .nav-links a:hover{color:var(--text);}
-  .nav-cta{
-    display:inline-flex;align-items:center;gap:6px;
-    background:linear-gradient(135deg,var(--accent),#8a6bff);
-    color:#fff;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:600;
-    box-shadow:0 8px 24px -8px #5b8cff80;
-  }
+  .nav-cta{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent),var(--accent-3));color:#fff;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px -8px #5b8cff80;transition:transform .2s,box-shadow .2s;}
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px -8px #5b8cffaa;}
   @media (max-width:760px){ .nav-links{display:none;} }
 
   /* HERO */
-  .hero{padding:96px 0 64px;text-align:center;position:relative;overflow:hidden;}
-  .pill{
-    display:inline-flex;align-items:center;gap:8px;
-    border:1px solid var(--border);background:var(--panel);
-    padding:7px 16px;border-radius:999px;font-size:13px;color:var(--text-dim);
-    margin-bottom:28px;
-  }
-  .pill span.dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 8px var(--accent-2);}
-  .hero h1{
-    font-size:clamp(32px,5vw,54px);font-weight:800;letter-spacing:-.02em;
-    line-height:1.2;max-width:860px;margin:0 auto 20px;
-  }
-  .hero h1 .grad{
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .hero p.sub{
-    max-width:620px;margin:0 auto 36px;color:var(--text-dim);font-size:17px;
-  }
+  .hero{padding:88px 0 56px;text-align:center;position:relative;overflow:hidden;}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:#141a26cc;backdrop-filter:blur(6px);padding:7px 16px;border-radius:999px;font-size:13px;color:var(--text-dim);margin-bottom:28px;}
+  .pill span.dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 10px var(--accent-2);}
+  .hero h1{font-size:clamp(32px,5vw,54px);font-weight:800;letter-spacing:-.02em;line-height:1.18;max-width:880px;margin:0 auto 20px;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.sub{max-width:620px;margin:0 auto 36px;color:var(--text-dim);font-size:17px;}
   .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-  .btn-primary{
-    background:linear-gradient(135deg,var(--accent),#8a6bff);color:#fff;
-    padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;
-    box-shadow:0 12px 30px -10px #5b8cffaa;
-  }
-  .btn-ghost{
-    border:1px solid var(--border);padding:14px 28px;border-radius:12px;
-    font-weight:600;font-size:15px;color:var(--text);background:var(--panel);
-  }
+  .btn-primary{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent-3));color:#fff;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 12px 30px -10px #5b8cffaa;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 34px -10px #5b8cffcc;}
+  .btn-ghost{display:inline-block;border:1px solid var(--border);padding:14px 28px;border-radius:12px;font-weight:600;font-size:15px;color:var(--text);background:var(--panel);transition:border-color .2s;}
+  .btn-ghost:hover{border-color:#3a4a6e;}
 
   /* STAT STRIP */
-  .stats{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;padding:36px 0 0;}
+  .stats{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;padding:40px 0 0;}
   .stat{text-align:center;}
   .stat b{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
   .stat div{font-size:13px;color:var(--text-dim);margin-top:4px;}
 
-  /* MOCK PREVIEW */
-  .preview{
-    margin:64px auto 0;max-width:980px;border-radius:20px;overflow:hidden;
-    border:1px solid var(--border);
-    box-shadow:0 40px 80px -40px #000a;
-    background:var(--panel);
-  }
-  .preview-bar{
-    display:flex;gap:8px;align-items:center;padding:12px 16px;
-    border-bottom:1px solid var(--border);background:#0f131c;
-  }
-  .preview-bar span{width:10px;height:10px;border-radius:50%;background:#3a4154;}
-  .preview-body{padding:28px;display:grid;grid-template-columns:200px 1fr;gap:20px;}
-  .preview-side{display:flex;flex-direction:column;gap:10px;}
-  .preview-side .item{
-    padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text-dim);
-    background:var(--panel-light);
-  }
-  .preview-side .item.active{color:var(--text);background:#223049;border:1px solid #2d4066;}
-  .preview-main h4{font-size:15px;margin-bottom:14px;}
-  .skeleton{height:12px;border-radius:6px;background:linear-gradient(90deg,#1c2436,#232c42,#1c2436);background-size:200% 100%;animation:shimmer 2.2s infinite;margin-bottom:10px;}
-  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-  .chart-mock{height:120px;border-radius:10px;background:var(--panel-light);display:flex;align-items:flex-end;gap:6px;padding:12px;margin-top:16px;}
-  .chart-mock i{flex:1;background:linear-gradient(180deg,var(--accent),var(--accent-2));border-radius:4px 4px 0 0;opacity:.85;}
-  @media (max-width:720px){ .preview-body{grid-template-columns:1fr;} .preview-side{display:none;} }
+  /* AGENT SHOWCASE */
+  .showcase{max-width:1000px;margin:64px auto 0;border-radius:22px;overflow:hidden;border:1px solid var(--border);
+    box-shadow:0 50px 100px -50px #000c, 0 0 0 1px #ffffff0a;
+    background:linear-gradient(180deg,#10141f,#0c0f17);position:relative;}
+  .showcase-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--border);background:#0d111a;}
+  .showcase-bar .d{width:11px;height:11px;border-radius:50%;background:#2c3344;}
+  .showcase-bar .d:nth-child(1){background:#ff5f57;} .showcase-bar .d:nth-child(2){background:#febc2e;} .showcase-bar .d:nth-child(3){background:#28c840;}
+  .showcase-title{margin-left:12px;font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+  .showcase-title .live{width:7px;height:7px;border-radius:50%;background:#28c840;box-shadow:0 0 8px #28c840;animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .showcase-body{display:grid;grid-template-columns:212px 1fr;min-height:360px;}
+  .showcase-side{background:#0b0e16;border-right:1px solid var(--border);padding:18px 14px;display:flex;flex-direction:column;gap:7px;}
+  .as-item{font-size:13px;color:var(--text-dim);padding:9px 12px;border-radius:9px;display:flex;align-items:center;gap:9px;transition:.2s;}
+  .as-item .ai-dot{width:6px;height:6px;border-radius:50%;background:#2c3344;flex:none;}
+  .as-item.active{color:var(--text);background:linear-gradient(90deg,#5b8cff22,transparent);border:1px solid #5b8cff44;}
+  .as-item.active .ai-dot{background:var(--accent-2);box-shadow:0 0 8px var(--accent-2);}
+  .as-item.done{color:var(--text-dim);}
+  .as-item.done .ai-dot{background:#28c840;}
+  .showcase-chat{padding:22px;display:flex;flex-direction:column;gap:14px;}
+  .msg{max-width:86%;padding:13px 16px;border-radius:14px;font-size:13.5px;line-height:1.65;}
+  .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent-3));color:#fff;border-bottom-right-radius:4px;}
+  .msg.agent{align-self:flex-start;background:var(--panel);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+  .msg.agent .label{font-size:11px;color:var(--accent-2);font-weight:700;letter-spacing:.05em;margin-bottom:6px;display:block;}
+  .msg .mini{margin-top:14px;border-top:1px solid var(--border);padding-top:14px;}
+  .mini-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+  .mini-sub{font-size:12px;color:var(--text-dim);margin-bottom:10px;}
+  .mini-bar{display:flex;align-items:flex-end;gap:9px;height:96px;}
+  .mini-bar i{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent-2));opacity:.92;}
+  .mini-bar i.hi{background:linear-gradient(180deg,var(--accent-3),var(--accent));opacity:1;box-shadow:0 0 14px -2px var(--accent-3);}
+  .typing{display:inline-flex;gap:5px;align-items:center;}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--text-dim);animation:blink 1.2s infinite;}
+  .typing i:nth-child(2){animation-delay:.2s;} .typing i:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.3;}40%{opacity:1;}}
+  .mini-actions{margin-top:14px;display:flex;gap:10px;}
+  @media (max-width:760px){ .showcase-body{grid-template-columns:1fr;} .showcase-side{display:none;} }
 
   /* SECTION HEADS */
-  section{padding:100px 0;}
-  .section-head{text-align:center;max-width:680px;margin:0 auto 56px;}
-  .section-tag{color:var(--accent-2);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+  section{padding:104px 0;position:relative;}
+  section.alt{background:#0e121b;}
+  .section-head{text-align:center;max-width:700px;margin:0 auto 56px;}
+  .section-tag{color:var(--accent-2);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
   .section-head h2{font-size:clamp(26px,3.6vw,38px);font-weight:800;letter-spacing:-.01em;margin-bottom:14px;}
   .section-head p{color:var(--text-dim);font-size:16px;}
 
@@ -132,61 +102,50 @@
   .modules{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
   @media (max-width:980px){ .modules{grid-template-columns:repeat(2,1fr);} }
   @media (max-width:560px){ .modules{grid-template-columns:1fr;} }
-  .module-card{
-    display:block;cursor:pointer;
+  .module-card{display:block;cursor:pointer;position:relative;overflow:hidden;
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    padding:26px 22px;transition:transform .25s, border-color .25s, background .25s;
-    position:relative;overflow:hidden;
-  }
-  .module-card:hover{transform:translateY(-6px);border-color:#3a4a6e;background:var(--panel-light);}
-  .module-card::after{content:"查看详情 →";position:absolute;bottom:14px;right:18px;font-size:12px;color:var(--accent);opacity:0;transition:opacity .25s;}
-  .module-card:hover::after{opacity:1;}
-  .module-card .num{
-    position:absolute;top:16px;right:18px;font-size:12px;font-weight:700;color:var(--text-dim);
-    opacity:.5;
-  }
-  .module-icon{
-    width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    font-size:22px;margin-bottom:18px;
-  }
+    padding:26px 22px;transition:transform .28s,border-color .28s,box-shadow .28s;}
+  .module-card::before{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1px;
+    background:linear-gradient(135deg,transparent,var(--accent),var(--accent-2));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:.3s;pointer-events:none;}
+  .module-card:hover{transform:translateY(-6px);border-color:transparent;box-shadow:0 26px 52px -24px #5b8cff66;}
+  .module-card:hover::before{opacity:1;}
+  .module-card .num{position:absolute;top:16px;right:18px;font-size:12px;font-weight:700;color:var(--text-dim);opacity:.5;}
+  .module-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:23px;margin-bottom:18px;}
   .module-card h3{font-size:16px;font-weight:700;margin-bottom:8px;}
   .module-card p{font-size:13.5px;color:var(--text-dim);}
+  .module-card .m-cat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);margin-bottom:10px;}
+  .module-card::after{content:"查看详情 →";position:absolute;bottom:14px;right:18px;font-size:12px;color:var(--accent);opacity:0;transition:opacity .25s;}
+  .module-card:hover::after{opacity:1;}
 
   /* WORKFLOW */
   .flow{display:flex;align-items:flex-start;justify-content:space-between;gap:0;overflow-x:auto;padding-bottom:12px;}
   .flow-step{flex:1;min-width:150px;text-align:center;position:relative;padding:0 10px;}
-  .flow-step .circle{
-    width:52px;height:52px;border-radius:50%;background:var(--panel-light);border:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-weight:800;font-size:17px;
-    color:var(--accent-2);
-  }
+  .flow-step .circle{width:54px;height:54px;border-radius:50%;background:var(--panel-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-weight:800;font-size:17px;color:var(--accent-2);box-shadow:0 0 0 6px #0b0e14, 0 8px 22px -8px #5b8cff66;}
   .flow-step h4{font-size:14px;font-weight:700;margin-bottom:6px;}
   .flow-step p{font-size:12.5px;color:var(--text-dim);}
-  .flow-step:not(:last-child)::after{
-    content:"";position:absolute;top:26px;left:calc(50% + 36px);right:-50%;height:1px;
-    background:linear-gradient(90deg,var(--border),transparent);
-  }
+  .flow-step:not(:last-child)::after{content:"";position:absolute;top:27px;left:calc(50% + 38px);right:-50%;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
   /* COMPARE TABLE */
-  .compare{
-    width:100%;border-collapse:collapse;background:var(--panel);border-radius:var(--radius);overflow:hidden;
-    border:1px solid var(--border);font-size:14px;
-  }
+  .compare{width:100%;border-collapse:collapse;background:var(--panel);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);font-size:14px;}
   .compare th,.compare td{padding:16px 20px;text-align:left;border-bottom:1px solid var(--border);}
-  .compare th{color:var(--text-dim);font-weight:600;font-size:13px;background:#0f131c;}
+  .compare thead th{background:linear-gradient(90deg,#17203a,#1b2b2a);color:var(--text);font-weight:700;font-size:13px;}
   .compare td.good{color:var(--accent-2);font-weight:700;}
   .compare td.bad{color:#7a8296;}
   .compare tr:last-child td{border-bottom:none;}
 
   /* CTA */
-  .cta-box{
-    background:linear-gradient(135deg,#17203a,#1b2b2a);
-    border:1px solid var(--border);border-radius:24px;padding:64px 40px;text-align:center;
-  }
+  .cta-box{background:linear-gradient(135deg,#17203a,#1b2b2a);border:1px solid var(--border);border-radius:24px;padding:64px 40px;text-align:center;box-shadow:0 30px 60px -40px #000a;}
   .cta-box h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;margin-bottom:14px;}
   .cta-box p{color:var(--text-dim);margin-bottom:30px;}
 
   footer{border-top:1px solid var(--border);padding:40px 0;text-align:center;color:var(--text-dim);font-size:13px;}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){ .reveal{opacity:1;transform:none;transition:none;} }
 </style>
 </head>
 <body>
@@ -206,9 +165,9 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="pill"><span class="dot"></span> AI Agent · 一句话生成专业报告</div>
+    <div class="pill"><span class="dot"></span> AI Agent · 8 大模块协同，一句话生成专业报告</div>
     <h1>把 <span class="grad">数据、分析与排版</span><br>交给一个 Agent 完成</h1>
-    <p class="sub">ReportMind 是面向企业的智能报告生成 Agent，8 大模块协同工作，从数据接入到多格式导出，分钟级产出可直接汇报的专业报告。</p>
+    <p class="sub">ReportMind 是面向企业的智能报告生成 Agent。你只管说需求、传数据，它自动串联 8 大模块，分钟级产出可直接汇报的专业报告。</p>
     <div class="hero-actions">
       <a class="btn-primary" href="report-generator.html">免费试用</a>
       <a class="btn-ghost" href="#modules">查看核心能力</a>
@@ -220,25 +179,44 @@
       <div class="stat"><b>99.2%</b><div>数据提取准确率</div></div>
     </div>
 
-    <div class="preview">
-      <div class="preview-bar"><span></span><span></span><span></span></div>
-      <div class="preview-body">
-        <div class="preview-side">
-          <div class="item active">📊 数据总览</div>
-          <div class="item">📈 趋势分析</div>
-          <div class="item">🧩 用户画像</div>
-          <div class="item">📝 结论建议</div>
-          <div class="item">📎 附录数据</div>
+    <!-- AGENT 工作会话窗口 -->
+    <div class="showcase">
+      <div class="showcase-bar">
+        <span class="d"></span><span class="d"></span><span class="d"></span>
+        <div class="showcase-title"><span class="live"></span> ReportMind Agent · 工作会话</div>
+      </div>
+      <div class="showcase-body">
+        <div class="showcase-side">
+          <div class="as-item done"><span class="ai-dot"></span>📥 数据接入</div>
+          <div class="as-item done"><span class="ai-dot"></span>🧠 需求理解</div>
+          <div class="as-item done"><span class="ai-dot"></span>📐 数据分析</div>
+          <div class="as-item done"><span class="ai-dot"></span>📊 图表生成</div>
+          <div class="as-item active"><span class="ai-dot"></span>✍️ 文案撰写</div>
+          <div class="as-item"><span class="ai-dot"></span>🎨 排版设计</div>
+          <div class="as-item"><span class="ai-dot"></span>📤 导出交付</div>
         </div>
-        <div class="preview-main">
-          <h4>2026年第三季度经营分析报告</h4>
-          <div class="skeleton" style="width:92%"></div>
-          <div class="skeleton" style="width:78%"></div>
-          <div class="skeleton" style="width:85%"></div>
-          <div class="chart-mock">
-            <i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i>
-            <i style="height:80%"></i><i style="height:60%"></i><i style="height:95%"></i>
-            <i style="height:70%"></i>
+        <div class="showcase-chat">
+          <div class="msg user">帮我分析 Q3 经营数据，生成一份可向管理层汇报的报告</div>
+          <div class="msg agent">
+            <span class="label">Agent · 执行中</span>
+            已接入数据源并完成清洗，正在理解汇报意图、生成图表与文案…
+            <div class="typing"><i></i><i></i><i></i></div>
+          </div>
+          <div class="msg agent">
+            <span class="label">Agent · 已生成报告</span>
+            整体经营稳中有进，核心指标全面向好，耗时 38 秒（传统人工约 4 小时）。
+            <div class="mini">
+              <div class="mini-title">2026 Q3 经营分析报告</div>
+              <div class="mini-sub">核心指标趋势（环比 %）</div>
+              <div class="mini-bar">
+                <i style="height:40%"></i><i style="height:62%"></i><i style="height:50%"></i>
+                <i class="hi" style="height:88%"></i><i style="height:66%"></i><i class="hi" style="height:96%"></i><i style="height:72%"></i>
+              </div>
+            </div>
+            <div class="mini-actions">
+              <a class="btn-primary" href="report-generator.html" style="padding:9px 18px;font-size:13px;">打开生成器</a>
+              <a class="btn-ghost" href="#modules" style="padding:9px 18px;font-size:13px;">了解模块</a>
+            </div>
           </div>
         </div>
       </div>
@@ -246,7 +224,7 @@
   </div>
 </section>
 
-<section id="modules">
+<section id="modules" class="reveal">
   <div class="wrap">
     <div class="section-head">
       <div class="section-tag">Core Modules</div>
@@ -257,48 +235,56 @@
 
       <a class="module-card" href="modules/data-integration.html">
         <div class="num">01</div>
+        <div class="m-cat">数据层</div>
         <div class="module-icon" style="background:#5b8cff22;color:#5b8cff;">🔌</div>
         <h3>数据接入模块</h3>
         <p>支持 Excel、数据库、API、BI 工具一键连接，自动清洗与标准化多源异构数据。</p></a>
 
       <a class="module-card" href="modules/requirement-understanding.html">
         <div class="num">02</div>
+        <div class="m-cat">智能层</div>
         <div class="module-icon" style="background:#7ee8c722;color:#7ee8c7;">🧠</div>
         <h3>需求理解模块</h3>
         <p>基于自然语言理解用户的报告意图，自动拆解为分析维度、指标与结构大纲。</p></a>
 
       <a class="module-card" href="modules/data-analysis.html">
         <div class="num">03</div>
+        <div class="m-cat">智能层</div>
         <div class="module-icon" style="background:#ffb86b22;color:#ffb86b;">📐</div>
         <h3>数据分析模块</h3>
         <p>内置统计建模与异常检测算法，自动完成同比环比、归因分析与趋势预测。</p></a>
 
       <a class="module-card" href="modules/chart-generation.html">
         <div class="num">04</div>
+        <div class="m-cat">智能层</div>
         <div class="module-icon" style="background:#ff6b9c22;color:#ff6b9c;">📊</div>
         <h3>图表生成模块</h3>
         <p>依据数据特征智能匹配最优图表类型，自动生成可交互、可编辑的可视化图表。</p></a>
 
       <a class="module-card" href="modules/narrative-writing.html">
         <div class="num">05</div>
+        <div class="m-cat">智能层</div>
         <div class="module-icon" style="background:#8a6bff22;color:#8a6bff;">✍️</div>
         <h3>文案撰写模块</h3>
         <p>基于大模型将数据洞察转化为专业、流畅的分析文案，支持多种语气与行业风格。</p></a>
 
       <a class="module-card" href="modules/layout-design.html">
         <div class="num">06</div>
+        <div class="m-cat">交付层</div>
         <div class="module-icon" style="background:#5bd1ff22;color:#5bd1ff;">🎨</div>
         <h3>排版设计模块</h3>
         <p>内置企业级设计模板库，自动完成图文排布、配色与品牌元素适配，告别手动调版。</p></a>
 
       <a class="module-card" href="modules/export-formats.html">
         <div class="num">07</div>
+        <div class="m-cat">交付层</div>
         <div class="module-icon" style="background:#ffd36622;color:#ffd366;">📤</div>
         <h3>多格式导出模块</h3>
         <p>一键导出 PDF、PPT、Word、网页等多种格式，适配汇报、分享与存档等不同场景。</p></a>
 
       <a class="module-card" href="modules/collaboration.html">
         <div class="num">08</div>
+        <div class="m-cat">交付层</div>
         <div class="module-icon" style="background:#9ad17e22;color:#9ad17e;">👥</div>
         <h3>协作与版本管理模块</h3>
         <p>支持多人在线协作、评论与审批流，自动记录版本历史，报告迭代全程可追溯。</p></a>
@@ -307,7 +293,7 @@
   </div>
 </section>
 
-<section id="workflow" style="background:#0e121b;">
+<section id="workflow" class="alt reveal">
   <div class="wrap">
     <div class="section-head">
       <div class="section-tag">Workflow</div>
@@ -315,36 +301,16 @@
       <p>Agent 自动串联 8 大模块，全流程无需人工干预，也可在任意环节插入人工审核。</p>
     </div>
     <div class="flow">
-      <div class="flow-step">
-        <div class="circle">1</div>
-        <h4>接入数据</h4>
-        <p>连接数据源，自动清洗</p>
-      </div>
-      <div class="flow-step">
-        <div class="circle">2</div>
-        <h4>理解需求</h4>
-        <p>解析意图，生成大纲</p>
-      </div>
-      <div class="flow-step">
-        <div class="circle">3</div>
-        <h4>分析建模</h4>
-        <p>统计分析与归因</p>
-      </div>
-      <div class="flow-step">
-        <div class="circle">4</div>
-        <h4>生成内容</h4>
-        <p>图表 + 文案自动产出</p>
-      </div>
-      <div class="flow-step">
-        <div class="circle">5</div>
-        <h4>排版导出</h4>
-        <p>一键导出多种格式</p>
-      </div>
+      <div class="flow-step"><div class="circle">1</div><h4>接入数据</h4><p>连接数据源，自动清洗</p></div>
+      <div class="flow-step"><div class="circle">2</div><h4>理解需求</h4><p>解析意图，生成大纲</p></div>
+      <div class="flow-step"><div class="circle">3</div><h4>分析建模</h4><p>统计分析与归因</p></div>
+      <div class="flow-step"><div class="circle">4</div><h4>生成内容</h4><p>图表 + 文案自动产出</p></div>
+      <div class="flow-step"><div class="circle">5</div><h4>排版导出</h4><p>一键导出多种格式</p></div>
     </div>
   </div>
 </section>
 
-<section id="compare">
+<section id="compare" class="reveal">
   <div class="wrap">
     <div class="section-head">
       <div class="section-tag">Comparison</div>
@@ -366,7 +332,7 @@
   </div>
 </section>
 
-<section id="cta">
+<section id="cta" class="reveal">
   <div class="wrap">
     <div class="cta-box">
       <h2>让下一份报告，交给 Agent 来写</h2>
@@ -382,6 +348,15 @@
 <footer>
   © 2026 ReportMind Agent · 本页面为产品演示 Demo，数据与截图均为模拟展示
 </footer>
+
+<script>
+(function(){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
 
 </body>
 </html>
