@@ -15,7 +15,7 @@
   // 留空，或者请求失败/超时，则自动回退到规则模板文案，不影响报告正常生成。
   // ---------------------------------------------------------------
   const AI_PROXY_ENDPOINT = "https://ai-report-narrative-proxy.yiru220.workers.dev"; // 与 modules/narrative-writing.html 保持一致
-  const AI_REQUEST_TIMEOUT_MS = 15000;
+  const AI_REQUEST_TIMEOUT_MS = 30000; // AI 生成通常 5~20 秒，前端必须比 Worker 侧(20s)长，否则会 abort
 
   // ---------------------------------------------------------------
   // 全局状态
