@@ -6,195 +6,355 @@
 <title>ReportMind Agent · 智能报告生成工具</title>
 <style>
   :root{
-    --bg:#f5f7fb;
-    --panel:#ffffff;
-    --border:#e4e8f0;
-    --text:#1a1f2b;
-    --text-dim:#6b7488;
+    --bg:#0b0e14;
+    --panel:rgba(255,255,255,.04);
+    --panel-2:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.09);
+    --border-strong:rgba(255,255,255,.16);
+    --text:#eef1f8;
+    --text-dim:#98a2b8;
+    --text-faint:#6b7488;
     --accent:#5b8cff;
-    --accent-2:#7ee8c7;
+    --accent-2:#8a6bff;
+    --teal:#7ee8c7;
+    --green:#3ddc97;
     --radius:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.65;
+    background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:44px 44px;
   }
-  .wrap{max-width:980px;margin:0 auto;padding:0 24px;}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(700px 380px at 12% -8%,rgba(91,140,255,.14),transparent 60%),
+      radial-gradient(640px 360px at 88% 108%,rgba(138,107,255,.10),transparent 60%);
+  }
 
-  header{
-    border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:10;
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    max-width:1180px;margin:0 auto;padding:18px 24px 0;
   }
-  nav{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:980px;margin:0 auto;padding:0 24px;}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;}
   .logo-badge{
-    width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    width:28px;height:28px;border-radius:8px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
     display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:800;
+    box-shadow:0 6px 18px -6px rgba(91,140,255,.7);
   }
-  .nav-actions{display:flex;gap:10px;}
+  .topbar a.back{
+    color:var(--text-dim);text-decoration:none;font-size:13.5px;font-weight:600;
+    padding:8px 14px;border:1px solid var(--border);border-radius:10px;transition:.15s;
+  }
+  .topbar a.back:hover{color:var(--text);border-color:var(--border-strong);background:var(--panel);}
 
-  main{padding:48px 0 80px;}
+  /* ============ Agent 工作会话窗口 ============ */
+  .agent-window{
+    position:relative;z-index:1;
+    max-width:1180px;margin:22px auto 60px;padding:0 24px;
+  }
+  .window-frame{
+    background:rgba(13,17,26,.82);
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:0 40px 90px -40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.02) inset;
+    backdrop-filter:blur(14px);
+    overflow:hidden;
+  }
+  .window-chrome{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 18px;border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.02);
+  }
+  .lights{display:flex;gap:7px;}
+  .lights i{width:11px;height:11px;border-radius:50%;display:block;}
+  .lights .l1{background:#ff5f57;} .lights .l2{background:#febc2e;} .lights .l3{background:#28c840;}
+  .chrome-title{font-size:13px;color:var(--text-dim);font-weight:600;letter-spacing:.4px;}
+  .chrome-status{
+    margin-left:auto;font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px;font-weight:600;
+  }
+  .chrome-status i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-  .page-title{text-align:center;margin-bottom:36px;}
-  .page-title h1{font-size:28px;font-weight:800;margin-bottom:10px;}
-  .page-title p{color:var(--text-dim);font-size:15px;}
+  .window-body{display:grid;grid-template-columns:236px 1fr;min-height:620px;}
 
-  /* UPLOAD STAGE */
+  /* ---- 左侧模块步骤 ---- */
+  .steps{
+    border-right:1px solid var(--border);
+    padding:20px 12px;background:rgba(255,255,255,.015);
+  }
+  .steps h5{font-size:11.5px;color:var(--text-faint);font-weight:700;letter-spacing:1.5px;margin:0 10px 12px;}
+  .step{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:10px;margin-bottom:4px;
+    font-size:13.5px;font-weight:600;color:var(--text-faint);
+    border:1px solid transparent;transition:.2s;
+  }
+  .step .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14);flex:none;transition:.2s;}
+  .step .ico{font-size:14px;filter:grayscale(1);opacity:.55;transition:.2s;}
+  .step.active{color:var(--text);background:var(--panel);border-color:var(--border);}
+  .step.active .dot{background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.4s infinite;}
+  .step.active .ico{filter:none;opacity:1;}
+  .step.done{color:var(--text-dim);}
+  .step.done .dot{background:var(--green);box-shadow:0 0 6px rgba(61,220,151,.5);}
+  .step.done .ico{filter:none;opacity:.9;}
+
+  /* ---- 右侧对话流 ---- */
+  .chat{padding:28px 30px 34px;display:flex;flex-direction:column;gap:18px;}
+  .msg{max-width:82%;animation:rise .35s ease both;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .msg.agent{align-self:flex-start;}
+  .msg.user{align-self:flex-end;}
+  .bubble{
+    padding:13px 17px;border-radius:16px;font-size:14px;
+  }
+  .msg.agent .bubble{
+    background:var(--panel);border:1px solid var(--border);
+    border-top-left-radius:6px;color:var(--text);
+  }
+  .msg.user .bubble{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;border-top-right-radius:6px;
+    box-shadow:0 12px 28px -12px rgba(91,140,255,.65);
+  }
+  .msg .who{font-size:11.5px;color:var(--text-faint);font-weight:700;margin-bottom:6px;letter-spacing:.5px;}
+  .msg.user .who{text-align:right;}
+
+  /* 上传卡片（Agent 消息内附件） */
   .dropzone{
-    border:2px dashed var(--border);border-radius:var(--radius);background:var(--panel);
-    padding:56px 24px;text-align:center;cursor:pointer;transition:border-color .2s, background .2s;
+    border:2px dashed var(--border-strong);border-radius:var(--radius);
+    background:rgba(255,255,255,.03);
+    padding:36px 22px;text-align:center;cursor:pointer;
+    transition:border-color .2s, background .2s, box-shadow .2s;
   }
-  .dropzone:hover, .dropzone.dragover{border-color:var(--accent);background:#f0f4ff;}
-  .dropzone .icon{font-size:42px;margin-bottom:14px;}
-  .dropzone h3{font-size:17px;font-weight:700;margin-bottom:8px;}
-  .dropzone p{color:var(--text-dim);font-size:13.5px;}
-  .dropzone .formats{margin-top:10px;font-size:12px;color:#9aa3b8;}
-
-  .divider-or{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--text-dim);font-size:13px;}
-  .divider-or::before,.divider-or::after{content:"";flex:1;height:1px;background:var(--border);}
+  .dropzone:hover,.dropzone.dragover{
+    border-color:var(--accent);background:rgba(91,140,255,.08);
+    box-shadow:0 0 0 4px rgba(91,140,255,.08);
+  }
+  .dropzone .icon{font-size:36px;margin-bottom:10px;}
+  .dropzone h3{font-size:15.5px;font-weight:700;margin-bottom:6px;}
+  .dropzone p{color:var(--text-dim);font-size:13px;}
+  .dropzone .formats{margin-top:10px;font-size:12px;color:var(--text-faint);}
 
   .btn{
     display:inline-flex;align-items:center;gap:6px;justify-content:center;
-    padding:12px 22px;border-radius:10px;font-weight:700;font-size:14px;border:none;cursor:pointer;
-    transition:opacity .15s, transform .1s;
+    padding:11px 20px;border-radius:10px;font-weight:700;font-size:13.5px;border:none;cursor:pointer;
+    transition:opacity .15s, transform .1s, box-shadow .2s;
   }
   .btn:active{transform:scale(.98);}
-  .btn:disabled{opacity:.45;cursor:not-allowed;}
-  .btn-primary{background:linear-gradient(135deg,var(--accent),#8a6bff);color:#fff;box-shadow:0 10px 24px -10px #5b8cff99;}
-  .btn-secondary{background:#eef1f8;color:var(--text);}
-  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 26px -10px rgba(91,140,255,.8);}
+  .btn-primary:hover:not(:disabled){box-shadow:0 14px 32px -10px rgba(91,140,255,.95);}
+  .btn-secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+  .btn-ghost:hover{color:var(--text);border-color:var(--border-strong);}
   .btn-block{width:100%;}
 
-  .status-msg{text-align:center;margin-top:16px;font-size:13.5px;color:var(--text-dim);min-height:20px;}
-  .status-msg.error{color:#e0455a;font-weight:600;}
+  /* 状态气泡（含打字动画） */
+  .status-msg{
+    align-self:flex-start;max-width:82%;
+    display:flex;align-items:center;gap:10px;
+    padding:12px 17px;border-radius:16px;border-top-left-radius:6px;
+    background:var(--panel);border:1px solid var(--border);
+    font-size:13.5px;color:var(--text-dim);min-height:20px;
+  }
+  .status-msg:empty{display:none;}
+  .status-msg.error{color:#ff7b8a;border-color:rgba(255,123,138,.35);}
+  .status-msg .txt{display:none;}
+  .status-msg.typing::after{
+    content:"···";margin-left:6px;letter-spacing:2px;color:var(--accent);font-weight:800;
+    animation:blink 1.2s infinite;
+  }
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
 
   .filename-tag{
-    display:none;margin-top:18px;padding:10px 16px;border-radius:10px;background:#eafaf1;color:#1b7a4f;
-    font-size:13.5px;font-weight:600;text-align:center;
+    display:none;align-self:flex-end;max-width:82%;
+    padding:12px 17px;border-radius:16px;border-top-right-radius:6px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 12px 28px -12px rgba(91,140,255,.65);
   }
-  .filename-tag.show{display:block;}
+  .filename-tag.show{display:block;animation:rise .35s ease both;}
 
-  .data-check{margin-top:28px;}
-  .data-check h4{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text-dim);}
+  /* 数据检查卡片 */
+  .data-check{max-width:82%;align-self:flex-start;display:none;animation:rise .35s ease both;}
+  .data-check.show{display:block;}
+  .data-check .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;border-top-left-radius:6px;
+    padding:15px 17px;
+  }
+  .data-check h4{font-size:11.5px;font-weight:700;color:var(--text-faint);letter-spacing:1px;margin-bottom:10px;}
   .col-tag{
-    display:inline-block;padding:6px 10px;margin:0 6px 8px 0;border-radius:8px;font-size:12.5px;font-weight:600;
+    display:inline-block;padding:5px 10px;margin:0 6px 8px 0;border-radius:8px;font-size:12px;font-weight:600;
+    background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-dim);
   }
   .col-tag i{font-style:normal;opacity:.65;margin-left:4px;font-weight:500;}
-  .tag-num{background:#eef2ff;color:#4457c2;}
-  .tag-date{background:#fff3e6;color:#b5690b;}
-  .tag-str{background:#eafaf1;color:#1b7a4f;}
+  .tag-num{color:#9db8ff;border-color:rgba(91,140,255,.4);background:rgba(91,140,255,.1);}
+  .tag-date{color:#ffc98a;border-color:rgba(255,184,107,.4);background:rgba(255,184,107,.1);}
+  .tag-str{color:#8fe9c9;border-color:rgba(126,232,199,.4);background:rgba(126,232,199,.08);}
 
-  .preview-table-wrap{margin-top:14px;overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
-  table.data-preview{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap;}
-  table.data-preview th,table.data-preview td{padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
-  table.data-preview th{background:#f8f9fc;color:var(--text-dim);font-weight:700;}
-  .preview-more{padding:8px 12px;font-size:12px;color:#9aa3b8;background:#fafbfd;}
+  .preview-table-wrap{margin-top:4px;overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+  table.data-preview{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;}
+  table.data-preview th,table.data-preview td{padding:7px 11px;border-bottom:1px solid var(--border);text-align:left;}
+  table.data-preview th{background:rgba(255,255,255,.04);color:var(--text-dim);font-weight:700;}
+  table.data-preview td{color:var(--text-dim);}
+  .preview-more{padding:7px 11px;font-size:11.5px;color:var(--text-faint);background:rgba(255,255,255,.02);}
 
-  .generate-bar{margin-top:28px;display:flex;gap:12px;justify-content:center;}
+  .generate-bar{display:flex;justify-content:flex-end;}
+  .generate-bar .btn{padding:13px 26px;font-size:14.5px;}
 
-  /* REPORT STAGE */
-  .report-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  /* ============ 报告阶段（同一窗口内切换） ============ */
+  .report-toolbar{display:flex;justify-content:space-between;align-items:center;}
   .report-toolbar .left{display:flex;gap:10px;}
 
   #reportRoot{
-    background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:40px;
+    max-width:88%;align-self:center;width:100%;
+    background:#ffffff;color:#1a1f2b;
+    border-radius:16px;padding:44px 46px;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.65);
+    animation:rise .4s ease both;
   }
-  .report-header{border-bottom:2px solid var(--text);padding-bottom:16px;margin-bottom:28px;}
-  .report-title{font-size:24px;font-weight:800;}
-  .report-meta{font-size:13px;color:var(--text-dim);margin-top:6px;}
-  .narrative-tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:700;}
+  .report-header{border-bottom:2px solid #1a1f2b;padding-bottom:16px;margin-bottom:28px;}
+  .report-title{font-size:24px;font-weight:800;color:#0d1119;}
+  .report-meta{font-size:12.5px;color:#6b7488;margin-top:6px;}
+  .narrative-tag{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;}
   .narrative-tag.ai{background:#eef2ff;color:#4457c2;}
   .narrative-tag.rule{background:#eef1f8;color:#6b7488;}
 
   .report-section{margin-bottom:30px;}
   .report-section h3{
-    font-size:16px;font-weight:800;margin-bottom:10px;color:var(--accent);
-    border-left:4px solid var(--accent);padding-left:10px;
+    font-size:16px;font-weight:800;margin-bottom:10px;color:#4457c2;
+    border-left:4px solid #5b8cff;padding-left:10px;
   }
   .report-section p{font-size:14px;color:#333a4a;}
   .report-section ul{margin:10px 0 0 20px;font-size:14px;color:#333a4a;}
   .report-section li{margin-bottom:6px;}
 
-  .chart-box{margin-top:16px;background:#fafbfd;border:1px solid var(--border);border-radius:10px;padding:16px;max-width:640px;}
+  .chart-box{margin-top:16px;background:#fafbfd;border:1px solid #e4e8f0;border-radius:10px;padding:16px;max-width:640px;}
 
   table.summary-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;}
-  table.summary-table th,table.summary-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;}
-  table.summary-table th{background:#f8f9fc;color:var(--text-dim);font-weight:700;}
+  table.summary-table th,table.summary-table td{padding:9px 12px;border-bottom:1px solid #e4e8f0;text-align:left;}
+  table.summary-table th{background:#f8f9fc;color:#6b7488;font-weight:700;}
 
-  footer{text-align:center;padding:30px 0;color:#9aa3b8;font-size:12.5px;}
+  .pagefoot{text-align:center;padding:0 0 34px;color:var(--text-faint);font-size:12px;position:relative;z-index:1;}
 
-  @media (max-width:640px){
-    #reportRoot{padding:20px;}
-    .report-title{font-size:20px;}
+  @media (max-width:860px){
+    .window-body{grid-template-columns:1fr;min-height:auto;}
+    .steps{display:none;}
+    .msg,.status-msg,.filename-tag,.data-check{max-width:96%;}
+    #reportRoot{padding:24px 20px;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <nav>
-    <div class="logo"><div class="logo-badge">R</div>ReportMind Agent</div>
-    <div class="nav-actions">
-      <a class="btn btn-ghost" href="index.html">← 返回首页</a>
-      <button class="btn btn-ghost" id="btnReset" style="display:none;">重新上传</button>
-    </div>
-  </nav>
-</header>
+<div class="topbar">
+  <div class="logo"><div class="logo-badge">R</div>ReportMind Agent</div>
+  <a class="back" href="index.html">← 返回首页</a>
+</div>
 
-<main>
-  <div class="wrap">
+<div class="agent-window">
+  <div class="window-frame">
 
-    <div id="uploadStage">
-      <div class="page-title">
-        <h1>上传数据，自动生成分析报告</h1>
-        <p>支持 Excel（.xlsx / .xls）与 CSV 文件，系统会在本地浏览器中真实解析数据、完成统计分析并生成图表与文案。</p>
-      </div>
-
-      <div class="dropzone" id="dropzone">
-        <div class="icon">📁</div>
-        <h3>点击或拖拽文件到此处上传</h3>
-        <p>我们会自动识别数值列、分类列与日期列</p>
-        <div class="formats">支持格式：.xlsx .xls .csv ｜ 数据仅在本地浏览器中处理，不会上传到服务器</div>
-      </div>
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;">
-
-      <div class="divider-or">没有数据文件？</div>
-      <button class="btn btn-secondary btn-block" id="btnDemo">使用示例数据体验（零售季度销售数据）</button>
-
-      <div class="filename-tag" id="fileNameTag"></div>
-
-      <div class="status-msg" id="statusMsg"></div>
-
-      <div id="dataCheckArea">
-        <div class="data-check" id="columnMapArea" style="display:none;">
-          <h4>系统识别的字段类型</h4>
-          <div id="columnMapWrap"></div>
-        </div>
-        <div class="data-check" id="previewArea" style="display:none;">
-          <h4>数据预览</h4>
-          <div class="preview-table-wrap" id="previewTableWrap"></div>
-        </div>
-      </div>
-
-      <div class="generate-bar">
-        <button class="btn btn-primary" id="btnGenerate" disabled>生成分析报告 →</button>
-      </div>
+    <div class="window-chrome">
+      <div class="lights"><i class="l1"></i><i class="l2"></i><i class="l3"></i></div>
+      <div class="chrome-title">ReportMind Agent · 工作会话</div>
+      <div class="chrome-status"><i></i>Agent 在线</div>
+      <button class="btn btn-ghost" id="btnReset" style="display:none;padding:6px 14px;font-size:12.5px;">重新上传</button>
     </div>
 
-    <div id="reportStage" style="display:none">
-      <div class="report-toolbar">
-        <div class="left">
-          <button class="btn btn-ghost" id="btnBackTop" onclick="document.getElementById('uploadStage').style.display='';document.getElementById('reportStage').style.display='none';">← 返回</button>
-        </div>
-        <button class="btn btn-primary" id="btnExportPdf">导出 PDF</button>
-      </div>
-      <div id="reportRoot"></div>
-    </div>
+    <div class="window-body">
 
+      <!-- 左侧：模块步骤 -->
+      <aside class="steps">
+        <h5>AGENT 工作流</h5>
+        <div class="step active" id="step-1"><span class="dot"></span><span class="ico">📥</span>数据接入</div>
+        <div class="step" id="step-2"><span class="dot"></span><span class="ico">🧠</span>需求理解</div>
+        <div class="step" id="step-3"><span class="dot"></span><span class="ico">📊</span>数据分析</div>
+        <div class="step" id="step-4"><span class="dot"></span><span class="ico">📈</span>图表生成</div>
+        <div class="step" id="step-5"><span class="dot"></span><span class="ico">✍️</span>文案撰写</div>
+        <div class="step" id="step-6"><span class="dot"></span><span class="ico">🎨</span>排版设计</div>
+        <div class="step" id="step-7"><span class="dot"></span><span class="ico">📤</span>导出交付</div>
+      </aside>
+
+      <!-- 右侧：对话流 -->
+      <div class="chat" id="chatFlow">
+
+        <div id="uploadStage" style="display:flex;flex-direction:column;gap:18px;">
+          <div class="msg agent">
+            <div class="who">AGENT</div>
+            <div class="bubble">你好，我是 ReportMind Agent 🤖 把你的 Excel / CSV 数据发给我，我会在本地完成清洗、统计分析、图表绘制与文案撰写，生成一份可直接导出的分析报告。</div>
+          </div>
+
+          <div class="msg agent">
+            <div class="who">AGENT · 等待数据</div>
+            <div class="dropzone" id="dropzone">
+              <div class="icon">📁</div>
+              <h3>点击或拖拽文件到此处上传</h3>
+              <p>我会自动识别数值列、分类列与日期列</p>
+              <div class="formats">支持 .xlsx .xls .csv ｜ 数据仅在本地浏览器中处理，不会上传到服务器</div>
+            </div>
+            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+          </div>
+
+          <div class="filename-tag" id="fileNameTag"></div>
+
+          <div class="status-msg" id="statusMsg"></div>
+
+          <div class="data-check" id="columnMapArea">
+            <div class="card">
+              <h4>字段识别结果</h4>
+              <div id="columnMapWrap"></div>
+            </div>
+          </div>
+          <div class="data-check" id="previewArea">
+            <div class="card">
+              <h4>数据预览</h4>
+              <div class="preview-table-wrap" id="previewTableWrap"></div>
+            </div>
+          </div>
+
+          <div class="msg agent" id="demoMsg">
+            <div class="who">AGENT</div>
+            <div class="bubble">没有现成数据？我准备了一份示例数据集（零售季度销售记录），点下面就能体验完整流程。</div>
+          </div>
+          <div class="generate-bar" id="demoBar">
+            <button class="btn btn-secondary" id="btnDemo">使用示例数据体验 →</button>
+          </div>
+
+          <div class="generate-bar" id="genBar" style="display:none;">
+            <button class="btn btn-primary" id="btnGenerate" disabled>生成分析报告 →</button>
+          </div>
+        </div>
+
+        <div id="reportStage" style="display:none;flex-direction:column;gap:18px;">
+          <div class="report-toolbar">
+            <div class="left">
+              <button class="btn btn-ghost" id="btnBackTop" onclick="document.getElementById('uploadStage').style.display='';document.getElementById('reportStage').style.display='none';">← 返回修改数据</button>
+            </div>
+            <button class="btn btn-primary" id="btnExportPdf">导出 PDF</button>
+          </div>
+
+          <div class="msg agent">
+            <div class="who">AGENT · 已完成</div>
+            <div class="bubble">报告生成完毕 ✅ 完整报告在下方，确认内容后可一键导出 PDF。</div>
+          </div>
+
+          <div id="reportRoot"></div>
+        </div>
+
+      </div>
+    </div>
   </div>
-</main>
+</div>
 
-<footer>ReportMind Agent · 数据分析与报告自动生成工具 · 所有计算在本地浏览器完成</footer>
+<div class="pagefoot">ReportMind Agent · 数据分析与报告自动生成工具 · 所有计算在本地浏览器完成</div>
 
 <script src="vendor/xlsx.full.min.js"></script>
 <script src="vendor/chart.umd.min.js"></script>
@@ -202,16 +362,63 @@
 <script src="vendor/html2canvas.min.js"></script>
 <script src="app.js"></script>
 <script>
-  // 数据预览区域的显示/隐藏联动（挂在原有逻辑之外，不侵入 app.js 的状态管理）
-  const _origIngest = document.getElementById('columnMapWrap');
+  // ===== 对话流联动（不侵入 app.js 的状态管理） =====
+  // 1) 数据预览/字段识别卡片随内容显隐；文件上传后切换按钮组
+  const _cmw = document.getElementById('columnMapWrap');
   const mo = new MutationObserver(() => {
-    document.getElementById('columnMapArea').style.display = document.getElementById('columnMapWrap').innerHTML ? '' : 'none';
-    document.getElementById('previewArea').style.display = document.getElementById('previewTableWrap').innerHTML ? '' : 'none';
-    document.getElementById('btnReset').style.display = document.getElementById('fileNameTag').classList.contains('show') ? '' : 'none';
+    document.getElementById('columnMapArea').classList.toggle('show', !!document.getElementById('columnMapWrap').innerHTML);
+    document.getElementById('previewArea').classList.toggle('show', !!document.getElementById('previewTableWrap').innerHTML);
+    const loaded = document.getElementById('fileNameTag').classList.contains('show');
+    document.getElementById('btnReset').style.display = loaded ? '' : 'none';
+    document.getElementById('demoMsg').style.display = loaded ? 'none' : '';
+    document.getElementById('demoBar').style.display = loaded ? 'none' : '';
+    document.getElementById('genBar').style.display = loaded ? '' : 'none';
   });
   mo.observe(document.getElementById('columnMapWrap'), { childList: true });
   mo.observe(document.getElementById('previewTableWrap'), { childList: true });
-  mo.observe(document.getElementById('fileNameTag'), { attributes: true });
+  mo.observe(document.getElementById('fileNameTag'), { attributes: true, childList: true, characterData: true });
+
+  // 2) 阶段切换兜底：app.js 用 style.display="" 切换显示，这里把清空自动还原为 flex（对话布局需要）
+  [['uploadStage','flex'],['reportStage','flex']].forEach(([id,disp])=>{
+    const el = document.getElementById(id);
+    new MutationObserver(()=>{
+      if(el.style.display === '') el.style.display = disp;
+    }).observe(el,{ attributes:true, attributeFilter:['style'] });
+  });
+
+  // 3) 状态气泡：含"正在"时显示打字动画（app.js 直接写 textContent，这里只切 class）
+  const _sm = document.getElementById('statusMsg');
+  new MutationObserver(() => {
+    _sm.classList.toggle('typing', /正在/.test(_sm.textContent) && !_sm.classList.contains('error'));
+  }).observe(_sm, { childList: true, characterData: true, subtree: true, attributes: true });
+
+  // 4) 左侧步骤状态机（轮询驱动，稳定且不依赖 app.js 内部实现）
+  const steps = Array.from({length:7},(_,i)=>document.getElementById('step-'+(i+1)));
+  function setSteps(state){ // state: 每步 'pending'|'active'|'done'
+    steps.forEach((el,i)=>{
+      el.classList.remove('active','done');
+      if(state[i]==='active') el.classList.add('active');
+      if(state[i]==='done') el.classList.add('done');
+    });
+  }
+  setInterval(()=>{
+    const loaded = document.getElementById('fileNameTag').classList.contains('show');
+    const reportVisible = document.getElementById('reportStage').style.display !== 'none';
+    const status = document.getElementById('statusMsg').textContent || '';
+    const analyzing = /正在分析|正在请求/.test(status);
+    const pdfDone = /PDF 导出完成/.test(status);
+
+    if(!loaded){
+      setSteps(['active','pending','pending','pending','pending','pending','pending']);
+    } else if(analyzing){
+      setSteps(['done','done','active','pending','pending','pending','pending']);
+    } else if(reportVisible){
+      setSteps(['done','done','done','done','done','done', pdfDone ? 'done' : 'active']);
+    } else {
+      // 数据已载入、等待点击生成
+      setSteps(['done','done','pending','pending','pending','pending','pending']);
+    }
+  }, 350);
 </script>
 </body>
 </html>
