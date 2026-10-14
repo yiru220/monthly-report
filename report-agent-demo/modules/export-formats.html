@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多格式导出模块 · ReportMind Agent</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141a26; --panel-light:#1b2231;
+    --accent:#5b8cff; --accent-2:#7ee8c7;
+    --text:#e9edf5; --text-dim:#93a0b8; --border:#232b3d; --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 10% -10%, #1c2a4a55, transparent),
+      radial-gradient(900px 500px at 90% 0%, #16352f55, transparent),
+      var(--bg);
+    color:var(--text);line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(160%) blur(10px);background:#0b0e14cc;border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1180px;margin:0 auto;padding:0 24px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:.3px;}
+  .logo-badge{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:15px;color:#0b0e14;font-weight:800;}
+  .nav-links{display:flex;gap:30px;font-size:14px;color:var(--text-dim);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent),#8a6bff);color:#fff;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px -8px #5b8cff80;}
+  @media (max-width:760px){ .nav-links{display:none;} }
+  .hero{padding:80px 0 48px;text-align:center;}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--panel);padding:7px 16px;border-radius:999px;font-size:13px;color:var(--text-dim);margin-bottom:26px;}
+  .pill span.dot{width:7px;height:7px;border-radius:50%;background:#ffd366;box-shadow:0 0 8px #ffd366;}
+  .hero h1{font-size:clamp(30px,4.6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:18px;}
+  .hero h1 .grad{background:linear-gradient(135deg,#ffd366,var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.sub{max-width:640px;margin:0 auto;color:var(--text-dim);font-size:16.5px;}
+  .hero .big-icon{font-size:52px;width:92px;height:92px;border-radius:24px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;background:#ffd36622;border:1px solid #ffd36644;}
+  .stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;padding:34px 0 0;}
+  .stat{text-align:center;}
+  .stat b{font-size:24px;font-weight:800;background:linear-gradient(135deg,#ffd366,var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat div{font-size:13px;color:var(--text-dim);margin-top:4px;}
+  section{padding:72px 0;}
+  section.alt{background:#0e121b;}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 48px;}
+  .section-tag{color:#ffd366;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+  .section-head h2{font-size:clamp(24px,3.2vw,34px);font-weight:800;letter-spacing:-.01em;margin-bottom:12px;}
+  .section-head p{color:var(--text-dim);font-size:15.5px;}
+  .feat{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media (max-width:760px){ .feat{grid-template-columns:1fr;} }
+  .feat-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:26px 24px;transition:transform .25s,border-color .25s;}
+  .feat-card:hover{transform:translateY(-4px);border-color:#ffd36666;}
+  .feat-card .fi{font-size:26px;margin-bottom:14px;}
+  .feat-card h3{font-size:16px;font-weight:700;margin-bottom:8px;}
+  .feat-card p{font-size:13.5px;color:var(--text-dim);}
+  .flow{display:flex;align-items:flex-start;justify-content:space-between;gap:0;overflow-x:auto;padding-bottom:12px;}
+  .flow-step{flex:1;min-width:150px;text-align:center;position:relative;padding:0 10px;}
+  .flow-step .circle{width:52px;height:52px;border-radius:50%;background:var(--panel-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-weight:800;font-size:17px;color:#ffd366;}
+  .flow-step h4{font-size:14px;font-weight:700;margin-bottom:6px;}
+  .flow-step p{font-size:12.5px;color:var(--text-dim);}
+  .flow-step:not(:last-child)::after{content:"";position:absolute;top:26px;left:calc(50% + 36px);right:-50%;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+  .scenes{display:grid;gap:14px;max-width:820px;margin:0 auto;}
+  .scene{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 20px;font-size:14px;color:var(--text-dim);}
+  .scene b{color:var(--text);font-weight:600;}
+  .scene .si{font-size:18px;}
+  .cta-box{background:linear-gradient(135deg,#17203a,#1b2b2a);border:1px solid var(--border);border-radius:24px;padding:52px 40px;text-align:center;}
+  .cta-box h2{font-size:clamp(22px,3vw,30px);font-weight:800;margin-bottom:12px;}
+  .cta-box p{color:var(--text-dim);margin-bottom:26px;}
+  .btn-primary{display:inline-block;background:linear-gradient(135deg,var(--accent),#8a6bff);color:#fff;padding:13px 26px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 12px 30px -10px #5b8cffaa;border:none;cursor:pointer;}
+  .btn-ghost{display:inline-block;border:1px solid var(--border);padding:13px 26px;border-radius:12px;font-weight:600;font-size:15px;color:var(--text);background:var(--panel);}
+  .pager{display:flex;justify-content:space-between;gap:16px;padding:56px 0 0;}
+  .pager a{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;transition:border-color .25s;}
+  .pager a:hover{border-color:#ffd36666;}
+  .pager .dir{font-size:12px;color:var(--text-dim);margin-bottom:6px;}
+  .pager .name{font-size:15px;font-weight:700;}
+  .pager a.next{text-align:right;}
+  footer{border-top:1px solid var(--border);padding:36px 0;text-align:center;color:var(--text-dim);font-size:13px;}
+  .back-top{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-dim);margin-top:10px;}
+  .back-top:hover{color:var(--text);}
+  .demo-box{max-width:820px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:28px;}
+  .demo-box textarea{width:100%;min-height:96px;background:var(--panel-light);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:14px;font-size:14px;font-family:inherit;resize:vertical;margin-bottom:16px;}
+  .demo-box textarea:focus{outline:none;border-color:#ffd366;}
+  .demo-out{margin-top:18px;background:var(--panel-light);border:1px solid var(--border);border-radius:10px;padding:18px;font-size:13.5px;color:var(--text-dim);white-space:pre-wrap;min-height:72px;}
+  .note{font-size:12.5px;color:var(--text-dim);margin-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <nav>
+    <a class="logo" href="../index.html"><div class="logo-badge">R</div>ReportMind Agent</a>
+    <div class="nav-links">
+      <a href="../index.html">产品总览</a>
+      <a href="../index.html#modules">核心模块</a>
+      <a href="../index.html#workflow">工作流程</a>
+    </div>
+    <a class="nav-cta" href="../report-generator.html">立即体验 →</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="pill"><span class="dot"></span> ReportMind · 核心模块 07 / 08</div>
+    <div class="big-icon">📤</div>
+    <h1><span class="grad">多格式导出模块</span></h1>
+    <p class="sub">一键导出 PDF、PPT、Word、网页等多种格式，适配汇报、分享与存档等不同场景。</p>
+    <div class="stats"><div class="stat"><b>4 种</b><div>主流导出格式</div></div><div class="stat"><b>1 键</b><div>全格式导出</div></div><div class="stat"><b>批量</b><div>多报告同时导出</div></div><div class="stat"><b>保真</b><div>排版零走样</div></div></div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Capabilities</div>
+      <h2>核心能力</h2>
+    </div>
+    <div class="feat"><div class="feat-card"><div class="fi">📄</div><h3>PDF 存档</h3><p>矢量级 PDF 输出，图表与文字完全保真，适合正式存档与对外发送。</p></div><div class="feat-card"><div class="fi">📽️</div><h3>PPT 汇报</h3><p>报告自动转为演示文稿结构，章节即页面，直接上会汇报。</p></div><div class="feat-card"><div class="fi">📝</div><h3>Word 协作</h3><p>导出可编辑 Word，方便后续人工续写、走内部审批流程。</p></div><div class="feat-card"><div class="fi">🌐</div><h3>网页分享</h3><p>生成在线网页版链接，移动端打开体验良好，适合群内分发。</p></div></div>
+  </div>
+</section>
+
+<section class="alt" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">How it works</div>
+      <h2>工作方式</h2>
+    </div>
+    <div class="flow"><div class="flow-step"><div class="circle">1</div><h4>完成报告</h4><p>内容与排版确认无误</p></div><div class="flow-step"><div class="circle">2</div><h4>选择格式</h4><p>PDF / PPT / Word / 网页任选</p></div><div class="flow-step"><div class="circle">3</div><h4>一键导出</h4><p>批量或单个导出</p></div><div class="flow-step"><div class="circle">4</div><h4>分发归档</h4><p>按场景分享或存入档案库</p></div></div>
+  </div>
+</section>
+
+<section id="scenes">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Use cases</div>
+      <h2>典型场景</h2>
+    </div>
+    <div class="scenes"><div class="scene"><span class="si">📌</span><span><b>上会汇报：</b>报告直接转 PPT，省一次重排</span></div><div class="scene"><span class="si">📌</span><span><b>对外发送：</b>PDF 加水印与权限后发给客户</span></div><div class="scene"><span class="si">📌</span><span><b>团队分发：</b>网页版链接发群，手机直接看</span></div></div>
+    <div style="text-align:center;margin-top:28px;"><a class="back-top" href="../index.html#modules">← 查看全部 8 大模块</a></div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>体验多格式导出模块</h2>
+      <p>打开报告生成器，上传数据即可体验完整流程</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="../report-generator.html">立即体验 →</a>
+        <a class="btn-ghost" href="../index.html">返回产品总览</a>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="wrap"><div class="pager"><a href="layout-design.html"><div class="dir">← 上一模块</div><div class="name">06 排版设计模块</div></a><a class="next" href="collaboration.html"><div class="dir">下一模块 →</div><div class="name">08 协作与版本管理模块</div></a></div></div>
+
+<footer>
+  © 2026 ReportMind Agent · 本页面为产品演示 Demo，数据与截图均为模拟展示 · <a href="../index.html" style="color:var(--accent-2);">返回产品总览</a>
+</footer>
+</body>
+</html>

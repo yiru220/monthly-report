@@ -133,11 +133,14 @@
   @media (max-width:980px){ .modules{grid-template-columns:repeat(2,1fr);} }
   @media (max-width:560px){ .modules{grid-template-columns:1fr;} }
   .module-card{
+    display:block;cursor:pointer;
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
     padding:26px 22px;transition:transform .25s, border-color .25s, background .25s;
     position:relative;overflow:hidden;
   }
   .module-card:hover{transform:translateY(-6px);border-color:#3a4a6e;background:var(--panel-light);}
+  .module-card::after{content:"查看详情 →";position:absolute;bottom:14px;right:18px;font-size:12px;color:var(--accent);opacity:0;transition:opacity .25s;}
+  .module-card:hover::after{opacity:1;}
   .module-card .num{
     position:absolute;top:16px;right:18px;font-size:12px;font-weight:700;color:var(--text-dim);
     opacity:.5;
@@ -252,61 +255,53 @@
     </div>
     <div class="modules">
 
-      <div class="module-card">
+      <a class="module-card" href="modules/data-integration.html">
         <div class="num">01</div>
         <div class="module-icon" style="background:#5b8cff22;color:#5b8cff;">🔌</div>
         <h3>数据接入模块</h3>
-        <p>支持 Excel、数据库、API、BI 工具一键连接，自动清洗与标准化多源异构数据。</p>
-      </div>
+        <p>支持 Excel、数据库、API、BI 工具一键连接，自动清洗与标准化多源异构数据。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/requirement-understanding.html">
         <div class="num">02</div>
         <div class="module-icon" style="background:#7ee8c722;color:#7ee8c7;">🧠</div>
         <h3>需求理解模块</h3>
-        <p>基于自然语言理解用户的报告意图，自动拆解为分析维度、指标与结构大纲。</p>
-      </div>
+        <p>基于自然语言理解用户的报告意图，自动拆解为分析维度、指标与结构大纲。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/data-analysis.html">
         <div class="num">03</div>
         <div class="module-icon" style="background:#ffb86b22;color:#ffb86b;">📐</div>
         <h3>数据分析模块</h3>
-        <p>内置统计建模与异常检测算法，自动完成同比环比、归因分析与趋势预测。</p>
-      </div>
+        <p>内置统计建模与异常检测算法，自动完成同比环比、归因分析与趋势预测。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/chart-generation.html">
         <div class="num">04</div>
         <div class="module-icon" style="background:#ff6b9c22;color:#ff6b9c;">📊</div>
         <h3>图表生成模块</h3>
-        <p>依据数据特征智能匹配最优图表类型，自动生成可交互、可编辑的可视化图表。</p>
-      </div>
+        <p>依据数据特征智能匹配最优图表类型，自动生成可交互、可编辑的可视化图表。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/narrative-writing.html">
         <div class="num">05</div>
         <div class="module-icon" style="background:#8a6bff22;color:#8a6bff;">✍️</div>
         <h3>文案撰写模块</h3>
-        <p>基于大模型将数据洞察转化为专业、流畅的分析文案，支持多种语气与行业风格。</p>
-      </div>
+        <p>基于大模型将数据洞察转化为专业、流畅的分析文案，支持多种语气与行业风格。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/layout-design.html">
         <div class="num">06</div>
         <div class="module-icon" style="background:#5bd1ff22;color:#5bd1ff;">🎨</div>
         <h3>排版设计模块</h3>
-        <p>内置企业级设计模板库，自动完成图文排布、配色与品牌元素适配，告别手动调版。</p>
-      </div>
+        <p>内置企业级设计模板库，自动完成图文排布、配色与品牌元素适配，告别手动调版。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/export-formats.html">
         <div class="num">07</div>
         <div class="module-icon" style="background:#ffd36622;color:#ffd366;">📤</div>
         <h3>多格式导出模块</h3>
-        <p>一键导出 PDF、PPT、Word、网页等多种格式，适配汇报、分享与存档等不同场景。</p>
-      </div>
+        <p>一键导出 PDF、PPT、Word、网页等多种格式，适配汇报、分享与存档等不同场景。</p></a>
 
-      <div class="module-card">
+      <a class="module-card" href="modules/collaboration.html">
         <div class="num">08</div>
         <div class="module-icon" style="background:#9ad17e22;color:#9ad17e;">👥</div>
         <h3>协作与版本管理模块</h3>
-        <p>支持多人在线协作、评论与审批流，自动记录版本历史，报告迭代全程可追溯。</p>
-      </div>
+        <p>支持多人在线协作、评论与审批流，自动记录版本历史，报告迭代全程可追溯。</p></a>
 
     </div>
   </div>
