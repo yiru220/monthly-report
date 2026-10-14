@@ -63,7 +63,12 @@ export default {
       return jsonResponse({ ok: false, error: "缺少 stats 字段（统计摘要）" }, 400, corsHeaders);
     }
 
-    const prompt = buildPrompt(stats);
+    // instruction：用户额外要求（生成前设定调性 / 生成后下达修改）
+    // currentReport：已有的报告正文（仅"对话改写"时传入），让 AI 基于它做修订
+    const instruction = (payload && typeof payload.instruction === "string") ? payload.instruction : "";
+    const currentReport = (payload && typeof payload.currentReport === "string") ? payload.currentReport : "";
+
+    const prompt = buildPrompt(stats, instruction, currentReport);
 
     try {
       const narrative = await callZhipu(apiKey, prompt);
@@ -78,15 +83,33 @@ export default {
   },
 };
 
-function buildPrompt(stats) {
-  return (
-    "你是一名数据分析师，请基于以下真实统计结果撰写一段专业、简洁的中文数据分析报告正文。" +
-    "要求：只基于给出的数字做分析和推断，不要编造任何数据或数字；语言专业但不生硬；" +
-    "分段输出「数据总览」「趋势分析」「维度分析」「结论与建议」四个小节，每节 2-4 句话；" +
+function buildPrompt(stats, instruction, currentReport) {
+  const statsJson = JSON.stringify(stats, null, 2);
+
+  // 场景二：已有报告 + 修改指令 -> 修订模式
+  if (currentReport && instruction) {
+    return (
+      "你是一名资深数据分析师。下面是已生成的数据分析报告正文，以及用户希望做的修改指令。" +
+      "请基于原始统计数据和用户的修改指令，输出修订后的完整报告正文。" +
+      "要求：保持「数据总览」「趋势分析」「维度分析」「结论与建议」四节结构（章节标题用这四个之一），每节 2-4 句；" +
+      "只基于已有信息和统计数据，不要编造数字；直接输出正文，不要输出多余说明或问候语。\n\n" +
+      "【已有报告正文】\n" + currentReport + "\n\n" +
+      "【用户的修改指令】\n" + instruction + "\n\n" +
+      "【原始统计数据（JSON，供核对）】\n" + statsJson
+    );
+  }
+
+  // 场景一：首次生成（可带额外要求）
+  let base =
+    "你是一名资深数据分析师。请基于以下真实统计结果撰写专业、简洁的中文数据分析报告正文。" +
+    "要求：只基于给出的数字做分析，不要编造任何数据或数字；" +
+    "分段输出「数据总览」「趋势分析」「维度分析」「结论与建议」四个小节（章节标题用这四个之一），每节 2-4 句话；" +
     "直接输出正文内容，不要输出多余的说明或开头问候语。\n\n" +
-    "统计结果（JSON）：\n" +
-    JSON.stringify(stats, null, 2)
-  );
+    "统计结果（JSON）：\n" + statsJson;
+  if (instruction) {
+    base += "\n\n【用户额外要求】\n" + instruction;
+  }
+  return base;
 }
 
 async function callZhipu(apiKey, prompt) {

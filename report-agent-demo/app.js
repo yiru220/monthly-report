@@ -28,6 +28,9 @@
     categoryCols: [],
     dateCols: [],
     charts: [],         // Chart.js 实例，导出前需要销毁或等待渲染完成
+    narrativeSections: null,  // 当前报告文案小节（用于生成后继续对话修订）
+    narrativeSource: "rule",  // 'ai' | 'rule'
+    lastStats: null,          // 缓存的统计结果，修订时复用
   };
 
   const els = {};
@@ -48,6 +51,9 @@
     els.statusMsg = document.getElementById("statusMsg");
     els.previewTableWrap = document.getElementById("previewTableWrap");
     els.columnMapWrap = document.getElementById("columnMapWrap");
+    els.chatScroll = document.getElementById("chatScroll");
+    els.chatInput = document.getElementById("chatInput");
+    els.chatSend = document.getElementById("chatSend");
 
     els.dropzone.addEventListener("click", () => els.fileInput.click());
     els.dropzone.addEventListener("dragover", (e) => {
@@ -67,9 +73,16 @@
     });
 
     els.btnDemo.addEventListener("click", loadDemoData);
-    els.btnGenerate.addEventListener("click", generateReport);
+    els.btnGenerate.addEventListener("click", triggerGenerate);
     els.btnExportPdf.addEventListener("click", exportPdf);
     els.btnReset.addEventListener("click", resetAll);
+
+    // 底部指令输入区：自由输入文字下达任务 / 生成后继续对话改报告
+    els.chatSend.addEventListener("click", sendMessage);
+    els.chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    disableComposer();
   }
 
   // ---------------------------------------------------------------
@@ -151,7 +164,8 @@
     renderColumnMap();
 
     els.btnGenerate.disabled = false;
-    setStatus(`解析成功，共 ${rows.length} 行数据。请确认字段识别无误后点击"生成报告"。`);
+    enableComposer();
+    setStatus(`解析成功，共 ${rows.length} 行数据。可直接点击"生成报告"，或在下方输入框下达指令（例如：重点分析复购率）。`);
   }
 
   // 识别形如 2026-01-01 / 2026/01/01 / 2026年1月1日 等常见日期字符串
@@ -264,6 +278,8 @@
     els.fileInput.value = "";
     els.uploadStage.style.display = "";
     els.reportStage.style.display = "none";
+    state.narrativeSections = null;
+    disableComposer();
     setStatus("");
   }
 
@@ -501,13 +517,27 @@
   // =================================================================
   // 报告渲染（真实图表 + 真实文案）
   // =================================================================
-  async function generateReport() {
+  // 触发生成：若输入框有指令则一并带入；并先以对话气泡呈现用户意图
+  function triggerGenerate() {
+    const instr = els.chatInput ? els.chatInput.value.trim() : "";
+    if (instr) {
+      appendUserBubble(instr);
+      els.chatInput.value = "";
+    }
+    generateReport(instr);
+  }
+
+  async function generateReport(instruction) {
+    instruction = instruction || "";
     if (!state.rawRows.length) return;
+
+    // 对话式进度反馈（始终可见，不依赖被隐藏的 uploadStage）
+    const statusBubble = appendAgentBubble("正在分析数据并生成报告…");
+    statusBubble.classList.add("typing");
     setStatus("正在分析数据…");
-    state.charts.forEach((c) => c.destroy());
-    state.charts = [];
 
     const stats = computeStats();
+    state.lastStats = stats;
     // 规则引擎生成的文案始终作为兜底，保证报告任何情况下都能生成
     const ruleNarrative = generateNarrative(stats);
 
@@ -519,7 +549,7 @@
     if (AI_PROXY_ENDPOINT) {
       setStatus("正在请求 AI 润色分析文案…");
       try {
-        const aiText = await requestAiNarrative(stats);
+        const aiText = await requestAiNarrative(stats, instruction);
         if (aiText) {
           narrative = mergeAiNarrative(ruleNarrative, aiText);
           narrativeSource = "ai";
@@ -529,26 +559,134 @@
       }
     }
 
-    els.reportRoot.innerHTML = buildReportSkeleton(narrative, stats, narrativeSource);
+    state.narrativeSections = narrative;
+    state.narrativeSource = narrativeSource;
+    renderReportIntoDom();
     els.uploadStage.style.display = "none";
     els.reportStage.style.display = "";
     els.btnGenerate.disabled = false;
 
-    // 渲染图表（必须在 DOM 插入后进行）
+    statusBubble.classList.remove("typing");
+    statusBubble.querySelector(".bubble").textContent =
+      narrativeSource === "ai"
+        ? "报告已生成，文案由 AI 润色完成 ✅"
+        : "报告已生成（规则模板文案）✅";
+    setStatus(
+      narrativeSource === "ai"
+        ? "报告生成完成（文案由 AI 生成），可点击右上角导出 PDF。"
+        : "报告生成完成（文案为规则模板生成），可点击右上角导出 PDF。"
+    );
+  }
+
+  // 把报告渲染进 DOM 并（重新）绘制图表；生成与"对话改写"共用，避免重复代码
+  function renderReportIntoDom() {
+    state.charts.forEach((c) => c.destroy());
+    state.charts = [];
+    els.reportRoot.innerHTML = buildReportSkeleton(state.narrativeSections, state.lastStats, state.narrativeSource);
     requestAnimationFrame(() => {
-      if (stats.trend) renderTrendChart(stats.trend);
-      if (stats.ranking) renderRankingChart(stats.ranking);
-      if (stats.secondaryRanking) renderSecondaryChart(stats.secondaryRanking);
-      setStatus(
-        narrativeSource === "ai"
-          ? "报告生成完成（文案由 AI 生成），可点击右上角导出 PDF。"
-          : "报告生成完成（文案为规则模板生成），可点击右上角导出 PDF。"
-      );
+      const s = state.lastStats;
+      if (s.trend) renderTrendChart(s.trend);
+      if (s.ranking) renderRankingChart(s.ranking);
+      if (s.secondaryRanking) renderSecondaryChart(s.secondaryRanking);
     });
   }
 
+  // =================================================================
+  // 对话式交互：自由输入文字下达任务 / 生成后继续对话改报告
+  // =================================================================
+  function appendUserBubble(text) { return makeBubble("user", text); }
+  function appendAgentBubble(text) { return makeBubble("agent", text); }
+  function makeBubble(role, text) {
+    const wrap = document.createElement("div");
+    wrap.className = "msg " + role;
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = role === "user" ? "你" : "AGENT";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text; // textContent 防止 XSS
+    wrap.appendChild(who);
+    wrap.appendChild(bubble);
+    els.chatScroll.appendChild(wrap);
+    scrollChatToBottom();
+    return wrap;
+  }
+  function scrollChatToBottom() {
+    if (els.chatScroll) els.chatScroll.scrollTop = els.chatScroll.scrollHeight;
+  }
+
+  function sendMessage() {
+    const input = els.chatInput;
+    const text = input.value.trim();
+    if (!text) return;
+    if (!state.rawRows.length) {
+      appendUserBubble(text);
+      input.value = "";
+      appendAgentBubble("请先上传数据或载入示例数据集，我才能为你分析哦～");
+      return;
+    }
+    appendUserBubble(text);
+    input.value = "";
+    if (!state.narrativeSections) {
+      // 还没生成报告：把这句话当作生成指令
+      generateReport(text);
+    } else {
+      // 已生成报告：把这句话当作修改指令，让 AI 修订报告
+      reviseReport(text);
+    }
+  }
+
+  async function reviseReport(instruction) {
+    if (!AI_PROXY_ENDPOINT) {
+      appendAgentBubble("当前未配置 AI 接口，无法在线修改报告。你可以返回修改数据后重新生成报告。");
+      return;
+    }
+    const base = state.narrativeSections;
+    if (!base) {
+      appendAgentBubble("当前还没有报告，请先生成报告再下达修改指令～");
+      return;
+    }
+    const statusBubble = appendAgentBubble("正在根据您的指令修订报告…");
+    statusBubble.classList.add("typing");
+    const stats = state.lastStats || computeStats();
+    // 把当前报告正文拼成纯文本，连同修改指令一起发给 AI
+    const currentReportText = base.map((s) => `## ${s.title}\n${s.text}`).join("\n\n");
+    try {
+      const aiText = await requestAiNarrative(stats, instruction, currentReportText);
+      if (!aiText) throw new Error("AI 返回内容为空");
+      state.narrativeSections = mergeAiNarrative(base, aiText);
+      state.narrativeSource = "ai";
+      renderReportIntoDom();
+      statusBubble.classList.remove("typing");
+      statusBubble.querySelector(".bubble").textContent = `已根据您的指令更新报告：${instruction}`;
+    } catch (err) {
+      statusBubble.classList.remove("typing");
+      statusBubble.classList.add("error");
+      statusBubble.querySelector(".bubble").textContent =
+        "AI 接口暂时无法访问（可能是网络或代理问题），报告未做修改。" +
+        (err && err.message ? "详情：" + err.message : "");
+      console.warn(err);
+    }
+  }
+
+  function enableComposer() {
+    els.chatInput.disabled = false;
+    els.chatSend.disabled = false;
+    els.chatInput.placeholder = "给 Agent 下达指令，例如：重点分析复购率 / 把结论精简成三句话 / 用更口语的方式重写";
+  }
+  function disableComposer() {
+    els.chatInput.disabled = true;
+    els.chatSend.disabled = true;
+    els.chatInput.value = "";
+    els.chatInput.placeholder = "请先上传数据或载入示例，再下达指令";
+  }
+
   // 把前端已算好的统计摘要（不含上传数据原始行）发给云函数中转层，换取 AI 生成的文案
-  function requestAiNarrative(stats) {
+  // instruction：用户的额外要求（生成前设定调性 / 生成后下达修改）
+  // currentReport：已有的报告正文（仅"对话改写"时传入），让 AI 基于它做修订
+  function requestAiNarrative(stats, instruction, currentReport) {
+    instruction = instruction || "";
+    currentReport = currentReport || "";
     const slimStats = {
       summary: stats.summary,
       trend: stats.trend
@@ -582,7 +720,7 @@
     return fetch(AI_PROXY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stats: slimStats }),
+      body: JSON.stringify({ stats: slimStats, instruction, currentReport }),
       signal: controller.signal,
     })
       .then((r) => r.json().then((j) => ({ r, j })))

@@ -106,7 +106,23 @@
   .step.done .ico{filter:none;opacity:.9;}
 
   /* ---- 右侧对话流 ---- */
-  .chat{padding:28px 30px 34px;display:flex;flex-direction:column;gap:18px;}
+  .chat{display:flex;flex-direction:column;min-height:620px;}
+  .chat-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;padding:28px 30px 18px;display:flex;flex-direction:column;gap:18px;}
+
+  /* 底部指令输入区（可自由输入文字下达任务 / 生成后继续对话改报告） */
+  .composer{display:flex;gap:10px;align-items:flex-end;padding:14px 30px 20px;border-top:1px solid var(--border);background:rgba(13,17,26,.95);}
+  .composer textarea{
+    flex:1;resize:none;height:48px;max-height:150px;padding:13px 16px;border-radius:12px;
+    background:var(--panel-2);border:1px solid var(--border);color:var(--text);
+    font-size:14px;font-family:inherit;line-height:1.5;outline:none;transition:border-color .2s,box-shadow .2s;
+  }
+  .composer textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,140,255,.12);}
+  .composer textarea:disabled{opacity:.45;cursor:not-allowed;}
+  .composer .btn-send{height:48px;padding:0 24px;flex:none;font-size:14.5px;}
+  .composer .btn-send:disabled{opacity:.45;cursor:not-allowed;}
+
+  /* Agent 气泡打字动画 */
+  .msg.agent.typing .bubble::after{content:" ···";letter-spacing:2px;color:var(--accent);font-weight:800;animation:blink 1.2s infinite;}
   .msg{max-width:82%;animation:rise .35s ease both;}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .msg.agent{align-self:flex-start;}
@@ -286,6 +302,8 @@
       <!-- 右侧：对话流 -->
       <div class="chat" id="chatFlow">
 
+       <div class="chat-scroll" id="chatScroll">
+
         <div id="uploadStage" style="display:flex;flex-direction:column;gap:18px;">
           <div class="msg agent">
             <div class="who">AGENT</div>
@@ -348,6 +366,13 @@
 
           <div id="reportRoot"></div>
         </div>
+
+       </div><!-- /chat-scroll -->
+
+       <div class="composer" id="composer">
+         <textarea id="chatInput" disabled placeholder="请先上传数据或载入示例，再下达指令"></textarea>
+         <button class="btn btn-primary btn-send" id="chatSend" disabled>发送</button>
+       </div>
 
       </div>
     </div>
